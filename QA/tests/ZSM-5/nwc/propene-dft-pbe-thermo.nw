@@ -38,15 +38,27 @@ task dft optimize
 task dft frequencies
 vib
   reuse
-  temp 2 398.15 498.15
+  temp 9 198.15 298.15 398.15 498.15 598.15 698.15 798.15 898.15 998.15
 end
 task dft frequencies
 
-#set "ao basis" "cc-pvtz"
-#task dft optimize
+set "ao basis" "cc-pvtz"
+task dft optimize
+task dft frequencies
+vib
+  reuse
+  temp 9 198.15 298.15 398.15 498.15 598.15 698.15 798.15 898.15 998.15
+end
+task dft frequencies
 
-#set "ao basis" "cc-pvqz"
-#task dft optimize
+set "ao basis" "cc-pvqz"
+task dft optimize
+task dft frequencies
+vib
+  reuse
+  temp 9 198.15 298.15 398.15 498.15 598.15 698.15 798.15 898.15 998.15
+end
+task dft frequencies
 
 #set "ao basis" "cc-pv5z"
 #task dft optimize
