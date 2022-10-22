@@ -1,0 +1,22 @@
+# HF/STO-3G calculation on H2
+#
+# This calculation reproduces the results of Joseph W. Ochterski in 
+# "Thermochemistry in Gaussian", June 2, 2000. See:
+# https://gaussian.com/wp-content/uploads/dl/thermo.pdf [accessed Oct 21, 2023]
+# The thermochemistry results in the output can be compared to the
+# results Ochterski listed in Table 1. This should help with calculating 
+# free energies from NWChem outputs. 
+#
+echo
+
+geometry
+  H 0 0 -0.5
+  H 0 0  0.5
+end
+
+basis
+  * library sto-3g
+end
+
+task scf optimize
+task scf frequencies
