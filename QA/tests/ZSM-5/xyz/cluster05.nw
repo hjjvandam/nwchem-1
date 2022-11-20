@@ -1,0 +1,19 @@
+echo 
+start zeolite-cluster
+
+geometry noautoz
+load cluster05.xyz
+end
+
+basis 
+  * library 3-21g*
+end
+
+scf
+  direct
+end
+
+#set geometry:actlist 1:77
+set geometry:actlist 78:103
+
+task scf optimize
