@@ -1,0 +1,35 @@
+echo 
+start zeolite-cluster
+
+geometry
+load cluster09-oh-h-4.0.xyz
+end
+
+geometry adjust
+  zcoord
+    bond 37 106 4.0 "oh-h" constant
+  end
+end
+
+
+basis 
+  * library 3-21g*
+end
+
+scf
+  direct
+end
+
+#set geometry:actlist 1:77
+#set geometry:actlist 78:103
+
+driver
+  maxiter 200
+end
+
+property
+  shielding
+end
+
+task scf property
+
