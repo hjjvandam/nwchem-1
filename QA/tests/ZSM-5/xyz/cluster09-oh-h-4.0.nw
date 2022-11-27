@@ -2,12 +2,12 @@ echo
 start zeolite-cluster
 
 geometry
-load cluster09-oh-h-4.0.xyz
+load cluster09.xyz
 end
 
 geometry adjust
   zcoord
-    bond 37 106 3.0 "oh-h" constant
+    bond 37 106 4.0 "oh-h" constant
   end
 end
 
