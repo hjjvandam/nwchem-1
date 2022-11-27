@@ -1,5 +1,6 @@
 echo 
 start zeolite-cluster
+memory stack 800 mb heap 200 mb global 6 gb
 
 geometry
 load cluster09-oh-h-4.0.xyz
