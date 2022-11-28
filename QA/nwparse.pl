@@ -18,7 +18,7 @@
 #           Richland, WA 99352-0999
 #
 $quiet = 0;
-$debug = 1;
+$debug = 0;
 $num_argv = @ARGV;
 
 if ($num_argv == 0) {
@@ -462,7 +462,10 @@ foreach $filename (@FILES_TO_PARSE) {
             }
             printf FILE_OUTPUT "%.10f\n", set_to_digits(@line_tokens[$itok],10);
         }
-	if (/isotropic =/ || /anisotropy =/ ) {
+	if (/Atom: /) {
+            printf FILE_OUTPUT "$_";
+        }
+	if (/isotropic =/ || /anisotropy =/) {
 		if ($debug) {print "\ndebug: $_";}
 		@line_tokens = split(' ');
 		$num_line_tokens = @line_tokens;
