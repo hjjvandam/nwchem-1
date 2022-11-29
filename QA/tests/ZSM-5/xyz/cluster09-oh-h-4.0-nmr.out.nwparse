@@ -1,0 +1,348 @@
+Effective nuclear repulsion energy (a.u.) 32305.45
+Effective nuclear repulsion energy (a.u.) 32305.45
+Total SCF energy = -11021.65997
+      Atom:    1  O 
+isotropic = 335.258
+anisotropy = 57.775
+      Atom:    2  Si
+isotropic = 613.204
+anisotropy = 52.727
+      Atom:    3  Si
+isotropic = 632.804
+anisotropy = 10.146
+      Atom:    4  Si
+isotropic = 642.940
+anisotropy = 42.312
+      Atom:    5  Si
+isotropic = 617.425
+anisotropy = 35.066
+      Atom:    6  Si
+isotropic = 625.677
+anisotropy = 46.026
+      Atom:    7  Si
+isotropic = 650.191
+anisotropy = 36.516
+      Atom:    8  Si
+isotropic = 645.891
+anisotropy = 25.336
+      Atom:    9  Si
+isotropic = 627.854
+anisotropy = 36.840
+      Atom:   10  Si
+isotropic = 607.397
+anisotropy = 53.818
+      Atom:   11  Si
+isotropic = 630.971
+anisotropy = 40.780
+      Atom:   12  O 
+isotropic = 334.807
+anisotropy = 57.598
+      Atom:   13  O 
+isotropic = 311.982
+anisotropy = 82.339
+      Atom:   14  O 
+isotropic = 308.144
+anisotropy = 77.975
+      Atom:   15  O 
+isotropic = 306.732
+anisotropy = 83.410
+      Atom:   16  O 
+isotropic = 298.865
+anisotropy = 54.239
+      Atom:   17  O 
+isotropic = 301.379
+anisotropy = 76.266
+      Atom:   18  O 
+isotropic = 307.345
+anisotropy = 77.067
+      Atom:   19  O 
+isotropic = 303.292
+anisotropy = 74.810
+      Atom:   20  O 
+isotropic = 329.389
+anisotropy = 49.729
+      Atom:   21  O 
+isotropic = 337.132
+anisotropy = 54.088
+      Atom:   22  O 
+isotropic = 332.975
+anisotropy = 62.235
+      Atom:   23  O 
+isotropic = 324.203
+anisotropy = 53.784
+      Atom:   24  O 
+isotropic = 311.750
+anisotropy = 69.320
+      Atom:   25  O 
+isotropic = 306.211
+anisotropy = 82.417
+      Atom:   26  O 
+isotropic = 314.591
+anisotropy = 49.945
+      Atom:   27  O 
+isotropic = 327.227
+anisotropy = 78.893
+      Atom:   28  O 
+isotropic = 302.494
+anisotropy = 75.765
+      Atom:   29  O 
+isotropic = 333.379
+anisotropy = 57.368
+      Atom:   30  O 
+isotropic = 306.021
+anisotropy = 71.984
+      Atom:   31  O 
+isotropic = 335.372
+anisotropy = 58.468
+      Atom:   32  O 
+isotropic = 312.880
+anisotropy = 82.127
+      Atom:   33  O 
+isotropic = 332.236
+anisotropy = 55.878
+      Atom:   34  O 
+isotropic = 323.110
+anisotropy = 57.201
+      Atom:   35  O 
+isotropic = 302.640
+anisotropy = 70.335
+      Atom:   36  Al
+isotropic = 613.241
+anisotropy = 29.319
+      Atom:   37  H 
+isotropic = 23.236
+anisotropy = 37.213
+      Atom:   38  Si
+isotropic = 646.963
+anisotropy = 14.339
+      Atom:   39  Si
+isotropic = 642.828
+anisotropy = 40.778
+      Atom:   40  Si
+isotropic = 609.814
+anisotropy = 31.238
+      Atom:   41  Si
+isotropic = 629.513
+anisotropy = 24.604
+      Atom:   42  Si
+isotropic = 623.383
+anisotropy = 20.084
+      Atom:   43  Si
+isotropic = 648.353
+anisotropy = 41.467
+      Atom:   44  Si
+isotropic = 645.174
+anisotropy = 44.775
+      Atom:   45  Si
+isotropic = 624.147
+anisotropy = 21.657
+      Atom:   46  Si
+isotropic = 609.313
+anisotropy = 38.360
+      Atom:   47  Si
+isotropic = 624.091
+anisotropy = 13.636
+      Atom:   48  Si
+isotropic = 640.500
+anisotropy = 26.909
+      Atom:   49  Si
+isotropic = 624.807
+anisotropy = 20.865
+      Atom:   50  O 
+isotropic = 308.581
+anisotropy = 83.728
+      Atom:   51  O 
+isotropic = 325.695
+anisotropy = 39.900
+      Atom:   52  O 
+isotropic = 308.139
+anisotropy = 78.353
+      Atom:   53  O 
+isotropic = 333.398
+anisotropy = 55.467
+      Atom:   54  O 
+isotropic = 306.582
+anisotropy = 76.427
+      Atom:   55  O 
+isotropic = 304.171
+anisotropy = 80.045
+      Atom:   56  O 
+isotropic = 312.292
+anisotropy = 84.437
+      Atom:   57  O 
+isotropic = 307.100
+anisotropy = 70.102
+      Atom:   58  O 
+isotropic = 306.384
+anisotropy = 75.273
+      Atom:   59  O 
+isotropic = 332.215
+anisotropy = 49.788
+      Atom:   60  O 
+isotropic = 334.520
+anisotropy = 58.272
+      Atom:   61  O 
+isotropic = 328.732
+anisotropy = 56.147
+      Atom:   62  O 
+isotropic = 336.513
+anisotropy = 60.984
+      Atom:   63  O 
+isotropic = 335.524
+anisotropy = 59.658
+      Atom:   64  O 
+isotropic = 312.359
+anisotropy = 84.152
+      Atom:   65  O 
+isotropic = 335.151
+anisotropy = 57.774
+      Atom:   66  O 
+isotropic = 332.883
+anisotropy = 54.407
+      Atom:   67  O 
+isotropic = 308.094
+anisotropy = 70.739
+      Atom:   68  O 
+isotropic = 309.002
+anisotropy = 72.344
+      Atom:   69  O 
+isotropic = 304.736
+anisotropy = 80.292
+      Atom:   70  O 
+isotropic = 306.498
+anisotropy = 73.204
+      Atom:   71  O 
+isotropic = 306.278
+anisotropy = 71.266
+      Atom:   72  O 
+isotropic = 306.111
+anisotropy = 76.902
+      Atom:   73  O 
+isotropic = 318.849
+anisotropy = 76.573
+      Atom:   74  O 
+isotropic = 307.264
+anisotropy = 65.560
+      Atom:   75  O 
+isotropic = 306.667
+anisotropy = 80.367
+      Atom:   76  O 
+isotropic = 314.048
+anisotropy = 82.522
+      Atom:   77  O 
+isotropic = 312.868
+anisotropy = 80.481
+      Atom:   78  O 
+isotropic = 333.475
+anisotropy = 59.040
+      Atom:   79  H 
+isotropic = 30.737
+anisotropy = 25.372
+      Atom:   80  O 
+isotropic = 336.828
+anisotropy = 62.918
+      Atom:   81  H 
+isotropic = 30.693
+anisotropy = 24.309
+      Atom:   82  O 
+isotropic = 332.756
+anisotropy = 59.868
+      Atom:   83  H 
+isotropic = 27.185
+anisotropy = 28.699
+      Atom:   84  O 
+isotropic = 335.761
+anisotropy = 58.023
+      Atom:   85  H 
+isotropic = 30.671
+anisotropy = 22.916
+      Atom:   86  H 
+isotropic = 30.890
+anisotropy = 22.657
+      Atom:   87  H 
+isotropic = 30.763
+anisotropy = 23.674
+      Atom:   88  H 
+isotropic = 31.279
+anisotropy = 21.458
+      Atom:   89  H 
+isotropic = 27.705
+anisotropy = 27.933
+      Atom:   90  H 
+isotropic = 29.854
+anisotropy = 18.929
+      Atom:   91  H 
+isotropic = 30.788
+anisotropy = 22.996
+      Atom:   92  H 
+isotropic = 28.828
+anisotropy = 20.090
+      Atom:   93  H 
+isotropic = 28.026
+anisotropy = 24.036
+      Atom:   94  H 
+isotropic = 30.926
+anisotropy = 23.047
+      Atom:   95  H 
+isotropic = 30.697
+anisotropy = 23.962
+      Atom:   96  H 
+isotropic = 31.082
+anisotropy = 21.915
+      Atom:   97  H 
+isotropic = 30.880
+anisotropy = 23.985
+      Atom:   98  H 
+isotropic = 30.888
+anisotropy = 24.210
+      Atom:   99  H 
+isotropic = 31.005
+anisotropy = 23.345
+      Atom:  100  H 
+isotropic = 31.169
+anisotropy = 21.784
+      Atom:  101  H 
+isotropic = 29.062
+anisotropy = 18.899
+      Atom:  102  H 
+isotropic = 30.832
+anisotropy = 25.322
+      Atom:  103  H 
+isotropic = 30.700
+anisotropy = 23.743
+      Atom:  104  C 
+isotropic = 192.081
+anisotropy = 31.528
+      Atom:  105  C 
+isotropic = 159.462
+anisotropy = 55.538
+      Atom:  106  O 
+isotropic = 311.080
+anisotropy = 57.730
+      Atom:  107  C 
+isotropic = 192.443
+anisotropy = 34.076
+      Atom:  108  H 
+isotropic = 31.475
+anisotropy = 12.439
+      Atom:  109  H 
+isotropic = 32.911
+anisotropy = 6.744
+      Atom:  110  H 
+isotropic = 33.055
+anisotropy = 11.659
+      Atom:  111  H 
+isotropic = 29.635
+anisotropy = 6.866
+      Atom:  112  H 
+isotropic = 33.617
+anisotropy = 17.617
+      Atom:  113  H 
+isotropic = 33.262
+anisotropy = 8.205
+      Atom:  114  H 
+isotropic = 31.178
+anisotropy = 11.625
+      Atom:  115  H 
+isotropic = 33.049
+anisotropy = 12.854
