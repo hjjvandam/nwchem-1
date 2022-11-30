@@ -1,0 +1,30 @@
+echo 
+start zeolite-cluster
+
+geometry
+load cluster09-ch-o-2.0.xyz
+end
+
+geometry adjust
+  zcoord
+    bond 27 108 1.5 "ch-o" constant
+  end
+end
+
+
+basis 
+  * library 3-21g*
+end
+
+scf
+  direct
+end
+
+#set geometry:actlist 1:77
+#set geometry:actlist 78:103
+
+driver
+  maxiter 200
+end
+
+task scf optimize
