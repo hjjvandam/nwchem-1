@@ -921,6 +921,31 @@ c
       
 c     
       end
+      
+c
+C> \sets and get cutoff radius
+c
+
+      double precision function geom_get_cutoff()
+      implicit none
+#include "nwc_const.fh"
+#include "geomP.fh"
+      geom_get_cutoff = cutoff
+      return
+      end
+
+      subroutine geom_set_cutoff(cutoff_in)
+      implicit none
+#include "nwc_const.fh"
+#include "geomP.fh"
+        double precision cutoff_in    ![input]
+
+        cutoff = cutoff_in
+cDEBUG
+        write(*,*)"geom_set_cutoff:",cutoff
+cDEBUG
+        end
+
 c
 C> \brief Compute and store the nuclear repulsion and nuclear dipole -
 C> external field energies
@@ -950,8 +975,8 @@ c
       logical geom_tag_to_element
       external geom_tag_to_element
       logical is_atom
-      double precision ddot
-      external ddot
+      double precision ddot, cutoff_l, geom_get_cutoff
+      external ddot, geom_get_cutoff
       is_atom(i) = (.not. inp_compare(.false., 'bq', tags(i,geom)(1:2)))
 c
       e = 0.0d0
