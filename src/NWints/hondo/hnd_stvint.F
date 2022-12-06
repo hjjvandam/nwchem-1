@@ -232,6 +232,9 @@ c
       cx=xyz(1,ic)
       cy=xyz(2,ic)
       cz=xyz(3,ic)
+      rrr =  sqrt((pp(1)-cx)**2+(pp(2)-cy)**2+(pp(3)-cz)**2)
+      cutoff = geom_get_cutoff()
+      if (rrr < cutoff) then
       yy=aa*((ax-cx)**2+(ay-cy)**2+(az-cz)**2)
       call hnd_droot
       do 420 iroot=1,nroots
@@ -272,6 +275,7 @@ c
   440 continue
   450 continue
 c
+      endif
   500 continue
       endif     ! of nuclear part
 c
