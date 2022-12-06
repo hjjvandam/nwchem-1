@@ -984,7 +984,11 @@ c
               rz = coords(3,i,geom)-coords(3,j,geom)
               rz = rz*rz
               r  = sqrt(rx+ry+rz)
+              cutoff_l = geom_get_cutoff()
+
+              if (r < cutoff_l) then
               e = e + charge(i,geom)*charge(j,geom)/r
+              endif
             endif
          end do
       end do
