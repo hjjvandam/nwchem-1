@@ -624,6 +624,21 @@ c     density screening
                         dijkl = max(dijkl,dijkl*dijkl)
                         if (qq4*sijkl*dijkl .lt. tol2e) goto 200 ! Next kl
                      end if
+
+c       radius screening
+                    ok =        geom_cent_get(geom, iat, t, ci, q)
+                    ok = ok.and.geom_cent_get(geom, jat, t, cj, q)
+                    p  = ci+cj/2
+                    ok = ok.and.geom_cent_get(geom, kat, t, ck, q)
+                    ok = ok.and.geom_cent_get(geom, lat, t, cl, q)
+                    q  = ck+cl/2
+                    if (.not.ok) then
+                            call errquit("messed up",0,UERR)
+                    endif
+                    ok = geom_calc_distance(p, q, pq)
+                    cutoff = geom_get_cutoff()
+                    if (pq < cutoff) then
+
 c     save it for later
                      nq = nq + 1
                      ijkl(nq,1) = ish
