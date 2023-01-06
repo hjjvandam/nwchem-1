@@ -938,13 +938,9 @@ c
       implicit none
 #include "nwc_const.fh"
 #include "geomP.fh"
-        double precision cutoff_in    ![input]
-
-        cutoff = cutoff_in
-cDEBUG
-        write(*,*)"geom_set_cutoff:",cutoff
-cDEBUG
-        end
+      double precision cutoff_in    ![input]
+      cutoff = cutoff_in
+      end
 
 c
 C> \brief Compute and store the nuclear repulsion and nuclear dipole -

@@ -283,6 +283,7 @@ c
       call movecs_ecce_print_on()
 c
       call geom_hnd_parallel(.true.)
+      call geom_set_cutoff(1.0d300)
 c
       call perfm_start()
 
