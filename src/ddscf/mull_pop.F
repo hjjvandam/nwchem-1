@@ -121,7 +121,7 @@ c
        if (.not.bas_numbf(basis,nbf))
      $     call errquit('bas_numbf failed',0, BASIS_ERR)
 
-      if(.not.ga_create(mt_int,nbf,1,'atom nbf',0,0,g_nbf))
+      if(.not.ga_create(mt_int,max(natoms,nbf),1,'atom nbf',0,0,g_nbf))
      $        call errquit('mull_pop ga_create failed', 0, GA_ERR)
       call ga_zero(g_nbf)
  
