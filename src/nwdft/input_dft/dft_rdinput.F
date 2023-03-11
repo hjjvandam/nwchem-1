@@ -199,7 +199,7 @@ c
 c     
       if (.not. rtdb_get(rtdb, 'dft:iterations', mt_int, 1,
      &   iterations))then
-         iterations=50
+         iterations=500
          if (.not. rtdb_put(rtdb, 'dft:iterations',
      &      mt_int, 1, iterations))
      &      call errquit('dft_rdinput: rtdb_put failed', 101, RTDB_ERR)
