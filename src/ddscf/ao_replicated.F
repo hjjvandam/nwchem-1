@@ -360,10 +360,17 @@ c
       logical oprint, osavewritefile, odotask
       logical odonea
 c     
+      logical geom_calc_distance
+      external geom_calc_distance
       logical int2e_set_bf_range
       external int2e_set_bf_range
       integer nxtask
       external nxtask
+c
+      double precision ci(3), cj(3), ck(3), cl(3), q, pq
+      double precision cutoff, rrik, rril, rrjk, rrjl
+      character*16 t
+      logical ok
 c     
       next = 1          ! take care of compiler warnings
       incomplete_top = 0
@@ -624,6 +631,23 @@ c     density screening
                         dijkl = max(dijkl,dijkl*dijkl)
                         if (qq4*sijkl*dijkl .lt. tol2e) goto 200 ! Next kl
                      end if
+
+c       radius screening
+                    ok =        geom_cent_get(geom, iat, t, ci, q)
+                    ok = ok.and.geom_cent_get(geom, jat, t, cj, q)
+                    ok = ok.and.geom_cent_get(geom, kat, t, ck, q)
+                    ok = ok.and.geom_cent_get(geom, lat, t, cl, q)
+                    ok = ok.and.geom_calc_distance(ci, ck, rrik)
+                    ok = ok.and.geom_calc_distance(ci, cl, rril)
+                    ok = ok.and.geom_calc_distance(cj, ck, rrjk)
+                    ok = ok.and.geom_calc_distance(cj, cl, rrjl)
+                    if (.not.ok) then
+                            call errquit("messed up",0,UERR)
+                    endif
+                    pq = min(rrik,rril,rrjk,rrjl)
+                    cutoff = geom_get_cutoff()
+                    if (pq < cutoff) then
+
 c     save it for later
                      nq = nq + 1
                      ijkl(nq,1) = ish
@@ -639,6 +663,7 @@ c     save it for later
      $                       ijkl(1,4), q4, current)
                         nq = 0
                      end if
+                    end if
  200              end do        ! Next KL pair
  100           end do           ! Next IJ pair
 c     

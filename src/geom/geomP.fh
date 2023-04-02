@@ -144,7 +144,7 @@ c
      $     geom_mass,bmatrix, velocities, zmt_varsign, zmt_cvr_scaling,
      $     zmt_ijbond_val, zmt_ijkang_val, zmt_ijklto_val,
      $     zmt_ijklop_val, zmt_ijklnb_val, zmt_izfrz_val,
-     $     geom_atomct
+     $     geom_atomct, cutoff
 
       common/cgeometry/
 *     doubles
@@ -177,6 +177,7 @@ c
      $     zmt_ijklop_val(max_zcoord,max_geom),
      $     zmt_ijklnb_val(max_zcoord,max_geom),
      $     zmt_izfrz_val(max_nzvar,max_geom),
+     $     cutoff,
 *     integers & logicals
      $     ncenter(max_geom),
      $     active(max_geom),
