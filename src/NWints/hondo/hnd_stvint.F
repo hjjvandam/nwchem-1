@@ -63,6 +63,7 @@ c
 #include "hnd_rys.fh"
 #include "hnd_tol.fh"
 #include "errquit.fh"
+#include "geom.fh"
       integer i_nprim  ! [input] num. prims on function i
       integer i_ngen   ! [input] num general conts on func. i
       integer Li       ! [input] angular momentum of func. i
@@ -95,6 +96,7 @@ c
       double precision rln10, zero, one, pi212
       double precision aax, aay, aaz, znuc, cx, cy, cz, uu, ww, tt
       double precision xv, yv, zv, dij
+      double precision cutoff, rri, rrj
       integer lit, ljt, maxi, maxj, ljtmod, jg
       integer ijx, ijy, ijz,ij, i, j
       integer ni, nj, i1, i2, j1, j2, ig, ic, iroot
@@ -232,6 +234,10 @@ c
       cx=xyz(1,ic)
       cy=xyz(2,ic)
       cz=xyz(3,ic)
+      rri =  sqrt((xi-cx)**2+(yi-cy)**2+(zi-cz)**2)
+      rrj =  sqrt((xj-cx)**2+(yj-cy)**2+(zj-cz)**2)
+      cutoff = geom_get_cutoff()
+      if ((rri .lt. cutoff) .or. (rrj .lt. cutoff)) then
       yy=aa*((ax-cx)**2+(ay-cy)**2+(az-cz)**2)
       call hnd_droot
       do 420 iroot=1,nroots
@@ -272,6 +278,7 @@ c
   440 continue
   450 continue
 c
+      endif
   500 continue
       endif     ! of nuclear part
 c

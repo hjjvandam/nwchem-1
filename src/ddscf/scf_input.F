@@ -12,7 +12,7 @@ c
       logical status
       character*255 test
       character*16 multiplicity
-      double precision conv, shifts(6), tolnr, tol2e
+      double precision conv, shifts(6), tolnr, tol2e, cutoff
       integer maxiter, poff, nopen, task_chunks, task_bf, maxsub
       integer memsize, filesize
       integer nriscf, ri_store
@@ -80,6 +80,7 @@ c
      $        call errquit('scf_input: rtdb_put of shifts failed',0,
      &       RTDB_ERR)
 c     
+
       else if (inp_compare(.false.,'vectors', test)) then
 c     
          call vectors_input(rtdb,'scf')
@@ -105,6 +106,20 @@ c
      $        inp_compare(.false.,'noprint', test)) then
 c     
          call util_print_input(rtdb, 'scf')
+c     
+      else if (inp_compare(.false.,'cutoff', test)) then
+
+c     
+c       cutoff <real cutoff>
+c     
+        if (.not. inp_f(cutoff)) call errquit
+     $          ('scf_input: cutoff <thresh>',0, INPUT_ERR)
+        if (.not. rtdb_put(rtdb,'scf:cutoff', MT_DBL, 1, cutoff))
+     $          call errquit('scf_input: rtdb_put of cutoff failed',0,
+     $          RTDB_ERR)
+cDEBUG
+c       write(*,*)"AAA cutoff = ",cutoff
+cDEBUG
 c     
       else if (inp_compare(.false.,'tol2e', test)) then
 c     

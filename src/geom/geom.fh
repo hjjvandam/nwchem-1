@@ -107,6 +107,8 @@ c
       logical geom_makec1
       logical geom_freeze
       logical geom_isbq
+
+      double precision geom_get_cutoff
 c
       external geom_disable_zmatrix
       external geom_zmt_put_data
@@ -191,6 +193,8 @@ c
       external geom_get_ang2au
       external geom_set_au2ang
       external geom_get_au2ang
+c
+      external geom_get_cutoff
 c
       external geom_ecp_allset
       external geom_ecp_allget

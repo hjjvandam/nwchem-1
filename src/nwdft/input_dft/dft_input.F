@@ -260,8 +260,8 @@ c     iterations;
 c             
   900 if (.not. inp_i(iterations)) then
          write(LuOut,*)' dft_input: iterations value not found;',
-     &             ' defaulting to 50'
-         iterations = 50
+     &             ' defaulting to 500'
+         iterations = 500
       endif 
       if (.not. rtdb_put(rtdb, 'dft:iterations', mt_int, 1, iterations))
      &   call errquit('dft_input: rtdb_put failed', 900, RTDB_ERR)
