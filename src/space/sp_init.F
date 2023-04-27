@@ -630,6 +630,57 @@ c
 c
       return
       end
+!
+!> @brief Read restart and part of the topology files
+!!
+!! This subroutine reads both the restart and some quantities from the
+!! topology files. The topology file is read through first, and
+!! subsequently the restart file is read.
+!!
+!! The key information to restore includes the positions of the solvent
+!! (water) and solute molecules, their velocities, and their forces.
+!!
+!! Note that internally the water atom positions and the solute
+!! atom positions are stored in Global Arrays. There are the following
+!! Global Arrays:
+!! - ga_ip the distribution of boxes over processors
+!! - ga_iw the water atom ranks
+!! - ga_w  the water atom quantities
+!!   - columns 1 - 9 water atom positions Ox,Oy,Oz,Hx,Hy,Hz,Hx,Hy,Hz
+!!   - columns 10 - 18 water atom velocities
+!!   - columns 19 - 27 water atom forces
+!! - ga_is the solute atom ranks
+!! - ga_s  the solute atom quantities
+!!   - columns 1 - 3 solute atom positions x,y,z
+!!   - columns 4 - 6 solute atom velocities
+!!   - columns 7 - 9 solute atom forces
+!!
+!! @param[in]  lfnrst the unit number for the restart file
+!! @param[in]  filrst the file name of the restart file
+!! @param[in]  lfntop the unit number for the topology file
+!! @param[in]  filtop the file name of the topology file
+!! @param[out] temp   temperature
+!! @param[out] tempw  temperature of the water
+!! @param[out] temps  temperature of the solute
+!! @param      iwl    memory for ranks of the water atoms
+!! @param      iwlp   memory for packed ranks of water atoms
+!! @param      xw     memory for water atom positions
+!! @param      vw     memory for water atom velocities
+!! @param      fw     memory for water atom forces
+!! @param      xwcr   ???
+!! @param      isl    memory for ranks of the solute atoms
+!! @param      islp   memory for packed ranks of solute atoms
+!! @param      xs     memory for solute atom positions
+!! @param      vs     memory for solute atom velocities
+!! @param      fs     memory for solute atom forces
+!! @param      xscr   ???
+!! @param      ipl    memory for number of molecules per box
+!! @param      b*     buffer variables to gather all atoms into
+!! @param[in]  ibownr box coordinates
+!! @param[in]  boxsiz the box sizes
+!! @param[in]  lseq 
+!! @param[out] isndx
+!!
       subroutine sp_rdrst(lfnrst,filrst,lfntop,filtop,
      + temp,tempw,temps,ipl,xw,vw,fw,xwcr,iwl,xs,vs,fs,xscr,isl,
      + bxw,bvw,bfw,brw,ibw,nw,bxs,bvs,bfs,ibs,ns,ndx,
@@ -2304,6 +2355,7 @@ c
 c
       return
       end
+!
 !> @brief Write restart file
 !!
 !! This subroutine writes the restart file. Key information to save
