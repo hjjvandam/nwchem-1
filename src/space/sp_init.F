@@ -2304,6 +2304,60 @@ c
 c
       return
       end
+!> @brief Write restart file
+!!
+!! This subroutine writes the restart file. Key information to save
+!! includes the positions of the solvent (water) and solute molecules,
+!! their velocities, and their forces. If we use a distributed write
+!! of just the process local quantities then we also need to save
+!! the rank of every, where the rank is the location of the atom
+!! in the full list of atoms.
+!!
+!! Note that internally the water atom positions and the solute
+!! atom positions are stored in Global Arrays. There are the following
+!! Global Arrays:
+!! - ga_ip the distribution of boxes over processors
+!! - ga_iw the water atom ranks
+!! - ga_w  the water atom quantities
+!!   - columns 1 - 9 water atom positions Ox,Oy,Oz,Hx,Hy,Hz,Hx,Hy,Hz
+!!   - columns 10 - 18 water atom velocities
+!!   - columns 19 - 27 water atom forces
+!! - ga_is the solute atom ranks
+!! - ga_s  the solute atom quantities
+!!   - columns 1 - 3 solute atom positions x,y,z
+!!   - columns 4 - 6 solute atom velocities
+!!   - columns 7 - 9 solute atom forces
+!!
+!! Overall the algorithm is that rank 0 loops over all
+!! processors, pulls the data from each processor into 
+!! the local buffer, then sort the atoms into the buffer
+!! for the global molecular system, and finally write it.
+!! The water molecules and solute atoms are handled separatedly.
+!!
+!! @param[in] lfnrst the unit number for the restart file
+!! @param[in] filrst the file name of the restart file
+!! @param[in] lveloc if .true. save the velocities
+!! @param[in] pres   pressure
+!! @param[in] temp   temperature
+!! @param[in] tempw  temperature of the water
+!! @param[in] temps  temperature of the solute
+!! @param     iwl    memory for ranks of the water atoms
+!! @param     iwlp   memory for packed ranks of water atoms
+!! @param     xw     memory for water atom positions
+!! @param     vw     memory for water atom velocities
+!! @param     fw     memory for water atom forces
+!! @param     xwcr   ???
+!! @param     isl    memory for ranks of the solute atoms
+!! @param     islp   memory for packed ranks of solute atoms
+!! @param     xs     memory for solute atom positions
+!! @param     vs     memory for solute atom velocities
+!! @param     fs     memory for solute atom forces
+!! @param     xscr   ???
+!! @param     ipl    memory for number of molecules per box
+!! @param[in] nb     buffer space size in number of atoms
+!! @param     b*     buffer variables to gather all atoms into
+!! @param[in] lseq   sequence information (replicated)
+!!
       subroutine sp_wtrst(lfnrst,filrst,lveloc,pres,temp,tempw,temps,
      + iwl,iwlp,xw,vw,fw,xwcr,isl,islp,xs,vs,fs,xscr,
      + ipl,nb,ibw,bxw,bvw,bfw,brw,ibs,bxs,bvs,bfs,lseq)
