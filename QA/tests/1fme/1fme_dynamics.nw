@@ -1,0 +1,13 @@
+echo 
+start nwchemdat
+
+md
+  msa 100000
+  system nwchemdat_md
+  step 0.002 equil 0 data 100000
+  isotherm 310.15 trelax 0.1
+  print extra out6
+  record rest 100
+  record coord 100 veloc 100 ascii
+end
+task md dynamics
