@@ -6,7 +6,8 @@ set sp:adios_mode Null
 md
   msa 100000
   system nwchemdat_md
-  step 0.002 equil 0 data 1000000
+  distar
+  step 0.002 equil 0 data 20000
   isotherm 310.15 trelax 0.1
   update center 1 
   print step 500 out6
