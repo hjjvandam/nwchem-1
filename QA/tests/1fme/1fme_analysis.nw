@@ -6,7 +6,7 @@ analysis
   reference nwchemdat_md.rst
   file nwchemdat_md.trj
   write 1 solute 1fme_md.pdb
-  frames 1 15000 1
+  frames 1 100000 1
   copy solute 1fme_md.crd
 end
 
