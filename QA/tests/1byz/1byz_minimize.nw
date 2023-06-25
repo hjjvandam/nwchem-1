@@ -1,0 +1,11 @@
+echo
+start nwchemdat
+
+md
+  msa 100000
+  system nwchemdat_md
+  sd 500
+  cg 500
+  print extra out6
+end
+task md optimize

@@ -1,0 +1,11 @@
+echo
+start nwchemdat
+
+prepare
+  system nwchemdat_md
+  new_rst
+  new_top new_seq
+  source 1byz_unfolded.pdb
+  vacuo
+end
+task prepare
