@@ -6,6 +6,6 @@ prepare
   new_rst
   new_top new_seq
   source 1byz_unfolded.pdb
-  vacuo
+  solvate
 end
 task prepare
