@@ -1,0 +1,432 @@
+\documentclass{amsart}
+
+\begin{document}
+
+\section{H2 in 2 orbitals}
+
+\begin{itemize}
+\item Consider H2 aligned along the z-axis in a minimal basis. The atoms are labeled A and B.
+\item The natural orbitals for this system are fixed by symmetry. The basis functions $\chi_A^S$ and 
+        $\chi_B^S$ are normalized. I.e. $\langle \chi_A^S|\chi_A^S\rangle = 1$. However, the basis 
+        functions  different atoms are not orthogonal. So $\langle \chi_A^S|\chi_B^S\rangle = S_{AB}$.
+\item From these basis functions we can construct 2 natural orbitals:
+         \begin{itemize}
+         \item $\phi_1 = N_1 \left(\chi_A^S + \chi_B^S\right)$ where $N_1 = 1/\sqrt{2+2S_{AB}}$
+         \item $\phi_2 = N_2 \left(\chi_A^S - \chi_B^S\right)$ where $N_2 = 1/\sqrt{2-2S_{AB}}$
+         \end{itemize}
+\item For the singlet ground state only 2 determinants contribute (others are symmetry forbidden). Hence  
+        the wave function is 
+        $\Psi = c_{11}|\phi_1^\alpha\phi_1^\beta\rangle + c_{22}|\phi_2^\alpha\phi_2^\beta\rangle $
+\item The 1-electron density matrix represented in the natural orbitals is given by
+         \begin{eqnarray}
+         D_{1} &=&
+         \left(\begin{matrix}
+         c_{11}^2 & 0 \\
+         0 & c_{22}^2
+         \end{matrix}\right) \\
+         &=&
+         \left(\begin{matrix}
+         d_{1} & 0 \\
+         0 & d_{2}
+         \end{matrix}\right)
+         \end{eqnarray}
+\item The $\alpha$-$\beta$ block of the 2-electron density matrix can be represented in
+        \begin{eqnarray}
+         D_{2} &=&
+         \left(\begin{matrix}
+         c_{11}^2 & 0 & 0 & c_{11}c_{22} \\
+         0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 \\
+         c_{22}c_{11} & 0 &0 & c_{22}^2
+         \end{matrix}\right)
+        \end{eqnarray}
+        In terms of the 1-electron density matrix occupation numbers this can also be written as
+        \begin{eqnarray}
+        \label{Eq:D2-2el-2orb}
+         D_{2} &=&
+         \left(\begin{matrix}
+         \sqrt{d_1^\alpha d_1^\beta} & 0 & 0 & -\sqrt[4]{d_1^\alpha d_1^\beta d_2^\alpha d_2^\beta} \\
+         0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 \\
+         -\sqrt[4]{d_1^\alpha d_1^\beta d_2^\alpha d_2^\beta} & 0 &0 & \sqrt{d_2^\alpha d_2^\beta} 
+         \end{matrix}\right)
+        \end{eqnarray}
+\item Writing the 2-electron density as an Cartesian product of 1-electron density matrices for an 
+         independent electron model gives
+         \begin{eqnarray}
+         D_{2} &=&
+         \left(\begin{matrix}
+         d_1^\alpha d_1^\beta & 0 & 0 & 0\\
+         0 & d_1^\alpha d_2^\beta & 0 & 0 \\
+         0 & 0 & d_2^\alpha d_1^\beta & 0 \\
+         0 & 0 &0 & d_2^\alpha d_2^\beta
+         \end{matrix}\right)
+        \end{eqnarray}
+\item The electron correlation can be obtained as
+         \begin{eqnarray}
+         \label{Eq:Ecorrelation-2el-2orb}
+         D_{2} &=&
+         \left(\begin{matrix}
+         \sqrt{d_1^\alpha d_1^\beta} - d_1^\alpha d_1^\beta & 0 & 0 & -\sqrt[4]{d_1^\alpha d_1^\beta d_2^\alpha d_2^\beta} \\
+         0 & - d_1^\alpha d_2^\beta & 0 & 0 \\
+         0 & 0 & - d_2^\alpha d_1^\beta & 0 \\
+         -\sqrt[4]{d_1^\alpha d_1^\beta d_2^\alpha d_2^\beta} & 0 &0 & \sqrt{d_2^\alpha d_2^\beta} - d_2^\alpha d_2^\beta
+         \end{matrix}\right)
+        \end{eqnarray}
+\item An important consideration for electron correlation is that this is accounted for by orbital pair
+         interactions. A particular important feature is that a pair of orbitals cannot contribute to the electron
+         correlation if even 1 orbital is not correlated. That means that any energy lowering contribution in 
+         Eq.(\ref{Eq:Ecorrelation-2el-2orb}) should vanish if an orbital involved has an occupation number
+         of 0 or 1. As written most contributions do not do that. They all go to 0 if an orbital is empty, but
+         they do not vanish if an orbital is fully occupied. Also note that this block of the 2-electron density 
+         matrix represents the correlation between $\alpha$ and $\beta$ electrons.
+\end{itemize}
+
+\section{H2 in 4 orbitals}
+\label{Subsect:h2-4orb}
+
+\begin{itemize}
+\item Like in the previous section we consider a basis set so that all natural orbitals are fixed by
+         symmetry. In this case the basis set is chosen to contain an $s$ function and the $p_x$ function.
+         The $p$-functions are also normalized but they have non-zero overlap on different centers. I.e. 
+         $\langle \chi_A^{P_x}|\chi_B^{P_x}\rangle = P_{AB}$. 
+\item With these basis functions the following natural orbitals can be constructed
+         \begin{itemize}
+         \item $\phi_1 = N_1 \left(\chi_A^S + \chi_B^S\right)$ where $N_1 = 1/\sqrt{2+2S_{AB}}$
+         \item $\phi_2 = N_2 \left(\chi_A^S - \chi_B^S\right)$ where $N_2 = 1/\sqrt{2-2S_{AB}}$
+         \item $\phi_3 = N_3 \left(\chi_A^{P_x} + \chi_B^{P_x}\right)$ where $N_3 = 1/\sqrt{2+2P_{AB}}$
+         \item $\phi_4 = N_4 \left(\chi_A^{P_x} - \chi_B^{P_x}\right)$ where $N_4 = 1/\sqrt{2-2P_{AB}}$
+         \end{itemize}
+\item By symmetry the wave function is 
+         $\Psi = c_{11}|\phi_1^\alpha\phi_1^\beta\rangle + c_{22}|\phi_2^\alpha\phi_2^\beta\rangle + c_{33}|\phi_3^\alpha\phi_3^\beta\rangle + c_{44}|\phi_4^\alpha\phi_4^\beta\rangle $
+\item The resulting 1-electron density matrix is
+         \begin{eqnarray}
+         D_{1} &=&
+         \left(\begin{matrix}
+         c_{11}^2 & 0 & 0 & 0 \\
+         0 & c_{22}^2 & 0 & 0 \\
+         0 & 0 & c_{33}^2 & 0 \\
+         0 & 0 & 0 & c_{44}^2
+         \end{matrix}\right) \\
+         &=&
+         \left(\begin{matrix}
+         d_{1} & 0 & 0 & 0 \\
+         0 & d_{2} & 0 & 0 \\
+         0 & 0 & d_{3} & 0 \\
+         0 & 0 & 0 & d_{4} 
+         \end{matrix}\right)
+         \end{eqnarray}
+\item The $\alpha$-$\beta$ block of the 2-electron density matrix becomes
+         \setcounter{MaxMatrixCols}{16}
+         \begin{eqnarray}
+         \label{Eq:D2-2el-4orb}
+         D_{2} &=&
+         \begin{pmatrix}
+         c_{11}^2 & 0 & 0 & 0 & 0 & c_{11}c_{22} & 0 & 0 & 0 & 0 & c_{11}c_{33} & 0 & 0 & 0 & 0 & c_{11}c_{44} \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         c_{22}c_{11} & 0 & 0 & 0 & 0 & c_{22}^2 & 0 & 0 & 0 & 0 & c_{22}c_{33} & 0 & 0 & 0 & 0 & c_{22}c_{44} \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         c_{33}c_{11} & 0 & 0 & 0 & 0 & c_{33}c_{22} & 0 & 0 & 0 & 0 & c_{33}^2 & 0 & 0 & 0 & 0 & c_{33}c_{44} \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         c_{44}c_{11} & 0 & 0 & 0 & 0 & c_{44}c_{22} & 0 & 0 & 0 & 0 & c_{44}c_{33} & 0 & 0 & 0 & 0 & c_{44}^2 
+         \end{pmatrix}
+         \end{eqnarray}
+\item As in Eq.(\ref{Eq:D2-2el-2orb}) we can assume that $c_{11} \approx 1$, i.e. the weak correlation limit,
+         and therefore the other wave function coefficients have to be negative to maximally lower the energy. 
+         However, if $c_{22}$ and $c_{33}$, for example, are negative then the term corresponding to
+         $c_{22}c_{33}$ has to be positive. Using this information, rewriting Eq.(\ref{Eq:D2-2el-4orb}) in terms of 
+         the 1-electron density matrix occupation numbers, and subtracting the independent particle 2-electron density
+         matrix, the following density matrix for the $\alpha$-$\beta$ electron correlation is obtained
+         \newcommand{\da}[1]{d_{#1}^\alpha}
+         \newcommand{\db}[1]{d_{#1}^\beta}
+         \tiny
+         \begin{eqnarray}
+         \label{Eq:Ecorrelation-2el-4orb}
+         D_{2} &=&
+         \begin{pmatrix}
+         \sqrt{\da{1}\db{1}} -  \da{1}\db{1} & 0 & 0 & 0 & 0 & -\sqrt[4]{\da{1}\db{1}\da{2}\db{2}} & \ldots & -\sqrt[4]{\da{1}\db{1}\da{3}\db{3}} & \ldots & -\sqrt[4]{\da{1}\db{1}\da{4}\db{4}}  \\
+         0 & -\da{1}\db{2} & 0 & 0 &  0 & 0 & \ldots & 0 & \ldots & 0 \\
+         0 & 0 & -\da{1}\db{3} & 0 &  0 & 0 & \ldots & 0 & \ldots & 0 \\
+         0 & 0 & 0 & -\da{1}\db{4} &  0 & 0 & \ldots & 0 & \ldots & 0 \\
+         0 & 0 & 0 & 0 &  -\da{2}\db{1} & 0 & \ldots & 0 & \ldots & 0 \\
+         -\sqrt[4]{\da{2}\db{2}\da{1}\db{1}}  & 0 & 0 & 0 & 0 & \sqrt{\da{2}\db{2}} -  \da{2}\db{2}  & \ldots & \sqrt[4]{\da{2}\db{2}\da{3}\db{3}} & \ldots & \sqrt[4]{\da{2}\db{2}\da{4}\db{4}} \\
+         \vdots & \vdots & \vdots & \vdots &  \vdots & \vdots & \ldots & \vdots & \ldots & \vdots \\
+         -\sqrt[4]{\da{3}\db{3}\da{1}\db{1}} & \vdots & \vdots & \vdots &  \vdots & \sqrt[4]{\da{3}\db{3}\da{2}\db{2}} & \ldots & \sqrt{\da{3}\db{3}} -  \da{3}\db{3}  & \ldots & \sqrt[4]{\da{3}\db{3}\da{4}\db{4}} \\
+         \vdots & \vdots & \vdots & \vdots &  \vdots & \vdots & \ldots & \vdots & \ldots & \vdots \\
+         -\sqrt[4]{\da{4}\db{4}\da{1}\db{1}} & 0 & 0 & 0 & 0 & \sqrt[4]{\da{4}\db{4}\da{2}\db{2}} & \ldots & \sqrt[4]{\da{4}\db{4}\da{3}\db{3}} & \ldots& \sqrt{\da{4}\db{4}} -  \da{4}\db{4} 
+         \end{pmatrix}
+         \end{eqnarray}
+         \normalsize
+\end{itemize}
+
+\section{ triplet H2 in 4 orbitals}
+
+\begin{itemize}
+\item To see how electron correlation plays out among same spin electrons consider H2 in 
+         the triplet state. As a minimal basis for correlation 4 orbitals are needed and the same
+         basis set and orbitals as in subsection~\ref{Subsect:h2-4orb} are used.
+\item Due to symmetry the wave function is of $B_{1u}$ irrep. The orbitals are $A_g$, $B_{1u}$, $B_{3u}$, and $B_{2g}$ symmetry
+         which means there are only 2 determinants of $B_{1u}$ symmetry. Hence the wave function becomes:
+         \begin{table}
+         \begin{tabular}{ccccccccc}
+         $D_{2h}$ & $E$ & $C_2(x)$ & $C_2(y)$ & $C_2(z)$ & $i$ & $\sigma(xy)$ & $\sigma(xz)$ & $\sigma(yz)$ \\
+         \hline
+         $A_g$      & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 \\
+         $B_{1u}$  & +1 & +1 & -1 & -1 & -1 & -1 & +1 & +1 \\
+         $B_{3u}$  & +1 & -1 & -1 & +1 & -1 & +1 & +1 & -1 \\
+         $B_{2g}$  & +1 & -1 & +1 & -1 & +1 & -1 & +1 & -1
+         \end{tabular}
+         \caption{$D_{2h}$ character table excerpt}
+         \end{table}
+         \begin{eqnarray}
+         \Psi &=& c_{12}|\phi^\alpha_1\phi^\alpha_2\rangle + c_{34}|\phi^\alpha_3\phi^\alpha_4\rangle 
+        \end{eqnarray}
+\item The resulting 1-electron density matrix is
+         \begin{eqnarray}
+         D_{1} &=&
+         \left(\begin{matrix}
+         c_{12}^2 & 0 & 0 & 0 \\
+         0 & c_{12}^2 & 0 & 0 \\
+         0 & 0 & c_{34}^2 & 0 \\
+         0 & 0 & 0 & c_{34}^2
+         \end{matrix}\right) \\
+         &=&
+         \left(\begin{matrix}
+         d_{1} & 0 & 0 & 0 \\
+         0 & d_{2} & 0 & 0 \\
+         0 & 0 & d_{3} & 0 \\
+         0 & 0 & 0 & d_{4} 
+         \end{matrix}\right)
+         \end{eqnarray}
+         where also $d_1 = d_2$ and $d_3 = d_4$.
+\item In the case of the $\alpha$-$\beta$ block of the 2-electron density matrix this block can be
+         expressed in terms of a Cartesian product of 1-electron density matrices. In the case under
+         consideration here the 2-electron density matrix has to be constructed from the tilde 
+         functions. In this case there are 2 electrons so 2 orthonormal tilde functions are needed.
+        
+         \begin{tabular}{c|cc}
+               & $\tilde{\phi}_1$ & $\tilde{\phi}_2$ \\
+         \hline
+         $\phi_1$ & $\sqrt{d_1}$ & $0$ \\
+         $\phi_2$ & $0$               & $\sqrt{d_2}$ \\
+         $\phi_3$ & $\sqrt{d_3}$ & $0$ \\
+         $\phi_4$ & $0$               & $\sqrt{d_4}$
+         \end{tabular}
+         
+         Because of the particular structure of these tilde functions the exchange term in the
+         2-electron occupation number is identical zero. The remaining term is 
+         $\frac{1}{2}\left(\tilde{\phi}_1^*(\epsilon_1)\tilde{\phi}_1(\epsilon_1)\tilde{\phi}_2^*(\epsilon_2)\tilde{\phi}_2(\epsilon_2)+\tilde{\phi}_2^*(\epsilon_1)\tilde{\phi}_2(\epsilon_1)\tilde{\phi}_1^*(\epsilon_2)\tilde{\phi}_1(\epsilon_2)\right)$, giving
+         \begin{eqnarray}
+         \label{Eq:D2aa-1-electron}
+         D_2 &=&
+         \begin{pmatrix}
+         \frac{1}{2}d_1 d_2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & \frac{1}{2}d_1 d_4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & \frac{1}{2}d_2 d_1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & \frac{1}{2}d_2 d_3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{1}{2}d_3 d_2 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{1}{2}d_3 d_4 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{1}{2}d_4 d_1 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{1}{2}d_4 d_3  \\
+         \end{pmatrix}
+         \end{eqnarray}
+         Note that the basis of this matrix is $|\phi^\alpha_1\phi^\alpha_2\rangle$,
+         $|\phi^\alpha_1\phi^\alpha_3\rangle$, $|\phi^\alpha_1\phi^\alpha_4\rangle$,
+         $|\phi^\alpha_2\phi^\alpha_1\rangle$, $|\phi^\alpha_2\phi^\alpha_3\rangle$,
+         $|\phi^\alpha_2\phi^\alpha_4\rangle$, $|\phi^\alpha_3\phi^\alpha_1\rangle$,
+         $|\phi^\alpha_3\phi^\alpha_2\rangle$, $|\phi^\alpha_3\phi^\alpha_4\rangle$,
+         $|\phi^\alpha_4\phi^\alpha_1\rangle$, $|\phi^\alpha_4\phi^\alpha_2\rangle$,
+         and $|\phi^\alpha_4\phi^\alpha_3\rangle$, everything being $0$ because of
+         the antisymmetry of the wave function.
+\item The $\alpha$-$\alpha$-block of the 2-electron density matrix is
+         \begin{eqnarray}
+         D_2 &=&
+         \begin{pmatrix}
+         c_{12}^*c_{12} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & c_{12}^*c_{34} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         c_{34}^*c_{12} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 &  c_{34}^*c_{34} \\
+         \end{pmatrix} \\
+         \label{Eq:D2aa-wfn}
+         &=&
+         \begin{pmatrix}
+         \sqrt{d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\sqrt[4]{d_{1}d_{2}d_{3}d_{4}} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         -\sqrt[4]{d_{3}d_{4}d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \sqrt{d_{3}d_{4}} \\
+         \end{pmatrix} 
+         \end{eqnarray}
+\item Combining Eq.(\ref{Eq:D2aa-1-electron}) and Eq.(\ref{Eq:D2aa-wfn}) the following 2-electron
+         density matrix block we have for the 2-electron correlation density matrix
+         \tiny
+         \begin{eqnarray}
+         \label{Eq:D2aa-correlation}
+         D_2 &=&
+         \begin{pmatrix}
+         \sqrt{d_{1}d_{2}}-\frac{1}{2}d_1 d_2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\sqrt[4]{d_{1}d_{2}d_{3}d_{4}} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & -\frac{1}{2}d_1 d_4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & -\frac{1}{2}d_2 d_1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & -\frac{1}{2}d_2 d_3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & -\frac{1}{2}d_3 d_2 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\frac{1}{2}d_3 d_4 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\frac{1}{2}d_4 d_1 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         -\sqrt[4]{d_{3}d_{4}d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \sqrt{d_{3}d_{4}}-\frac{1}{2}d_4 d_3  \\
+         \end{pmatrix}
+         \end{eqnarray}
+         \normalsize
+         Note that in this equation normally the occupation numbers of the 2-electron density matrix should appear
+         in a form that cannot be cast in terms of the 1-electron density matrices. In this specific case it happens that
+         it can be cast in that form. Also note that because of the constraint on the orbital pairs due to the
+         anti-symmetry there are far fewer off-diagonal contributions relative to the basis size than in the case of
+         $\alpha$-$\beta$ block.
+\end{itemize}
+
+\section{H4 in 4 orbitals}
+
+\begin{itemize}
+\item In this section a chemical system with more electrons than 2 is considered. 
+         The system under consideration is H4 in a rectangular configuration. 
+         The point group of this system is D2h and the 4 orbitals have the irreps $A_g$,
+         $B_{2u}$, $B_{3u}$, and $B_{1g}$.
+         The atom coordinates are of the form
+         \begin{verbatim}
+         H_A  -X -Y  0
+         H_B  -X  Y  0
+         H_C   X  Y  0
+         H_D   X -Y  0
+         \end{verbatim}
+         where $Y > X$.
+         The natural orbitals have the following nodal structure
+         \begin{itemize}
+         \item $\phi_1 = N_1\left(\chi_A^S + \chi_B^S + \chi_C^S + \chi_D^S\right)$
+         \item $\phi_2 = N_2\left(\chi_A^S - \chi_B^S - \chi_C^S + \chi_D^S\right)$
+         \item $\phi_3 = N_3\left(\chi_A^S + \chi_B^S - \chi_C^S - \chi_D^S\right)$
+         \item $\phi_4 = N_4\left(\chi_A^S - \chi_B^S + \chi_C^S - \chi_D^S\right)$
+         \end{itemize}
+\item The wave function expanded in natural orbitals is
+         \begin{eqnarray}
+         \Psi &=& c_{1122}|\phi_1^\alpha\phi_1^\beta\phi_2^\alpha\phi_2^\beta\rangle +
+                        c_{1133}|\phi_1^\alpha\phi_1^\beta\phi_3^\alpha\phi_3^\beta\rangle +
+                        c_{1144}|\phi_1^\alpha\phi_1^\beta\phi_4^\alpha\phi_4^\beta\rangle + \nonumber\\
+                 &&  c_{2233}|\phi_2^\alpha\phi_2^\beta\phi_3^\alpha\phi_3^\beta\rangle +
+                        c_{2244}|\phi_2^\alpha\phi_2^\beta\phi_4^\alpha\phi_4^\beta\rangle +
+                        c_{3344}|\phi_3^\alpha\phi_3^\beta\phi_4^\alpha\phi_4^\beta\rangle + \nonumber\\
+                 &&  c_{1234}|\phi_1^\alpha\phi_2^\beta\phi_3^\alpha\phi_4^\beta\rangle +
+                        c_{2143}|\phi_2^\alpha\phi_1^\beta\phi_4^\alpha\phi_3^\beta\rangle + 
+                        c_{1243}|\phi_1^\alpha\phi_2^\beta\phi_4^\alpha\phi_3^\beta\rangle + \nonumber\\
+                 &&  c_{2134}|\phi_2^\alpha\phi_1^\beta\phi_3^\alpha\phi_4^\beta\rangle + 
+                        c_{1324}|\phi_1^\alpha\phi_3^\beta\phi_2^\alpha\phi_4^\beta\rangle +
+                        c_{3142}|\phi_3^\alpha\phi_1^\beta\phi_4^\alpha\phi_2^\beta\rangle
+         \end{eqnarray}
+\item The $\alpha$ 1-electron density matrix is
+         \begin{eqnarray}
+         D_1 &=&
+         \begin{pmatrix}
+         \begin{array}{l}
+         c_{1122}^2+ \\
+         c_{1133}^2+ \\
+         c_{1144}^2+ \\
+         c_{1234}^2+ \\
+         c_{1243}^2+ \\
+         c_{1324}^2 
+         \end{array}
+         & 0 & 0 & 0 \\
+         0 & 
+         \begin{array}{l}
+         c_{1122}^2+ \\
+         c_{2233}^2+ \\
+         c_{2244}^2+ \\
+         c_{2143}^2+ \\
+         c_{2134}^2+ \\
+         c_{1324}^2
+         \end{array}
+         & 0 & 0 \\
+         0 & 0 &
+         \begin{array}{l}
+         c_{1133}^2+ \\
+         c_{2233}^2+ \\
+         c_{3344}^2+ \\
+         c_{1234}^2+ \\
+         c_{2134}^2+ \\
+         c_{3142}^2
+         \end{array}
+         & 0 \\
+         0 & 0 & 0 &
+         \begin{array}{l}
+         c_{1144}^2+ \\
+         c_{2244}^2+ \\
+         c_{3344}^2+ \\
+         c_{2143}^2+ \\
+         c_{1243}^2+ \\
+         c_{3142}^2
+         \end{array} \\
+         \end{pmatrix}
+         \end{eqnarray}
+\item The $\alpha$-$\beta$ 2-electron density matrix is
+         \begin{eqnarray}
+         D_2 &=&
+         \begin{pmatrix}
+         % 11,11
+         \begin{array}{l}
+         c_{1122}^2+ \\
+         c_{1133}^2+ \\
+         c_{1144}^2
+         \end{array} &
+         0 & 0 & 0 &
+         % 11,21
+         0 & 0 & 0 & 0 &
+         % 11,31
+         0 & 0 & 0 & 0 &
+         % 11,41
+         0 & 0 & 0 & 0 \\
+         % 12,11
+         0 & 0 & 0 & 0 &
+         % 12,21
+         \begin{array}{l}
+         c_{1234}^*c_{2134}+ \\
+         c_{1243}^*c_{2143}
+         \end{array} &
+         0 & 0 & 0 &
+         % 12,31
+         0 & 0 & 0 & 0 &
+         % 12,41
+         0 & 0 & 0 & 0 \\
+         \end{pmatrix}
+         \end{eqnarray}
+\end{itemize}
+
+
+\end{document}
