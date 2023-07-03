@@ -217,7 +217,7 @@ void integrate_34(std::string& str, const wavefunction& wbra, const wavefunction
  *
  */
 void build_d2ab(std::string& str, const wavefunction& wbra, const wavefunction& wket){
-    str.append("\\begin{parray}\n");
+    str.append("\\begin{eqnarray}\nD_2 &=&\n\\begin{pmatrix}\n");
     for (int bra_a = 1; bra_a <= 4; bra_a++) {
         for (int bra_b = 1; bra_b <= 4; bra_b++) {
             wavefunction wsbra(wbra,bra_a,bra_b);
@@ -238,7 +238,7 @@ void build_d2ab(std::string& str, const wavefunction& wbra, const wavefunction& 
             }
         }
     }
-    str.append("\\end{parray}\n");
+    str.append("\\end{pmatrix}\n\\end{eqnarray}\n");
 }
 
 int main(int argc, char* argv[]) {
