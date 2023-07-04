@@ -1,6 +1,10 @@
 \documentclass{amsart}
 
 \begin{document}
+\newlength{\classpageheight}
+\setlength{\classpageheight}{\pdfpageheight}
+\newlength{\classpagewidth}
+\setlength{\classpagewidth}{\pdfpagewidth}
 
 \section{H2 in 2 orbitals}
 
@@ -395,37 +399,17 @@
          \end{array} \\
          \end{pmatrix}
          \end{eqnarray}
-\item The $\alpha$-$\beta$ 2-electron density matrix is
-         \begin{eqnarray}
-         D_2 &=&
-         \begin{pmatrix}
-         % 11,11
-         \begin{array}{l}
-         c_{1122}^2+ \\
-         c_{1133}^2+ \\
-         c_{1144}^2
-         \end{array} &
-         0 & 0 & 0 &
-         % 11,21
-         0 & 0 & 0 & 0 &
-         % 11,31
-         0 & 0 & 0 & 0 &
-         % 11,41
-         0 & 0 & 0 & 0 \\
-         % 12,11
-         0 & 0 & 0 & 0 &
-         % 12,21
-         \begin{array}{l}
-         c_{1234}^*c_{2134}+ \\
-         c_{1243}^*c_{2143}
-         \end{array} &
-         0 & 0 & 0 &
-         % 12,31
-         0 & 0 & 0 & 0 &
-         % 12,41
-         0 & 0 & 0 & 0 \\
-         \end{pmatrix}
-         \end{eqnarray}
+\item The $\alpha$-$\beta$ and $\alpha$-$\alpha$ 2-electron density matrices, respectively are
+         \eject
+         \pdfpagewidth=16.5in
+         \pdfpageheight=11.7in
+         \tiny
+         \include{d2ab}
+         \include{d2aa}
+         \normalsize
+         \eject
+         \pdfpagewidth=\classpagewidth
+         \pdfpageheight=\classpageheight
 \end{itemize}
 
 

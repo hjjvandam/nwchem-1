@@ -5,7 +5,6 @@
  *
  *  a determinant of 4 orbitals with the orbital in positions 1 and 3
  *  being alpha electrons, and positions 2 and 4 being beta electrons.
- *  When stored i1 < i3, and i2 < i4.
  */
 class determinant {
     int sign = 1;
@@ -51,9 +50,9 @@ public:
         orbs[3] = t;
         sign = -sign;
     }
-    friend std::string integrate_34(const determinant& bra, const determinant& ket);
-    friend bool match_34(std::string& out, const determinant& bra, const determinant& ket);
-    friend bool matchup_12(determinant& det, const int a, const int b);
+    friend std::string integrate_24(const determinant& bra, const determinant& ket);
+    friend bool match_24(std::string& out, const determinant& bra, const determinant& ket);
+    friend bool matchup_13(determinant& det, const int a, const int b);
     friend std::ostream& operator<<(std::ostream& os, const determinant& det);
 };
 
@@ -69,8 +68,8 @@ std::ostream& operator<<(std::ostream& os, const determinant& det) {
     return os;
 }
 
-bool match_34(std::string& out, const determinant& bra, const determinant& ket) {
-    if (bra.orbs[2] == ket.orbs[2] && bra.orbs[3] == ket.orbs[3]) {
+bool match_24(std::string& out, const determinant& bra, const determinant& ket) {
+    if (bra.orbs[1] == ket.orbs[1] && bra.orbs[3] == ket.orbs[3]) {
         if (bra.sign*ket.sign > 0) {
             out = '+';
         }
@@ -81,75 +80,39 @@ bool match_34(std::string& out, const determinant& bra, const determinant& ket) 
         out.append(ket.coefficient);
         return true;
     }
-    else {
-        return false;
-    };
+    if (bra.orbs[1] == ket.orbs[3] && bra.orbs[3] == ket.orbs[1]) {
+        if (bra.sign*ket.sign > 0) {
+            out = '-';
+        }
+        else {
+            out = '+';
+        };
+        out.append(bra.coefficient);
+        out.append(ket.coefficient);
+        return true;
+    }
+    return false;
 }
 
-/** \brief Try if we can match up orbitals 1 and 2 with a and b
+/** \brief Try if we can match up orbitals 1 and 3 with a and b
  *
- *  If we can apply a permutation such that orbitals 1 and 2 match
+ *  If we can apply a permutation such that orbitals 1 and 3 match
  *  a and b, then return true and return the determinant with this
  *  permutation.
  *
  */
-bool matchup_12(determinant& det, const int a, const int b) {
-    if (det.orbs[0] == a && det.orbs[1] == b) return true;
+bool matchup_13(determinant& det, const int a, const int b) {
+    if (det.orbs[0] == a && det.orbs[2] == b) return true;
     det.swap_a();
-    if (det.orbs[0] == a && det.orbs[1] == b) return true;
-    det.swap_b();
-    if (det.orbs[0] == a && det.orbs[1] == b) return true;
+    if (det.orbs[0] == a && det.orbs[2] == b) return true;
     det.swap_a();
-    if (det.orbs[0] == a && det.orbs[1] == b) return true;
-    det.swap_b();
     return false;
 }
 
-void integrate_34(std::string& out, const determinant& bra, const determinant& ket) {
+void integrate_24(std::string& out, const determinant& bra, const determinant& ket) {
     auto bra2 = bra;
     auto ket2 = ket;
-    match_34(out,bra2,ket2);
-
-    /*
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_b();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_b();
-
-    bra2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_b();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_b();
-
-    bra2.swap_b();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_b();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_b();
-
-    bra2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_b();
-    if (match_34(out,bra2,ket2)) return out;
-    ket2.swap_a();
-    if (match_34(out,bra2,ket2)) return out;
-    return out;
-    */
+    match_24(out,bra2,ket2);
 }
 
 class wavefunction {
@@ -161,7 +124,7 @@ public:
     }
     wavefunction(const wavefunction& in_wfn, const int a, const int b) {
         for (auto det: in_wfn.terms) {
-            if (matchup_12(det,a,b)) {
+            if (matchup_13(det,a,b)) {
                 this->terms.push_back(det);
             }
         }
@@ -186,12 +149,12 @@ std::ostream& operator<<(std::ostream& os, const wavefunction& wfn) {
     return os;
 }
 
-void integrate_34(std::string& str, const wavefunction& wbra, const wavefunction& wket) {
+void integrate_24(std::string& str, const wavefunction& wbra, const wavefunction& wket) {
     std::string tmp("");
     for (auto bra: wbra.dets()) {
         for (auto ket: wket.dets()) {
             std::string out("");
-            integrate_34(out,bra,ket);
+            integrate_24(out,bra,ket);
             if (out.length() > 0) {
                 if (tmp.length() == 0) tmp.append("\\begin{array}{l}\n");
                 tmp.append(out);
@@ -208,7 +171,7 @@ void integrate_34(std::string& str, const wavefunction& wbra, const wavefunction
     str.append(tmp);
 }
 
-/** \brief Add the LaTeX expression for the alpha-beta block of the 2-electron density matrix
+/** \brief Add the LaTeX expression for the alpha-alpha block of the 2-electron density matrix
  *
  *  Given a wavefunction as the sum of Slater determinants generate
  *  the expression for the 2-electron density matrix and add it to the
@@ -216,18 +179,20 @@ void integrate_34(std::string& str, const wavefunction& wbra, const wavefunction
  *  to be expressed in the same orbital basis.
  *
  */
-void build_d2ab(std::string& str, const wavefunction& wbra, const wavefunction& wket){
+void build_d2aa(std::string& str, const wavefunction& wbra, const wavefunction& wket){
     str.append("\\begin{eqnarray}\nD_2 &=&\n\\begin{pmatrix}\n");
     for (int bra_a = 1; bra_a <= 4; bra_a++) {
         for (int bra_b = 1; bra_b <= 4; bra_b++) {
+            if (bra_a == bra_b) continue;
             wavefunction wsbra(wbra,bra_a,bra_b);
             for (int ket_a = 1; ket_a <= 4; ket_a++) {
                 for (int ket_b = 1; ket_b <= 4; ket_b++) {
+                    if (ket_a == ket_b) continue;
                     wavefunction wsket(wket,ket_a,ket_b);
                     std::string tmp("");
-                    integrate_34(tmp,wsbra,wsket);
+                    integrate_24(tmp,wsbra,wsket);
                     str.append(tmp);
-                    if (ket_a == 4 && ket_b == 4) {
+                    if (ket_a == 4 && ket_b == 3) {
                         str.append(" \\\\\n");
                     }
                     else {
@@ -256,6 +221,6 @@ int main(int argc, char* argv[]) {
     wfn.add(determinant("c_{1324}",1,3,2,4));
     wfn.add(determinant("c_{3142}",3,1,4,2));
     std::string eq("");
-    build_d2ab(eq,wfn,wfn);
+    build_d2aa(eq,wfn,wfn);
     std::cout << eq << std::endl;
 }
