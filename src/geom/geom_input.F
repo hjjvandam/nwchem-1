@@ -1139,13 +1139,18 @@ c     yes it should be one
           message = "too many atoms"
           goto 40
         end if
-        read(buffer,*,ERR=40,END=40) a16,id,tags(n),
-     +     resn,chainID,ir
-c     +     resn,ir,c(1,n),c(2,n),c(3,n)
-        read(buffer(13:14),*) tags(n)
-        read(buffer(31:38),*) c(1,n)
-        read(buffer(39:46),*) c(2,n)
-        read(buffer(47:54),*) c(3,n)
+c the next line is utter junk
+c       read(buffer,*,ERR=40,END=40) a16,id,tags(n),
+c    +     resn,chainID,ir
+        read(buffer( 7:11),*)      id
+        read(buffer(13:14),*)      tags(n)
+        read(buffer(18:20),*)      resn
+c       Next line format needed in case character is white space
+        read(buffer(22:22),'(A1)') chainID
+        read(buffer(23:26),*)      ir
+        read(buffer(31:38),*)      c(1,n)
+        read(buffer(39:46),*)      c(2,n)
+        read(buffer(47:54),*)      c(3,n)
 c       process selections here
 
         call geom_selection(id,
