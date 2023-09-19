@@ -1,0 +1,34 @@
+echo
+start dat_dplot_dft_prep
+memory total 8 gb
+
+geometry noautoz noprint
+#geometry noautoz
+  load water_cyl.xyz
+end
+
+basis
+  * library sto-3g
+end
+
+set MXqshells 100000
+dft
+  direct
+  noprint "final vectors" "final vectors analysis"
+  cgmin
+end
+
+task dft
+
+dplot
+  TITLE HOMO
+  LimitXYZ
+   -24.0 26.0 200
+   -25.0 25.0 200
+    -6.0  6.0  48
+  spin charge density
+  gaussian
+  output n2density.cube
+end
+
+task dplot
