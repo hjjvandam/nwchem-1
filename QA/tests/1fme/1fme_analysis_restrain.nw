@@ -1,0 +1,13 @@
+echo
+start nwchemdat
+
+analysis
+  system nwchemdat_md
+  reference nwchemdat_md.rst
+  file nwchemdat_md.trj
+  write 201 solute 1fme_unfolded.pdb
+  frames 1 15000 1
+  copy solute 1fme_unfolding.crd
+end
+
+task analysis

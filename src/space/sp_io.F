@@ -1,4 +1,5 @@
       module sp_io
+#ifdef USE_ADIOS
         use adios2
         implicit none
 #include "errquit.fh"
@@ -9,11 +10,13 @@
     
         type(adios2_variable) :: varWLX, varWLY, varWLZ, varWID
         type(adios2_variable) :: varSLX, varSLY, varSLZ, varSID
+#endif
 
       contains
 
 
       subroutine io_init()
+#ifdef USE_ADIOS
         use sp_io_vars
         use adios2
         implicit none
@@ -34,10 +37,12 @@
         if (ierr.ne.adios2_error_none) then
           call errquit('ADIOS2_SET_ENGINE failed: ',ierr,UERR)
         endif
+#endif
       end subroutine io_init
 
 
       subroutine io_finalize()
+#ifdef USE_ADIOS
         use sp_io_vars
         use adios2
         implicit none
@@ -50,13 +55,16 @@
         if (ierr.ne.adios2_error_none) then
           call errquit('ADIOS2_FINALIZE failed: ',ierr,UERR)
         endif
+#endif
       end subroutine io_finalize
 
 
       subroutine io_write(tstep, mnstep, wlx, wly, wlz, wid, 
      &                                   slx, sly, slz, sid)
+#ifdef USE_ADIOS
         use sp_io_vars
         use adios2
+#endif
         implicit none
 
         integer, intent(in)   :: tstep
@@ -72,6 +80,7 @@
         integer*4 :: ndims=1
 
         ! Define variables at the first time
+#ifdef USE_ADIOS
         if (tstep.eq.mnstep) then
 !DEBUG
 !         write(*,*)'io_write: outputdirectory = ',outputfile
@@ -271,6 +280,7 @@
             call errquit('ADIOS2_END_STEP failed: ',ierr,UERR)
           endif
         endif ! tstep.ge.mnstep
+#endif
       end subroutine io_write
 
       end module sp_io

@@ -1,0 +1,16 @@
+echo 
+start nwchemdat
+
+set sp:adios_mode Null
+
+md
+  msa 100000
+  system nwchemdat_md
+  step 0.002 equil 0 data 10000000
+  isotherm 410.15 trelax 0.1
+  #update center 1 
+  update motion 1 
+  print step 500 stat 5000 out6
+  record coord 100 veloc 100 ascii
+end
+task md dynamics

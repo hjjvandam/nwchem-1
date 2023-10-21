@@ -1,0 +1,11 @@
+echo
+start nwchemdat
+
+analysis
+  system nwchemdat_md
+  reference nwchemdat_md.rst
+  file nwchemdat_md.trj
+  write 5000 solute 1fme_md.pdb
+end
+
+task analysis

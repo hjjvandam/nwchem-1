@@ -1,0 +1,14 @@
+echo
+start nwchemdat
+
+prepare
+  system nwchemdat_md
+  new_rst
+  new_top new_seq
+  source 1byz_1.pdb
+  hbuild
+  vacuo
+  # turn constraints on in MD with distar directive
+  noe   1:_C    13:_OXT  45.0 50.0 60.0  100.0 10.0
+end
+task prepare
