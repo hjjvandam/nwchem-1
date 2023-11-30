@@ -1,0 +1,38 @@
+
+
+echo
+start ch3fcl_zts_dat
+charge -1
+geometry geometry nocenter
+  symmetry c1
+C            0.00000000     0.00000000     1.64319769
+F           -0.00000000     0.00000000     3.02620684
+H            0.72524782     0.72524782     1.28368498
+H            0.26545913    -0.99070694     1.28368498
+H           -0.99070694     0.26545913     1.28368498
+Cl          -0.00000000    -0.00000000    -2.35680231
+end
+geometry endgeom nocenter
+  symmetry c1
+C            0.00000000     0.00000000    -0.46666185
+F            0.00000000     0.00000000     3.53333815
+H            0.72617942     0.72617942    -0.12259296
+H            0.26580012    -0.99197954    -0.12259296
+H           -0.99197954     0.26580012    -0.12259296
+Cl           0.00000000     0.00000000    -2.27809744
+end
+basis
+  * library cc-pvdz
+end
+print low
+string
+  tol  0.001d0
+  stepsize 0.20d0
+  nbeads 24
+  maxiter 100
+  interpol 1
+end
+# We have to freeze the end points since this reaction has no barrier
+set string:freezen .true.
+set string:freeze1 .true.
+task string scf

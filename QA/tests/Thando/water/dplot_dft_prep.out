@@ -1,0 +1,371 @@
+ argument  1 = dplot_dft_prep.nw
+
+
+
+============================== echo of input deck ==============================
+echo
+start dat_dplot_dft_prep
+memory total 8 gb
+
+geometry noautoz noprint
+#geometry noautoz
+  load water_cyl.xyz
+end
+
+basis
+  * library sto-3g
+end
+
+set MXqshells 100000
+dft
+  direct
+  noprint "final vectors" "final vectors analysis"
+  cgmin
+end
+
+task dft
+
+dplot
+  TITLE HOMO
+  LimitXYZ
+   -24.0 26.0 200
+   -25.0 25.0 200
+    -6.0  6.0  48
+  spin charge density
+  gaussian
+  output n2density.cube
+end
+
+task dplot
+================================================================================
+
+
+                                         
+                                         
+
+
+             Northwest Computational Chemistry Package (NWChem) 7.0.1
+             --------------------------------------------------------
+
+
+                    Environmental Molecular Sciences Laboratory
+                       Pacific Northwest National Laboratory
+                                Richland, WA 99352
+
+                              Copyright (c) 1994-2020
+                       Pacific Northwest National Laboratory
+                            Battelle Memorial Institute
+
+             NWChem is an open-source computational chemistry package
+                        distributed under the terms of the
+                      Educational Community License (ECL) 2.0
+             A copy of the license is included with this distribution
+                              in the LICENSE.TXT file
+
+                                  ACKNOWLEDGMENT
+                                  --------------
+
+            This software and its documentation were developed at the
+            EMSL at Pacific Northwest National Laboratory, a multiprogram
+            national laboratory, operated for the U.S. Department of Energy
+            by Battelle under Contract Number DE-AC05-76RL01830. Support
+            for this work was provided by the Department of Energy Office
+            of Biological and Environmental Research, Office of Basic
+            Energy Sciences, and the Office of Advanced Scientific Computing.
+
+
+           Job information
+           ---------------
+
+    hostname        = node03
+    program         = /home/hvandam/nwchem-1-srp-hpc/QA/tests/Thando/water/../../../../bin/LINUX64/nwchem
+    date            = Fri Sep  1 23:18:16 2023
+
+    compiled        = Fri_Sep_01_23:16:53_2023
+    source          = /home/hvandam/nwchem-1-srp-hpc
+    nwchem branch   = 7.0.0
+    nwchem revision = nwchem_on_git-4138-g6a87d17
+    ga revision     = 5.8.1
+    use scalapack   = F
+    input           = dplot_dft_prep.nw
+    prefix          = dat_dplot_dft_prep.
+    data base       = ./dat_dplot_dft_prep.db
+    status          = startup
+    nproc           =       64
+    time left       =     -1s
+
+
+
+           Memory information
+           ------------------
+
+    heap     =     217726 doubles =      1.7 Mbytes
+    stack    =  357841360 doubles =   2730.1 Mbytes
+    global   =  715682730 doubles =   5460.2 Mbytes (distinct from heap & stack)
+    total    = 1073741816 doubles =   8192.0 Mbytes
+    verify   = yes
+    hardfail = no 
+
+
+           Directory information
+           ---------------------
+
+  0 permanent = .
+  0 scratch   = .
+
+
+
+
+                                NWChem Input Module
+                                -------------------
+
+
+ C1  symmetry detected
+
+
+ Summary of "ao basis" -> "" (cartesian)
+ ------------------------------------------------------------------------------
+       Tag                 Description            Shells   Functions and Types
+ ---------------- ------------------------------  ------  ---------------------
+ *                           sto-3g                   on all atoms 
+
+
+
+                                 NWChem DFT Module
+                                 -----------------
+
+
+                      Basis "ao basis" -> "ao basis" (cartesian)
+                      -----
+  H (Hydrogen)
+  ------------
+            Exponent  Coefficients 
+       -------------- ---------------------------------------------------------
+  1 S  3.42525091E+00  0.154329
+  1 S  6.23913730E-01  0.535328
+  1 S  1.68855400E-01  0.444635
+
+  O (Oxygen)
+  ----------
+            Exponent  Coefficients 
+       -------------- ---------------------------------------------------------
+  1 S  1.30709320E+02  0.154329
+  1 S  2.38088610E+01  0.535328
+  1 S  6.44360830E+00  0.444635
+
+  2 S  5.03315130E+00 -0.099967
+  2 S  1.16959610E+00  0.399513
+  2 S  3.80389000E-01  0.700115
+
+  3 P  5.03315130E+00  0.155916
+  3 P  1.16959610E+00  0.607684
+  3 P  3.80389000E-01  0.391957
+
+
+
+ Summary of "ao basis" -> "ao basis" (cartesian)
+ ------------------------------------------------------------------------------
+       Tag                 Description            Shells   Functions and Types
+ ---------------- ------------------------------  ------  ---------------------
+ H                           sto-3g                  1        1   1s
+ O                           sto-3g                  3        5   2s1p
+
+
+
+
+ Summary of "ao basis" -> "ao basis" (cartesian)
+ ------------------------------------------------------------------------------
+       Tag                 Description            Shells   Functions and Types
+ ---------------- ------------------------------  ------  ---------------------
+ H                           sto-3g                  1        1   1s
+ O                           sto-3g                  3        5   2s1p
+
+
+
+            General Information
+            -------------------
+          SCF calculation type: DFT
+          Wavefunction type:  closed shell.
+          No. of atoms     :  3000
+          No. of electrons :  ****
+           Alpha electrons :  5000
+            Beta electrons :  5000
+          Charge           :     0
+          Spin multiplicity:     1
+          Use of symmetry is: off; symmetry adaption is: off
+          Maximum number of iterations: 500
+          This is a Direct SCF calculation.
+          AO basis - number of functions:  7000
+                     number of shells:  5000
+          Convergence on energy requested:  1.00D-06
+          Convergence on density requested:  1.00D-05
+          Convergence on gradient requested:  5.00D-04
+
+              XC Information
+              --------------
+                        Slater Exchange Functional  1.000 local    
+                      VWN V Correlation Functional  1.000 local    
+
+             Grid Information
+             ----------------
+          Grid used for XC integration:  medium    
+          Radial quadrature: Mura-Knowles        
+          Angular quadrature: Lebedev. 
+          Tag              B.-S. Rad. Rad. Pts. Rad. Cut. Ang. Pts.
+          ---              ---------- --------- --------- ---------
+          H                   0.35       45          13.0       434
+          O                   0.60       49          12.0       434
+          Grid pruning is: on 
+          Number of quadrature shells: *****
+          Spatial weights used:  Erf1
+
+          Convergence Information
+          -----------------------
+          Convergence aids based upon iterative change in 
+          total energy or number of iterations. 
+          Levelshifting, if invoked, occurs when the 
+          HOMO/LUMO gap drops below (HL_TOL):  1.00D-02
+          DIIS, if invoked, will attempt to extrapolate 
+          using up to (NFOCK): 10 stored Fock matrices.
+
+                    Damping( 0%)  Levelshifting(0.5)       DIIS
+                  --------------- ------------------- ---------------
+          dE  on:    start            ASAP                start   
+          dE off:    2 iters        500 iters           500 iters 
+
+
+      Screening Tolerance Information
+      -------------------------------
+          Density screening/tol_rho:  1.00D-10
+          AO Gaussian exp screening on grid/accAOfunc:  14
+          CD Gaussian exp screening on grid/accCDfunc:  20
+          XC Gaussian exp screening on grid/accXCfunc:  20
+          Schwarz screening/accCoul:  1.00D-08
+
+
+      Superposition of Atomic Density Guess
+      -------------------------------------
+
+ Sum of atomic energies:      -74710.95592377
+
+      Non-variational initial energy
+      ------------------------------
+
+ Total energy =  -74693.105818
+ 1-e energy   = **************
+ 2-e energy   = 1654347.313913
+ HOMO         =      -0.148967
+ LUMO         =       0.248665
+
+
+
+ ----------------------------------------------
+         Quadratically convergent ROKS
+
+ Convergence threshold     :          5.000E-04
+ Maximum no. of iterations :          500
+ Final Fock-matrix accuracy:          1.000E-08
+ ----------------------------------------------
+
+
+ Grid_pts file          = ./dat_dplot_dft_prep.gridpts.00
+ Record size in doubles =  12289        No. of grid_pts per rec  =   3070
+ Max. records in memory =    339        Max. recs in file   =    318870
+
+
+              iter       energy          gnorm     gmax       time
+             ----- ------------------- --------- --------- --------
+                 1   -74698.9457781462  2.42D+01  1.82D-01   5980.5
+  Setting level-shift to   3.38 to force positive preconditioner
+                 2   -74740.8273163752  3.56D+00  6.41D-02  10342.8
+  Setting level-shift to   2.33 to force positive preconditioner
+                 3   -74742.6452791336  9.56D-01  2.42D-02  20338.9
+  Setting level-shift to   2.23 to force positive preconditioner
+                 4   -74742.7758085174  5.00D-01  1.48D-02  29328.7
+  Setting level-shift to   2.21 to force positive preconditioner
+                 5   -74742.8084681532  2.13D-01  1.18D-02  34513.8
+  Setting level-shift to   2.20 to force positive preconditioner
+                 6   -74742.8245891709  2.08D-01  9.41D-03  44076.5
+  Setting level-shift to   2.18 to force positive preconditioner
+                 7   -74742.8286704729  7.79D-02  9.26D-03  49213.9
+  Setting level-shift to   2.18 to force positive preconditioner
+                 8   -74742.8302212449  8.58D-02  7.84D-03  58567.5
+  Setting level-shift to   2.18 to force positive preconditioner
+                 9   -74742.8311276289  4.03D-02  7.49D-03  63570.3
+  Setting level-shift to   2.17 to force positive preconditioner
+                10   -74742.8318773337  6.82D-02  5.74D-03  73304.1
+  Setting level-shift to   2.17 to force positive preconditioner
+                11   -74742.8323357778  2.91D-02  5.49D-03  78079.3
+  Setting level-shift to   2.17 to force positive preconditioner
+                12   -74742.8326123456  4.24D-02  5.28D-03  87195.4
+  Setting level-shift to   2.16 to force positive preconditioner
+                13   -74742.8328340791  2.08D-02  5.69D-03  91722.6
+  Setting level-shift to   2.16 to force positive preconditioner
+                14   -74742.8330791734  4.55D-02  6.97D-03 100250.5
+  Setting level-shift to   2.16 to force positive preconditioner
+                15   -74742.8332871870  2.03D-02  7.48D-03 104594.6
+  Setting level-shift to   2.16 to force positive preconditioner
+                16   -74742.8334465202  3.56D-02  8.61D-03 113040.8
+  Setting level-shift to   2.15 to force positive preconditioner
+                17   -74742.8336016730  1.78D-02  9.17D-03 117530.9
+  Setting level-shift to   2.15 to force positive preconditioner
+                18   -74742.8338074975  4.61D-02  1.09D-02 126227.5
+  Setting level-shift to   2.14 to force positive preconditioner
+                19   -74742.8340217702  2.11D-02  1.14D-02 130750.8
+  Setting level-shift to   2.14 to force positive preconditioner
+                20   -74742.8342013345  3.92D-02  1.26D-02 139736.4
+  Setting level-shift to   2.14 to force positive preconditioner
+                21   -74742.8343900817  1.99D-02  1.31D-02 144376.8
+  Setting level-shift to   2.13 to force positive preconditioner
+                22   -74742.8346412014  5.13D-02  1.40D-02 153163.6
+  Setting level-shift to   2.13 to force positive preconditioner
+                23   -74742.8349045924  2.36D-02  1.42D-02 158140.6
+  Setting level-shift to   2.13 to force positive preconditioner
+                24   -74742.8351036812  3.93D-02  1.41D-02 167065.7
+  Setting level-shift to   2.13 to force positive preconditioner
+                25   -74742.8352975529  2.02D-02  1.40D-02 171995.6
+  Setting level-shift to   2.13 to force positive preconditioner
+                26   -74742.8355244135  4.52D-02  1.27D-02 180958.0
+  Setting level-shift to   2.12 to force positive preconditioner
+                27   -74742.8357279823  2.08D-02  1.24D-02 185440.5
+  Setting level-shift to   2.12 to force positive preconditioner
+                28   -74742.8358626545  3.00D-02  1.11D-02 193815.2
+  Setting level-shift to   2.12 to force positive preconditioner
+                29   -74742.8359780552  1.56D-02  1.05D-02 198204.0
+  Setting level-shift to   2.12 to force positive preconditioner
+                30   -74742.8360996105  3.11D-02  8.41D-03 207063.9
+  Setting level-shift to   2.11 to force positive preconditioner
+                31   -74742.8361957458  1.44D-02  7.95D-03 211579.4
+  Setting level-shift to   2.11 to force positive preconditioner
+                32   -74742.8362549764  1.92D-02  6.69D-03 220317.5
+  Setting level-shift to   2.11 to force positive preconditioner
+                33   -74742.8363029428  1.01D-02  6.23D-03 224762.1
+  Setting level-shift to   2.11 to force positive preconditioner
+                34   -74742.8363525669  1.95D-02  4.63D-03 233448.2
+  Setting level-shift to   2.11 to force positive preconditioner
+                35   -74742.8363904386  9.06D-03  4.32D-03 238087.0
+  Setting level-shift to   2.11 to force positive preconditioner
+                36   -74742.8364136875  1.20D-02  3.55D-03 246658.6
+  Setting level-shift to   2.11 to force positive preconditioner
+                37   -74742.8364328330  6.38D-03  3.28D-03 251042.9
+  Setting level-shift to   2.11 to force positive preconditioner
+                38   -74742.8364531427  1.26D-02  2.37D-03 259476.5
+  Setting level-shift to   2.11 to force positive preconditioner
+                39   -74742.8364690212  5.92D-03  2.21D-03 264021.4
+  Setting level-shift to   2.11 to force positive preconditioner
+                40   -74742.8364793576  8.13D-03  1.80D-03 273132.7
+  Setting level-shift to   2.11 to force positive preconditioner
+                41   -74742.8364880833  4.33D-03  1.67D-03 277563.5
+  Setting level-shift to   2.11 to force positive preconditioner
+                42   -74742.8364977117  8.95D-03  1.21D-03 291139.1
+  Setting level-shift to   2.11 to force positive preconditioner
+                43   -74742.8365057438  4.23D-03  1.16D-03 295598.3
+  Setting level-shift to   2.11 to force positive preconditioner
+                44   -74742.8365113102  6.10D-03  1.07D-03 303804.0
+  Setting level-shift to   2.11 to force positive preconditioner
+                45   -74742.8365161006  3.26D-03  1.03D-03 308490.6
+  Setting level-shift to   2.11 to force positive preconditioner
+                46   -74742.8365221833  6.89D-03  9.06D-04 321215.3
+  Setting level-shift to   2.11 to force positive preconditioner
+                47   -74742.8365270042  3.33D-03  9.41D-04 325675.7
+  Setting level-shift to   2.11 to force positive preconditioner

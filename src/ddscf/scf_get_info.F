@@ -288,6 +288,11 @@ c
      >         cosmo_phase = 1
          endif
       endif
+c
+c     After potentially update the inter atomic cutoff we need to 
+c     recalculate the nuclear-nuclear repulsion.
+c
+      call geom_compute_values(geom)
       oinitialized = .true.
 c     
       end
@@ -301,7 +306,7 @@ C$Id$
 c     
       integer rtdb
 c
-      double precision mone
+      double precision mone, cutoff
       parameter (mone = -1.0d0)
 c     
       ouser_changed_conv = .false.
@@ -315,6 +320,12 @@ c
       endif
       if (.not.rtdb_get(rtdb, 'scf:thresh', MT_DBL, 1, gnorm_tol)) 
      $     gnorm_tol = 1.d-4
+c
+c     Get the distance cutoff
+c
+      if (.not. rtdb_get(rtdb, 'scf:cutoff', MT_DBL, 1, cutoff))
+     $     cutoff = 1.0d300
+      call geom_set_cutoff(cutoff)
 c
 c     Ensure that the default integral selection is sufficient
 c     for the request accuracy of the SCF.  However, allow user override.
