@@ -1802,9 +1802,12 @@ fi
 # Find out whether there are any BLAS, LAPACK and/or ScaLAPACK libraries 
 # available.
 #
-# If BLASOPT is set that runs shot over everything. 
+# If USE_INTERNALBLAS is set then use the builtin reference BLAS library
+# otherwise if BLASOPT is set that runs shot over everything. 
 #
-if [ ${#BLASOPT} -ne 0 ] ; then
+if [ ${#USE_INTERNALBLAS} -ne 0 ]; then
+  unset BLASOPT
+elif [ ${#BLASOPT} -ne 0 ] ; then
   if [ ${#MPI_LIB} -ne 0 ] ; then
     # Only set MPI_LIB_TMP if MPI_LIB is non-empty
     MPI_LIB_TMP=`echo "-L${MPI_LIB}" | sed 's/^-L-L/-L/'`
@@ -2220,6 +2223,13 @@ if [ ${#SLURMOPT} -ne 0 ] ; then
   echo "unset SLURM"                     >> ${NWCHEM_UNENV_SH}
   echo "unsetenv SLURMOPT"               >> ${NWCHEM_UNENV_CSH}
   echo "unsetenv SLURM"                  >> ${NWCHEM_UNENV_CSH}
+fi
+if [ ${#USE_INTERNALBLAS} -ne 0 ] ; then
+  echo "USE_INTERNALBLAS   =" ${USE_INTERNALBLAS} 
+  echo "export USE_INTERNALBLAS=\"${USE_INTERNALBLAS}\"" >> ${NWCHEM_ENV_SH}
+  echo "setenv USE_INTERNALBLAS \"${USE_INTERNALBLAS}\"" >> ${NWCHEM_ENV_CSH}
+  echo "unset USE_INTERNALBLAS"                          >> ${NWCHEM_UNENV_SH}
+  echo "unsetenv USE_INTERNALBLAS"                       >> ${NWCHEM_UNENV_CSH}
 fi
 if [ ${#BLASOPT} -ne 0 ] ; then
   echo "BLASOPT            =" ${BLASOPT} 
