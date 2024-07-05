@@ -1,0 +1,25 @@
+/**
+  
+@defgroup noft Natural Orbital Functional Theory
+
+\brief The Natural Orbital Function Theory Module
+
+This module implements methods that use a single configuration
+wave function that can generate the exact 1-electron density
+matrix (1RDM). This wave function is based on the Thermo Field
+Dynamics one. Here this wave function is used to implement
+a natural orbital functional theory capability [1].
+
+[1] H.J.J. van Dam,
+    <a href="https://www.overleaf.com/read/vknsnpyygqrb#000730">
+    <https://www.overleaf.com/read/vknsnpyygqrb#000730/a>,
+    In preparation.
+
+@defgroup noft_api API
+   @ingroup noft
+   Routines that external code may call
+@defgroup noft_priv Private Routines
+   @ingroup noft
+   Routines that are private to the module
+
+*/

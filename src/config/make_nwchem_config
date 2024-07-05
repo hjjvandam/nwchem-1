@@ -21,7 +21,7 @@ KNOWN_MODULE_SUBDIRS = NWints atomscf ddscf develop gradients moints nwdft \
         property solvation nwpw fft rimp2_grad python argos analyz diana nwmd cafe space \
         drdy vscf uccsdt qmmm rism qmd etrans tce geninterface bq mm cons\
         perfm dntmc smd nbo dangchang leps ccca lucia dimqm rdmft fcidump\
-        gwmol xtb nwc_columbus
+        gwmol xtb nwc_columbus noft
 
 # These are the libraries for the high-level modules.  They should be
 # specified in an order that will link correctly, but that shouldn't
@@ -36,7 +36,7 @@ KNOWN_MODULE_LIBS = -ltest -lccsd -llucia -lmcscf -lselci -lmp2 -lmoints \
                     -lcafe -lspace -lanalyze -ldiana -lqhop \
                     -lpfft -ldplot -lnwpython -ldrdy -lvscf -lqmmm -lrism -lqmd -letrans\
                     -lpspw -ltce  -lgeninterface -lbq -lmm  -lcons -lperfm -lnbo -ldntmc -lccca\
-                    -ldimqm -lrdmft -lfcidump -lgwmol -lnwxtb
+                    -ldimqm -lrdmft -lfcidump -lgwmol -lnwxtb -lnoft
 
 # This include file handles configuration of the NW_MODULE_SUBDIRS and
 # NW_MODULE_LIBS macros for what we actually want to build.  It
@@ -71,7 +71,7 @@ MODULES := $(NWCHEM_MODULES)
 
 EXPANSIONS = all qm md classical tps alldev pnnl pnnldev smallqm smallqmmm notce
 
-EXP_all = $(filter-out argos leps smd uccsdt python develop scfaux rimp2_grad geninterface diana nbo rism lucia nwxc rdmft xtb nwc_columbus,$(KNOWN_MODULE_SUBDIRS) )
+EXP_all = $(filter-out argos leps smd uccsdt python develop scfaux rimp2_grad geninterface diana nbo rism lucia nwxc rdmft xtb nwc_columbus noft,$(KNOWN_MODULE_SUBDIRS) )
 EXP_pnnl = $(EXP_all) python dntmc
 EXP_alldev = develop $(EXP_all)
 EXP_pnnldev = develop $(EXP_pnnl)
@@ -275,6 +275,7 @@ MOD_LIBS := $(patsubst fcidump,-lfcidump,$(MOD_LIBS) )
 MOD_LIBS := $(patsubst gwmol,-lgwmol,$(MOD_LIBS) )
 MOD_LIBS := $(patsubst xtb,-lnwxtb,$(MOD_LIBS) )
 MOD_LIBS := $(patsubst nwc_columbus,-lnwc_columbus,$(MOD_LIBS) )
+MOD_LIBS := $(patsubst noft,-lnoft,$(MOD_LIBS) )
 MOD_LIBS := $(strip $(MOD_LIBS))
 
 #-----------------------------------------------------------------------------
@@ -297,6 +298,7 @@ STUBROUTINES := $(patsubst moints,atwtest direct_mp2 moints_full,$(STUBROUTINES)
 STUBROUTINES := $(patsubst fcidump, fcidump_input fcidump_symm task_fcidump,$(STUBROUTINES) )
 STUBROUTINES := $(patsubst nwdft,nwdft occup_input xc_chktau dft_fitcd grid_cleanup dft_fitvc grid_quadv0_gen dft_input xc_quadv0_gen dft_energy dft_energy_gradient sodft_energy tddft_input tddft_energy sodft_energy sodft_energy_gradient rt_dft_input rt_tddft_input tddft_gradient task_rt_tddft xc_vdw_to_hessian,$(STUBROUTINES) )
 STUBROUTINES := $(patsubst nwxc,nwxc_getwght nwxc_getvals nwxc_eval_df nwxc_eval_df2 nwxc_eval_df3 nwxc_get_cam nwxc_get_disp nwxc_has_cam nwxc_has_2nd nwxc_has_xc nwxc_has_disp nwxc_has_hfx nwxc_has_mp2c nwxc_init nwxc_input nwxc_is_gga nwxc_is_lda nwxc_is_mgga nwxc_is_on nwxc_print nwxc_print_nwpw nwxc_reset_rho_tolerance nwxc_rtdb_delete nwxc_rtdb_load nwxc_rtdb_store nwxc_vdw3_dftd3 nwxc_wght_hfx nwxc_wght_mp2c,$(STUBROUTINES) )
+STUBROUTINES := $(patsubst noft,noft_input noft_task_energy,$(STUBROUTINES) )
 STUBROUTINES := $(patsubst rdmft,wfn1_input wfn1_task_energy,$(STUBROUTINES) )
 STUBROUTINES := $(patsubst rimp2,rimp2,$(STUBROUTINES) )
 STUBROUTINES := $(patsubst rimp2_grad,rimp2g,$(STUBROUTINES) )

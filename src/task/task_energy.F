@@ -237,6 +237,7 @@ c     external oimp2
       external leps_energy
       logical  wfn1_task_energy
       external wfn1_task_energy
+      logical, external ::  noft_task_energy
       logical xtb_energy
       external xtb_energy
       logical dft_guesshfx,nwdft
@@ -446,6 +447,8 @@ c         status = .false.
          status = dc_energy(rtdb)
       else if (theory .eq. 'wfn1') then
          status = wfn1_task_energy(rtdb)
+      else if (theory .eq. 'noft') then
+         status = noft_task_energy(rtdb)
       else
          call errquit('task_energy: unknown theory',0, INPUT_ERR)
       endif
