@@ -7,7 +7,7 @@ documentation using Doxygen.
 To generate the source code for all of NWChem documentation run
 
 	cd $NWCHEM_TOP
-	./contrib/docygen/run_doxygen
+	./contrib/doxygen/run_doxygen
 
 To generate documentation for parts of NWChem you can invoke the run_doxygen
 script in any subdirectory.
@@ -27,7 +27,7 @@ Experience so far has been mixed:
 - Doxygen can generate about 4 GB of documentation for the NWChem source tree
   in about 1 hour and 20 minutes. You can reduce this by using appropriate
   options, but then the result is also less informative.
-- Doxygen can generate call treesi, caller trees and other diagrams. However
+- Doxygen can generate call trees, caller trees and other diagrams. However
   it seems that sometimes nodes are missing from these diagrams.
 Currently I am guessing that we will need multiple Doxygen configuration files
 and allow a developer to select one with a command line option on the 
