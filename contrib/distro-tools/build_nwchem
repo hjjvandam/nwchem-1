@@ -1807,6 +1807,8 @@ fi
 #
 if [ ${#USE_INTERNALBLAS} -ne 0 ]; then
   unset BLASOPT
+  export BLAS_SIZE=8
+  export LAPACK_SIZE=8
 elif [ ${#BLASOPT} -ne 0 ] ; then
   if [ ${#MPI_LIB} -ne 0 ] ; then
     # Only set MPI_LIB_TMP if MPI_LIB is non-empty
