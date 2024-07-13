@@ -1,0 +1,16 @@
+c-----------------------------------------------------------------------
+!> \brief The main driver for Natural Orbital Functional Theory
+!>
+!> This function is the main driver for Natural Orbital Functional
+!> Theory (NOFT) calculations.
+!>
+!> @param[in] rtdb The runtime database handle
+!>
+!> \return .TRUE. if the calculation converged, and .FALSE. otherwise
+!>
+      logical function noft_task_energy_doit(rtdb)
+      implicit none
+      integer, intent(in) :: rtdb
+      noft_task_energy_doit = .false.
+      end function noft_task_energy_doit
+c-----------------------------------------------------------------------

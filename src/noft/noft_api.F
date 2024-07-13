@@ -148,7 +148,7 @@
 !>         
 !>
       function noft_task_energy(rtdb) result(noft_success)
-!      use noft
+      use noft
       implicit none
       integer, intent(inout) :: rtdb !> [Input] The runtime database
       logical :: noft_success

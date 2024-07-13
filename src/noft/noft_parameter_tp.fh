@@ -1,0 +1,26 @@
+c-----------------------------------------------------------------------
+!> \brief The parameters data type
+!>
+!> This data type stores various parameters of the calculation. 
+!> These parameters are entities that do not change throughout the
+!> calculation, but that are also simple quantities.
+!>
+      type noft_parameter_tp
+        !> The maximum number of allowed iterations
+        integer :: maxiter
+        !> The required convergence threshold
+        real(kind=dp) :: threshold
+        !> The levelshifter for the molecular orbitals
+        real(kind=dp) :: levelshift_mo
+        !> The levelshifter for the tilde orbitals
+        real(kind=dp) :: levelshift_to
+        !> The coefficient for the same spin 2-electron off-diagonal
+        real(kind=dp) :: c_aa
+        !> The coefficient for the opposite spin 2-electron off-diagonal
+        real(kind=dp) :: c_ab
+        !> The power for the same spin 2-electron off-diagonal
+        real(kind=dp) :: p_aa
+        !> The power for the opposite spin 2-electron off-diagonal
+        real(kind=dp) :: p_ab
+      end type noft_parameter_tp
+c-----------------------------------------------------------------------
