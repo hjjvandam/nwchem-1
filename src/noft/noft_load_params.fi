@@ -1,0 +1,75 @@
+!-----------------------------------------------------------------------
+!> \brief Load the parameters for the NOFT calculations from the RTDB
+!>
+!> Load the various parameters from the RTDB and store them in the
+!> appropriate data structures. This is also the location where defaults
+!> for parameters that weren't specified in the input file are resolved.
+!>
+      subroutine noft_load_params(rtdb,noft_params)
+      implicit none
+#include "errquit.fh"
+#include "mafdecls.fh"
+#include "rtdb.fh"
+      !> The runtime database handle
+      integer, intent(in) :: rtdb
+      !> The calculation parameters
+      type(noft_parameter_tp), intent(out) :: noft_params
+!
+!     Load job parameters
+!
+!     Load the number of iterations (maxiter)
+!
+      if (rtdb_get(rtdb,"noft:maxiter", MT_INT, 1,
+     &             noft_params%maxiter)) then
+      else
+         noft_params%maxiter = 50
+      endif
+!
+!     Load the convergence threshold
+!
+      if (rtdb_get(rtdb,"noft:threshold", MT_DBL, 1,
+     &             noft_params%threshold)) then
+      else
+          noft_params%threshold = 1.0e-4
+      endif
+!
+!     Load levelshifts
+!
+      if (rtdb_get(rtdb,"noft:levelshift_orbitals", MT_DBL, 1,
+     &             noft_params%levelshift_mo)) then
+      else
+        noft_params%levelshift_mo = 0.5
+      endif
+      if (rtdb_get(rtdb,"noft:levelshift_tildefuncs", MT_DBL, 1,
+     &             noft_params%levelshift_to)) then
+      else
+        noft_params%levelshift_to = 0.5
+      endif
+!
+!     Load the off-diagonal coefficients
+!
+      if (rtdb_get(rtdb,"noft:c_aa", MT_DBL, 1,
+     &             noft_params%c_aa)) then
+      else
+        noft_params%c_aa = 1.0
+      endif
+      if (rtdb_get(rtdb,"noft:c_ab", MT_DBL, 1,
+     &             noft_params%c_ab)) then
+      else
+        noft_params%c_ab = 1.0
+      endif
+!
+!     Load the off-diagonal powers
+!
+      if (rtdb_get(rtdb,"noft:p_aa", MT_DBL, 1,
+     &             noft_params%p_aa)) then
+      else
+        noft_params%p_aa = 0.5
+      endif
+      if (rtdb_get(rtdb,"noft:p_ab", MT_DBL, 1,
+     &             noft_params%p_ab)) then
+      else
+        noft_params%p_ab = 0.5
+      endif
+      end subroutine noft_load_params
+!-----------------------------------------------------------------------

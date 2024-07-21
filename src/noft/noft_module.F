@@ -17,6 +17,7 @@ c-----------------------------------------------------------------------
 #include "noft_parameters.fh"
 #include "noft_parameter_tp.fh"
       contains
+#include "noft_load_params.fi"
 #include "noft_task_energy_doit.fi"
       end module noft
 !>
