@@ -72,6 +72,12 @@
      &                       mt_dbl, 1, levelshift_tildefuncs))
      &      call errquit("noft_input: rtdb_put failed", 35, RTDB_ERR)
 !
+!       Vectors
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "vectors")) then
+          call vectors_input(rtdb,'noft')
+!
 !       C_aa (note C_aa refers to same spin interactions,
 !             hence conceptually C_bb = C_aa)
 !

@@ -1,0 +1,32 @@
+c-----------------------------------------------------------------------
+!> \brief The files data type
+!>
+!> This data type stores the names of various files. The file
+!> names are kept in a type of their own as they are only used
+!> for I/O operations.
+!>
+!> In the NOFT module the wavefunction is expressed in terms of
+!> svecs, mvecs, and tvecs. The movecs are the result of transforming
+!> the svecs with the mvecs. This forward transformation is trivial
+!> but obtaining the mvecs from the movecs and the svecs is less so.
+!>
+      type noft_files_tp
+        !> The starting moleculare vectors
+        character(len=256) :: movecs_in
+        !> The starting orthogonalizing vectors
+        character(len=256) :: svecs_in
+        !> The starting molecular orbitals given in a orthogonal basis
+        character(len=256) :: mvecs_in
+        !> The starting tilde orbitals given in molecular orbital basis
+        character(len=256) :: tvecs_in
+        !>
+        !> The output moleculare vectors
+        character(len=256) :: movecs_out
+        !> The output orthogonalizing vectors
+        character(len=256) :: svecs_out
+        !> The output molecular orbitals given in a orthogonal basis
+        character(len=256) :: mvecs_out
+        !> The output tilde orbitals given in molecular orbital basis
+        character(len=256) :: tvecs_out
+      end type noft_files_tp
+c-----------------------------------------------------------------------

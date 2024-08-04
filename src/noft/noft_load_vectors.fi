@@ -1,0 +1,167 @@
+!-----------------------------------------------------------------------
+!> \brief replace one filename extension with another
+!>
+      function replace_extension(filename,newextension) result(newfile)
+      implicit none
+#include "inp.fh"
+      !> the input filename
+      character(len=*) :: filename
+      !> the new filename extension
+      character(len=*) :: newextension
+      !> the new filename
+      character(len=256) :: newfile
+!
+!     Local
+!
+      integer iperiod
+!
+!     Find the last position of "." in the filename
+!
+      iperiod = index(filename,".",.TRUE.)
+      newfile = filename(1:iperiod)//newextension
+      end
+!-----------------------------------------------------------------------
+!> \brief Load the setting for the vectors files from the RTDB
+!>
+!> We have used the regular vectors_input routine to read the vectors
+!> directive. Here we read the settings back and adjust them for
+!> NOFT module. In this module we use an extra three files for the
+!> vectors because the form of the wavefunction we use.
+!>
+      subroutine noft_load_vectors(rtdb,noft_vectors)
+      implicit none
+#include "errquit.fh"
+#include "mafdecls.fh"
+#include "rtdb.fh"
+      !> The runtime database handle
+      integer, intent(in) :: rtdb
+      !> The vectors filenames
+      type(noft_files_tp), intent(out) :: noft_vectors
+!
+!     Local variables
+!
+      character(len=30)  :: tag
+      character(len=256) :: movecs_in
+      character(len=256) :: movecs_out
+      character(len=256) :: svecs_in
+      character(len=256) :: svecs_out
+      character(len=256) :: mvecs_in
+      character(len=256) :: mvecs_out
+      character(len=256) :: tvecs_in
+      character(len=256) :: tvecs_out
+!
+!     Figure out input vectors
+!
+      tag = "noft:input vectors"
+      if (.not. rtdb_cget(rtdb, tag, 1, movecs_in)) movecs_in = 'atomic'
+      tag = "noft:output vectors"
+      if (.not. rtdb_cget(rtdb, tag, 1, movecs_out)) movecs_out = ' '
+      if (movecs_out.eq.' ') then
+         if (movecs_in.eq.'atomic' .or. movecs_in.eq.'hcore' .or.
+     $        movecs_in.eq.'project' .or. movecs_in.eq.'fragment'.or.
+     $        movecs_in.eq.'molden'
+     $          .or.movecs_in.eq.'rotate') then
+            call util_file_name('movecs', .false.,.false.,movecs_out)
+         else
+            movecs_out = movecs_in
+         endif
+      endif
+!
+!     Resolve names of MO files to full paths defaulting to the
+!     permanent directory
+!
+      if (movecs_in.eq.'atomic' .or. movecs_in.eq.'hcore' .or.
+     $        movecs_in.eq.'project' .or. movecs_in.eq.'fragment'.or.
+     $        movecs_in.eq.'molden'
+     $          .or.movecs_in.eq.'rotate') then
+         continue
+      else
+         call util_file_name_resolve(movecs_in, .false.)
+      endif
+      call util_file_name_resolve(movecs_out, .false.)
+!
+!     For NOFT we have multiple sets of vectors.
+!     The output side is easy we just need to generate the proper names:
+!     - svecs_out: the orthogonalizing transformation
+!     - mvecs_out: the molecular orbitals in an orthogonal basis
+!     - tvecs_out: the tilde orbitals in an orthogonal basis
+!     - movecs_out: S*M, i.e. the molecular orbitals in the AO basis
+!     The input side is more complicated. 
+!     - if movecs_in.eq.'atomic' ect. then everything should be
+!          initialized from scratch
+!     - else if the corresponding input file is set then use the name
+!          from the RTDB
+!     - else construct the name from the movecs filename
+!    
+!     Input filenames
+!
+      if (movecs_in.eq.'atomic' .or. movecs_in.eq.'hcore' .or.
+     &        movecs_in.eq.'project' .or. movecs_in.eq.'fragment'.or.
+     &        movecs_in.eq.'molden'
+     &          .or.movecs_in.eq.'rotate') then
+          noft_vectors%movecs_in = movecs_in
+          noft_vectors%svecs_in  = movecs_in
+          noft_vectors%mvecs_in  = movecs_in
+          noft_vectors%tvecs_in  = movecs_in
+      else
+          tag = "noft:input s-vectors"
+          if (.not. rtdb_cget(rtdb, tag, 1, svecs_in)) 
+     &        svecs_in = replace_extension(movecs_in,"svecs")
+          tag = "noft:input m-vectors"
+          if (.not. rtdb_cget(rtdb, tag, 1, mvecs_in)) 
+     &        mvecs_in = replace_extension(movecs_in,"mvecs")
+          tag = "noft:input t-vectors"
+          if (.not. rtdb_cget(rtdb, tag, 1, tvecs_in)) 
+     &        tvecs_in = replace_extension(movecs_in,"tvecs")
+          noft_vectors%svecs_in  = svecs_in
+          noft_vectors%mvecs_in  = mvecs_in
+          noft_vectors%tvecs_in  = tvecs_in
+      endif
+!
+!     Output filenames
+!
+      tag = "noft:output s-vectors"
+      if (.not. rtdb_cget(rtdb, tag, 1, svecs_out)) svecs_out = svecs_in
+      tag = "noft:output m-vectors"
+      if (.not. rtdb_cget(rtdb, tag, 1, mvecs_out)) mvecs_out = mvecs_in
+      tag = "noft:output t-vectors"
+      if (.not. rtdb_cget(rtdb, tag, 1, tvecs_out)) tvecs_out = tvecs_in
+      noft_vectors%svecs_out = svecs_out
+      noft_vectors%mvecs_out = mvecs_out
+      noft_vectors%tvecs_out = tvecs_out
+!
+      tag = "noft:input vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, movecs_in)) then
+         call errquit("writing movecs to RTDB failed")
+      endif
+      tag = "noft:output vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, movecs_out)) then
+         call errquit("writing movecs to RTDB failed")
+      endif
+      tag = "noft:input s-vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, svecs_in)) then
+         call errquit("writing movecs to RTDB failed")
+      endif
+      tag = "noft:output s-vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, svecs_out)) then
+         call errquit("writing movecs to RTDB failed")
+      endif
+      tag = "noft:input m-vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, mvecs_in)) then
+         call errquit("writing movecs to RTDB failed")
+      endif
+      tag = "noft:output m-vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, mvecs_out)) then
+         call errquit("writing movecs to RTDB failed")
+      endif
+      tag = "noft:input t-vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, tvecs_in)) then
+         call errquit("writing movecs to RTDB failed")
+      endif
+      tag = "noft:output t-vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, tvecs_out)) then
+         call errquit("writing movecs to RTDB failed")
+      endif
+!
+      end
+!-----------------------------------------------------------------------
