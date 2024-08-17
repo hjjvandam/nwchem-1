@@ -1,0 +1,41 @@
+!>
+!> \brief Print the module header
+!>
+      subroutine noft_print_header(rtdb,luout)
+      implicit none
+!>    The runtime database handle
+      integer, intent(in) :: rtdb 
+!>    The output file unit number
+      integer, intent(in) :: luout
+!
+!     Local
+!
+#include "global.fh"
+#include "rtdb.fh"
+#include "util.fh"
+!
+      integer iproc
+      logical oprint
+      character(len=256) :: title
+!
+!     Code
+!
+      oprint = util_print('information',print_low)
+      iproc = ga_nodeid()
+      if (oprint) then
+        if (.not. rtdb_cget(rtdb, 'title', 1, title))
+     &       title = ' '
+        if(iproc.eq.0) then
+          write(LuOut,*)
+          call util_print_centered(
+     &         LuOut, 'NWChem NOFT Module', 40, .true.)
+          write(LuOut,*)
+          write(LuOut,*)
+          if (title .ne. ' ') then
+            call util_print_centered(LuOut, title, 40, .false.)
+            write(LuOut,*)
+            write(LuOut,*)
+          endif
+        endif
+      endif
+      end

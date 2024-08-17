@@ -20,6 +20,7 @@ c-----------------------------------------------------------------------
       contains
 #include "noft_load_params.fi"
 #include "noft_load_vectors.fi"
+#include "noft_print_header.fi"
 #include "noft_task_energy_doit.fi"
       end module noft
 !>
