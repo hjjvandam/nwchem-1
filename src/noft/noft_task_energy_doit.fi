@@ -30,6 +30,6 @@ c-----------------------------------------------------------------------
       call noft_load_lindep(rtdb,noft_lindep)
       call noft_load_params(rtdb,noft_params)
       call noft_load_vectors(rtdb,noft_vectors)
-      call noft_load_geometry(rtdb,noft_instances)
+      call noft_load_geometry_basis(rtdb,noft_instances)
       end function noft_task_energy_doit
 c-----------------------------------------------------------------------

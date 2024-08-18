@@ -20,7 +20,9 @@ c-----------------------------------------------------------------------
 #include "noft_lindep_tp.fh"
 #include "noft_parameter_tp.fh"
       contains
+#include "noft_load_basis.fi"
 #include "noft_load_geometry.fi"
+#include "noft_load_geometry_basis.fi"
 #include "noft_load_lindep.fi"
 #include "noft_load_params.fi"
 #include "noft_load_vectors.fi"

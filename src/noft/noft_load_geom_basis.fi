@@ -1,0 +1,23 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Load the geometry and basis set
+!>
+!> This routine loads both the geometry and the basis set. The reason
+!> for having a separate routine for this is because there are
+!> dependencies that require these instances to be loaded in a 
+!> particular order.
+!>
+      subroutine noft_load_geometry_basis(rtdb,instances)
+      implicit none
+      !> The RTBD handle
+      integer, intent(in) :: rtdb
+      !> The instances data structure
+      type(noft_instances_tp), intent(out) :: instances
+!
+!     Code
+!
+      call noft_load_geometry(rtdb,instances)
+      call noft_load_basis(rtdb,instances)
+!
+      end
+!-----------------------------------------------------------------------

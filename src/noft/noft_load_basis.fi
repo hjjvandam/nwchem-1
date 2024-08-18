@@ -1,0 +1,34 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Load the basis set
+!>
+      subroutine noft_load_basis(rtdb,instances)
+      implicit none
+      !> The RTDB handle
+      integer, intent(in) :: rtdb
+      !> The instances data structure
+      type(noft_instances_tp), intent(inout) :: instances
+!
+!     Local
+!
+#include "basis.fh"
+#include "errquit.fh"
+#include "rtdb.fh"
+!
+      character(len=15), parameter :: pname = "noft_load_basis"
+      integer :: nbf
+!
+!     Code
+!
+      if (.not.bas_create(instances%basis,'ao basis'))
+     &  call errquit(pname//' bas_create failed',0, BASIS_ERR)
+      if (.not.bas_rtdb_load(rtdb,instances%geom,
+     &                       instances%basis,'ao basis'))
+     &  call errquit(pname//' no ao basis found',0, RTDB_ERR)
+      if (.not.bas_numbf(instances%basis,nbf))
+     &  call errquit(pname//" no basis functions",0,BASIS_ERR)
+      if (.not.int_normalize(rtdb,instances%basis))
+     &  call errquit(pname//' int_normalize failed', 0, INT_ERR)
+!
+      end
+!-----------------------------------------------------------------------
