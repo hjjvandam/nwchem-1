@@ -1,0 +1,28 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Load the geometry
+!>
+      subroutine noft_load_geometry(rtdb,instances)
+      implicit none
+      !> The RTDB handle
+      integer, intent(in) :: rtdb
+      !> The instances data structure
+      type(noft_instances_tp), intent(inout) :: instances
+!
+!     Local
+!
+#include "errquit.fh"
+#include "geom.fh"
+#include "rtdb.fh"
+!
+      character(len=18), parameter :: pname = "noft_load_geometry"
+!
+!     Code
+!
+      if (.not.geom_create(instances%geom,'geometry'))
+     &  call errquit(pname//' geom_create failed',0,GEOM_ERR)
+      if (.not.geom_rtdb_load(rtdb,instances%geom,'geometry'))
+     &  call errquit(pname//' no geometry found',0,RTDB_ERR)
+!
+      end
+!-----------------------------------------------------------------------

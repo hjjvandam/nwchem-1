@@ -16,6 +16,7 @@ c-----------------------------------------------------------------------
 !
 #include "stdio.fh"
 !
+      type(noft_instances_tp) :: noft_instances
       type(noft_lindep_tp)    :: noft_lindep
       type(noft_parameter_tp) :: noft_params
       type(noft_files_tp)     :: noft_vectors
@@ -29,5 +30,6 @@ c-----------------------------------------------------------------------
       call noft_load_lindep(rtdb,noft_lindep)
       call noft_load_params(rtdb,noft_params)
       call noft_load_vectors(rtdb,noft_vectors)
+      call noft_load_geometry(rtdb,noft_instances)
       end function noft_task_energy_doit
 c-----------------------------------------------------------------------

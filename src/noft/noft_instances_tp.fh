@@ -1,0 +1,14 @@
+!-----------------------------------------------------------------------
+!> \brief The instances data type
+!>
+!> This data type stores instances that do not change during the
+!> calculation but that are complex objects. Typically we store a 
+!> handle of these objects.
+!>
+      type noft_instances_tp
+        !> The geometry handle
+        integer :: geom
+        !> The basis set handle
+        integer :: basis
+      end type noft_instances_tp
+!-----------------------------------------------------------------------
