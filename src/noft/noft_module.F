@@ -16,8 +16,10 @@ c-----------------------------------------------------------------------
       implicit none
 #include "noft_parameters.fh"
 #include "noft_files_tp.fh"
+#include "noft_lindep_tp.fh"
 #include "noft_parameter_tp.fh"
       contains
+#include "noft_load_lindep.fi"
 #include "noft_load_params.fi"
 #include "noft_load_vectors.fi"
 #include "noft_print_header.fi"

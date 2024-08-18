@@ -22,6 +22,7 @@
       character(len=255) :: test
       character(len=16)  :: xc
       integer :: maxiter
+      integer :: nfield, ifield
       real(kind=dp) :: threshold
       real(kind=dp) :: levelshift_orbitals
       real(kind=dp) :: levelshift_tildefuncs
@@ -29,6 +30,8 @@
       real(kind=dp) :: c_ab
       real(kind=dp) :: p_aa
       real(kind=dp) :: p_ab
+      integer       :: nindep ! Number of linearly independ vectors
+      real(kind=dp) :: cindep ! Cutoff to determine independ vectors
       do while (inp_read())
         if (.not. inp_a(test))
      &    call errquit("noft_input: keyword read failed", 0,
@@ -115,6 +118,53 @@
           if (.not. rtdb_put(rtdb, "noft:p_ab", mt_dbl, 1, p_ab))
      &      call errquit("noft_input: rtdb_put failed", 70, RTDB_ERR)
 !
+!       Lindep [ off | nvec <integer num> | cutoff <real val> ]
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"lindep"))
+     &  then
+          nindep = -2
+          cindep = -2.0d0
+          nfield = inp_n_field()
+          ifield = inp_cur_field()
+          do while (ifield.lt.nfield)
+            if (.not. inp_a(test))
+     &        call errquit("noft_input: invalid lindep directive",
+     &                     0, INPUT_ERR)
+              if (inp_compare(.false.,test(1:inp_strlen(test)),"nvec"))
+     &        then
+                if (.not. inp_i(nindep))
+     &            call errquit("noft_input: read nindep failed",
+     &                         0, INPUT_ERR)
+                if (nindep.lt.1) then
+                  call errquit("noft_input: invalid nindep value",
+     &                         0, INPUT_ERR)
+                endif
+              else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                             "cutoff"))
+     &        then
+                if (.not. inp_f(cindep))
+     &            call errquit("noft_input: read cindep failed",
+     &                         0, INPUT_ERR)
+                if (cindep.lt.0.0d0) then
+                  call errquit("noft_input: invalid cindep value",
+     &                         0, INPUT_ERR)
+                endif
+              if (inp_compare(.false.,test(1:inp_strlen(test)),"off"))
+     &        then
+                nindep = -1
+                cindep = -1.0d0
+              endif
+            endif
+          enddo
+          if (nindep.gt.-2) then
+            if (.not. rtdb_put(rtdb, "noft:nindep", mt_int, 1, nindep))
+     &        call errquit("noft_input: rtdb_put failed", 80, RTDB_ERR)
+          endif
+          if (cindep.gt.-2.0d0) then
+            if (.not. rtdb_put(rtdb, "noft:cindep", mt_dbl, 1, cindep))
+     &        call errquit("noft_input: rtdb_put failed", 82, RTDB_ERR)
+          endif
+!
 !       End
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"end"))
@@ -158,7 +208,7 @@
       implicit none
       integer, intent(inout) :: rtdb !> [Input] The runtime database
       logical :: noft_success
-!      noft_success = noft_task_energy_doit(rtdb)
+      noft_success = noft_task_energy_doit(rtdb)
       end function noft_task_energy
 !>
 !>----------------------------------------------------------------------

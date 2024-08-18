@@ -1,0 +1,16 @@
+!>
+!> \brief The linear dependency type
+!>
+!> This data type stores the parameters related to managing
+!> linear dependencies in the basis set. The linear 
+!> dependencies can be managed by keeping only a given
+!> number of vectors with the highest eigenvalues of the
+!> overlap matrix or by specifying a cutoff value for the
+!> eigenvalues.
+!>
+      type noft_lindep_tp
+!>      The number of vectors to keep
+        integer :: nvec
+!>      The overlap matrix eigenvalue tolerance
+        real(kind=dp) :: tol
+      end type

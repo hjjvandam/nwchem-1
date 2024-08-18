@@ -1,0 +1,44 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Load the linear dependence parameters
+!>
+!> In Gaussian basis sets you can have linear dependencies if the basis
+!> set is large. Typically one obtains the orthogonalizing
+!> transformation by diagonalizing the overlap matrix. A way to remove
+!> linear dependencies is to discard eigenvectors with small
+!> eigenvalues. Alternatively one might choose to keep just a given
+!> number of vectors.
+!>
+!> Here we read the settings from the RTDB. By default we set
+!> - nindep = -1 (turn the number of vectors criterion off)
+!> - cindep = 1.0e-5 (keep only vectors with eigen values greater than
+!>                    this cutoff)
+!>
+      subroutine noft_load_lindep(rtdb,lindep)
+      implicit none
+      !> The RTDB handle
+      integer, intent(in) :: rtdb 
+      !> The linear dependency parameters
+      type(noft_lindep_tp), intent(out) :: lindep
+!
+!     Local
+!
+#include "mafdecls.fh"
+#include "rtdb.fh"
+!
+      integer, parameter       :: nindep_default = -1
+      real(kind=dp), parameter :: cindep_default =  1.0d-5
+      integer       :: nindep
+      real(kind=dp) :: cindep
+!
+!     Code
+!
+      if (.not. rtdb_get(rtdb, "noft:nindep", mt_int, 1, nindep))
+     &  nindep = nindep_default
+      if (.not. rtdb_get(rtdb, "noft:cindep", mt_dbl, 1, cindep))
+     &  cindep = cindep_default
+      lindep%nvec = nindep
+      lindep%tol  = cindep
+      end
+
+!-----------------------------------------------------------------------

@@ -16,6 +16,7 @@ c-----------------------------------------------------------------------
 !
 #include "stdio.fh"
 !
+      type(noft_lindep_tp)    :: noft_lindep
       type(noft_parameter_tp) :: noft_params
       type(noft_files_tp)     :: noft_vectors
 !
@@ -25,6 +26,7 @@ c-----------------------------------------------------------------------
       call util_print_push
       call util_print_rtdb_load(rtdb,'noft')
       call noft_print_header(rtdb,luout)
+      call noft_load_lindep(rtdb,noft_lindep)
       call noft_load_params(rtdb,noft_params)
       call noft_load_vectors(rtdb,noft_vectors)
       end function noft_task_energy_doit
