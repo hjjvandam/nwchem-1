@@ -1,0 +1,1324 @@
+%% ****** Start of file aiptemplate.tex ****** %
+%%
+%%   This file is part of the files in the distribution of AIP substyles for REVTeX4.
+%%   Version 4.1 of 9 October 2009.
+%%
+%
+% This is a template for producing documents for use with 
+% the REVTEX 4.1 document class and the AIP substyles.
+% 
+% Copy this file to another name and then work on that file.
+% That way, you always have this original template file to use.
+
+\documentclass[aip,graphicx]{revtex4-1}
+%\documentclass[aip,reprint]{revtex4-1}
+
+\usepackage[version=3]{mhchem}
+\usepackage[]{hyperref}
+\usepackage{amsmath}
+
+\draft % marks overfull lines with a black rule on the right
+
+\newcommand{\half}{\frac{1}{2}}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand{\abs}[1]{| #1 |}
+
+% Notation for natural orbitals
+\newcommand{\nn}[1]{n_{#1}}
+\newcommand{\nnd}[1]{n_{#1}^{*}} % d from dagger
+\newcommand{\nnq}[2]{n_{#1}^{#2}}
+\newcommand{\nnqd}[2]{\left(n_{#1}^{#2}\right)^{*}}
+\newcommand{\nna}[1]{\nnq{#1}{\alpha}}
+\newcommand{\nnad}[1]{\nnqd{#1}{\alpha}}
+\newcommand{\nnb}[1]{\nnq{#1}{\beta}}
+\newcommand{\nnbd}[1]{\nnqd{#1}{\beta}}
+\newcommand{\nns}[1]{\nnq{#1}{\sigma}}
+\newcommand{\nnsd}[1]{\nnqd{#1}{\sigma}}
+\newcommand{\nnt}[1]{\nnq{#1}{\sigma'}}
+\newcommand{\nntd}[1]{\nnqd{#1}{\sigma'}}
+\newcommand{\nnu}[1]{\nnq{#1}{\sigma''}}
+\newcommand{\nnud}[1]{\nnqd{#1}{\sigma''}}
+\newcommand{\nNq}[1]{N^{#1}}
+\newcommand{\nNa}{\nNq{\alpha}}
+\newcommand{\nNb}{\nNq{\beta}}
+\newcommand{\nNs}{\nNq{\sigma}}
+\newcommand{\nNt}{\nNq{\sigma'}}
+\newcommand{\nNu}{\nNq{\sigma''}}
+\newcommand{\nNsd}[1]{\left(\nNq{\sigma}_{#1}\right)^{*}}
+\newcommand{\nNtd}[1]{\left(\nNq{\sigma'}_{#1}\right)^{*}}
+
+\newcommand{\mns}[1]{m_{#1}^{\sigma}}
+\newcommand{\mnsd}[1]{\left(\mns{#1}\right)^{*}}
+
+% Notation for tilde orbitals
+\newcommand{\tn}[1]{\tilde{n}_{#1}}
+\newcommand{\tnd}[1]{\tilde{n}_{#1}^{*}}
+\newcommand{\tnq}[2]{\tilde{n}_{#1}^{#2}}
+\newcommand{\tnqd}[2]{\left(\tilde{n}_{#1}^{#2}\right)^{*}}
+\newcommand{\tna}[1]{\tnq{#1}{\alpha}}
+\newcommand{\tnad}[1]{\tnqd{#1}{\alpha}}
+\newcommand{\tnb}[1]{\tnq{#1}{\beta}}
+\newcommand{\tnbd}[1]{\tnqd{#1}{\beta}}
+\newcommand{\tns}[1]{\tnq{#1}{\sigma}}
+\newcommand{\tnsd}[1]{\tnqd{#1}{\sigma}}
+\newcommand{\tnt}[1]{\tnq{#1}{\sigma'}}
+\newcommand{\tntd}[1]{\tnqd{#1}{\sigma'}}
+\newcommand{\tnu}[1]{\tnq{#1}{\sigma''}}
+\newcommand{\tnud}[1]{\tnqd{#1}{\sigma''}}
+\newcommand{\tNq}[1]{\tilde{N}^{#1}}
+\newcommand{\tNa}{\tNq{\alpha}}
+\newcommand{\tNb}{\tNq{\beta}}
+\newcommand{\tNs}{\tNq{\sigma}}
+\newcommand{\tNt}{\tNq{\sigma'}}
+\newcommand{\tNu}{\tNq{\sigma''}}
+\newcommand{\tNsd}[1]{\left(\tNq{\sigma}_{#1}\right)^{*}}
+\newcommand{\tNtd}[1]{\left(\tNq{\sigma'}_{#1}\right)^{*}}
+
+% Notation for occupation numbers
+\newcommand{\dd}[1]{d_{#1}}
+\newcommand{\dq}[2]{d_{#1}^{#2}}
+\newcommand{\da}[1]{\dq{#1}{\alpha}}
+\newcommand{\db}[1]{\dq{#1}{\beta}}
+\newcommand{\ds}[1]{\dq{#1}{\sigma}}
+\newcommand{\dt}[1]{\dq{#1}{\sigma'}}
+
+% Notation for density matrices
+\newcommand{\Dq}[1]{D^{#1}}
+\newcommand{\Da}{\Dq{\alpha}}
+\newcommand{\Db}{\Dq{\beta}}
+\newcommand{\Ds}{\Dq{\sigma}}
+\newcommand{\Dt}{\Dq{\sigma'}}
+\newcommand{\Wqq}[2]{W^{#1 #2}}
+\newcommand{\Waa}{\Wqq{\alpha}{\alpha}}
+\newcommand{\Wab}{\Wqq{\alpha}{\beta}}
+\newcommand{\Wba}{\Wqq{\beta}{\alpha}}
+\newcommand{\Wbb}{\Wqq{\beta}{\beta}}
+\newcommand{\Wss}{\Wqq{\sigma}{\sigma}}
+\newcommand{\Wst}{\Wqq{\sigma}{\sigma'}}
+
+% Notation for Lagrange multipliers
+\newcommand{\nLq}[1]{\Lambda^{#1}}
+\newcommand{\nLa}{\nLq{\alpha}}
+\newcommand{\nLb}{\nLq{\beta}}
+\newcommand{\nLs}{\nLq{\sigma}}
+\newcommand{\nLt}{\nLq{\sigma'}}
+
+% Notation for tilde Lagrange multipliers
+\newcommand{\tLq}[1]{\tilde{\Lambda}^{#1}}
+\newcommand{\tLa}{\tLq{\alpha}}
+\newcommand{\tLb}{\tLq{\beta}}
+\newcommand{\tLs}{\tLq{\sigma}}
+\newcommand{\tLt}{\tLq{\sigma'}}
+
+% Notation for numbers of electrons
+\newcommand{\nel}{N_{\mathrm{el}}}
+\newcommand{\nelq}[1]{\nel^{#1}}
+\newcommand{\nela}{\nelq{\alpha}}
+\newcommand{\nelb}{\nelq{\beta}}
+\newcommand{\nels}{\nelq{\sigma}}
+\newcommand{\nelt}{\nelq{\sigma'}}
+
+\begin{document}
+
+% Fancy stuff to deal with equations that are too large for a regular piece of paper:
+
+\newlength{\classpageheight}
+\setlength{\classpageheight}{\pdfpageheight}
+\newlength{\classpagewidth}
+\setlength{\classpagewidth}{\pdfpagewidth}
+
+% Use the \preprint command to place your local institutional report number 
+% on the title page in preprint mode.
+% Multiple \preprint commands are allowed.
+%\preprint{}
+
+\title[Exact results from modeling electron correlation with the thermo-field dynamics wavefunction]{Exact results from modeling electron correlation with the thermo-field dynamics wavefunction} %Title of paper
+
+% repeat the \author .. \affiliation  etc. as needed
+% \email, \thanks, \homepage, \altaffiliation all apply to the current author.
+% Explanatory text should go in the []'s, 
+% actual e-mail address or url should go in the {}'s for \email and \homepage.
+% Please use the appropriate macro for the type of information
+
+% \affiliation command applies to all authors since the last \affiliation command. 
+% The \affiliation command should follow the other information.
+
+\author{H.J.J. van Dam}
+\email[]{hvandam@bnl.gov}
+%\homepage[]{Your web page}
+%\thanks{}
+%\altaffiliation{}
+\affiliation{Condensed Matter Physics and Materials Science Department, Brookhaven National Laboratory}
+
+% Collaboration name, if desired (requires use of superscriptaddress option in \documentclass). 
+% \noaffiliation is required (may also be used with the \author command).
+%\collaboration{}
+%\noaffiliation
+
+\date{\today}
+
+\begin{abstract}
+% insert abstract here
+\end{abstract}
+
+\pacs{}% insert suggested PACS numbers in braces on next line
+
+\maketitle %\maketitle must follow title, authors, abstract and \pacs
+
+\tableofcontents
+\newpage
+% Body of paper goes here. Use proper sectioning commands. 
+% References should be done using the \cite, \ref, and \label commands
+\section{Introduction}
+\label{intro}
+
+\begin{itemize}
+    \item It is important to be able to do accurate simulations at a reasonable cost
+    \item The Hohenberg-Kohn\cite{Hohenberg_1964} theorems that laid the foundation for DFT are an important step in that direction
+    \item Gilbert's theorem\cite{Gilbert_1975} extended this to density matrix functional theory (DMFT)
+    \item More recently it has been realized that in practice density matrix related functionals are actually functionals of the natural orbitals and occupation numbers. Therefore are better characterized as natural orbital functional theories (NOFT)\cite{Goedecker_2000}.
+    \item There has been a long history of NOFTs, but in practice most of these models try to reconstruct the exact 2-electron density matrix in terms of 1-electron density matrices. These attempts generally lead to models that violate the N-representability conditions in some way\cite{Herbert_2003}.
+    \item In a different context physicists interested systems at finite temperature realized that by doubling the Hilbert space it is possible to write simple transformations that allow for density matrices with fractional occupation numbers\cite{Araki_1963}. 
+    \item This basic transformation was extended to thermo-field dynamics (TFD)\cite{Takahashi_1975,Takahashi_1996}. TFD proposes an single configuration wave function in a double Hilbert space that admits fractional occupation numbers. The resulting 1- and 2-electron density matrices are N-representable by construction. 
+    \item It would seem that such a wave function is an ideal starting point for an NOFT method. Nevertheless, it seems that this possibility has not been pursued. 
+    \item Note that TFD has recently been used to bring finite temperature effects to dynamics\cite{Borrelli_2021} and correlated models, such as coupled cluster models\cite{Harsha_2019,Shushkov_2019,Nooijen_2021,Harsha_2022}. It has not been in itself been used to to formulate correlated models (at zero temperature). 
+    \item In this paper the TFD wave function at zero temperature is taken as a starting point. The question how to exploit this wave function to construct models for correlated electrons is addressed. In particular this paper focuses on exact solutions that can be obtained for simple systems. These results provide insights as to what corresponding models for more complicated systems should look like.
+    \item In particular we look at 2-electron systems, both closed shell and open shell.
+    \item The closed shell case reduces to the essentially the same solution as the one of Goedecker and Umgar\cite{Goedecker_2000}.
+    \item The open shell case leads to a new result. More importantly this result shows that this result depends on the 2-electron density matrix in way that in general cannot be decomposed into 1-electron density matrices.
+    \item In the following sections we first describe the TFD wavefunction and how to calculate it's 1- and 2-electron density matrices. In addition the N-representability conditions are summarized. 
+    \item In the next sections the energy of the TFD wavefunction is compared to that of the Full-CI wavefunction to derive what changes have to be made to the TFD based energy expression to match that of the Full-CI energy expression.  
+\end{itemize}
+
+\section{The TFD wavefunction at zero temperature and its density matrices}
+\label{tfdsummary}
+
+\begin{itemize}
+    \item The fundamental transformation to represent thermal effects was discovered by Araki\cite{Araki_1963} already in 1963. This transformation was developed into a proper finite temperature wavefunction model by Takahashi and Umezawa\cite{Takahashi_1975,Takahashi_1996} by 1975. Recently, a report by Das\cite{Das_2000} introduced Thermo-Field Dynamics using a modern notation.
+    \item Summarizing the foundations, following pages 10 and 11 of Das\cite{Das_2000}, in thermo-field dynamics one is interested in ensemble averages of an observable at a given temperature. In addition one would like to express this ensemble average as the expectation value of some state vector. I.e. one would like to have a state description such that
+    \begin{equation}
+    \label{eq-expectation-value}
+    \langle O \rangle_\beta = \langle 0,\beta|O|0,\beta\rangle 
+    = \frac{1}{Z(\beta)} \mathrm{Tr}\; e^{-\beta H}O
+    = \frac{1}{Z(\beta)} \sum_n e^{-\beta E_n} \langle n|O|n \rangle
+    \end{equation}
+    where the states $|n\rangle$ are eigenfunctions of
+    \begin{eqnarray}
+    H |n\rangle &=& E_n |n\rangle \\
+    \langle m|n \rangle &=& \delta_{mn} \\
+    \sum_n |n\rangle\langle n| &=& I
+    \end{eqnarray}
+    From writing the state $|0,\beta\rangle$ as a linear combination as
+    \begin{eqnarray}
+    |0,\beta\rangle &=& \sum_n f_n(\beta)|n\rangle
+    \end{eqnarray}
+    it follows for the expectation value that
+    \begin{eqnarray}
+    \langle 0,\beta| O | 0,\beta \rangle
+    &=& \sum_{n,m}f^*_n(\beta)f_m(\beta)\langle n |O|m \rangle
+    \end{eqnarray}
+    which matches Eq.\ref{eq-expectation-value} only when
+    \begin{eqnarray}
+    \label{eq-f-product}
+    f^*_n(\beta)f_m(\beta) &=& \frac{1}{Z(\beta)} e^{-\beta E_n}\delta_{nm}
+    \end{eqnarray}
+    Given that the $f_n(\beta)$s are ordinary numbers and Eq.\ref{eq-f-product} is more like an orthonormality condition it follows that this equation cannot be satisfied if we stay in the original Hilbert space. 
+    
+    If the $f_n(\beta)$s were to behave more like state vectors then it would be possible to solve this problem. As a solution Araki\cite{Araki_1963} proposed to introduce a fictitious system, referred to as the tilde system, of the same dimensions and properties as the original system. In this double Hilbert space as state would be written as
+    \begin{eqnarray}
+    \label{eq-normal-otimes-tilde}
+    |n,\tilde{n}\rangle &=& |n\rangle \otimes |\tilde{n}\rangle
+    \end{eqnarray}
+    Like the normal functions the tilde functions form an orthonormal set but the operator $O$ does not act on the coordinates of the tilde functions. Then $|0,\beta\rangle$ can be written as
+    \begin{eqnarray}
+    |0,\beta\rangle &=& \sum_n f_n(\beta)|n,\tilde{n}\rangle \\
+                    &=& \sum_n f_n(\beta)|n\rangle\otimes|\tilde{n}\rangle
+    \end{eqnarray}
+    For the expectation value of $O$ this gives
+    \begin{eqnarray}
+    \langle 0,\beta|O|0,\beta\rangle 
+    &=& \sum_{n,m}f_n^*(\beta)f_m(\beta)\langle n,\tilde{n}|O|m,\tilde{m}\rangle \\
+    &=& \sum_{n,m}f_n^*(\beta)f_m(\beta)\langle n|O|m\rangle \delta_{\tilde{n}\tilde{m}}\\
+    &=& \sum_n f_n^*(\beta)f_n(\beta)\langle n|O|n\rangle
+    \end{eqnarray}
+    
+    In the context of this paper the normal states correspond to molecular orbitals that generate the spatial distribution of an electron probability density. The tilde functions generate the probability density distribution of a single electron across molecular orbitals. In addition this paper focuses on electron correlation instead of finite temperature effects. This means that 
+    \begin{eqnarray}
+    f_n(\beta) &=& \left\{\begin{array}{cc}
+      1,   & n \leq n_{\mathrm{electron}} \\
+      0,   & n > n_{\mathrm{electron}}
+    \end{array}\right.
+    \end{eqnarray}
+    or alternatively the first $n_{\mathrm{electron}}$ tilde functions are occupied and all others are empty. 
+    
+    \item There is one final "surprise". As this paper focuses on electrons the wave function should be anti-symmetric. This means that the factor associated with the natural orbitals should be anti-symmetrized. However, the occupation numbers are generated by the tilde functions. In order for the occupation numbers of density matrices of more than 1-electron to be physically sensible the wave function must also be anti-symmetric under the permutation of two tilde functions. In other words the wave function needs to be doubly anti-symmetric. In thermo-field dynamics this requirement is obvious from the fact that finite temperature effects mix the normal and tilde functions through a Bogoliubov transformation\cite{Bogoljubov_1958}. This mixing would destroy the symmetry properties of the wave function unless they are the same for both the normal and tilde functions. Here, the focus is on electron correlation represented in thermo-field wave functions in the zero temperature limit, but the double anti-symmetry survives in this limit to describe systems of fermions correctly.
+    
+    \item Key to calculating observable quantities from the wave function are the density matrices that can be obtained. Here the derivation of the density matrices is given in more detail. Starting from Eq.\ref{eq-normal-otimes-tilde} this can be written for a system of $N_e$ same spin electrons (either $\alpha$ or $\beta$) as
+    \begin{eqnarray}
+    \Psi(\epsilon_1,\ldots,\epsilon_{N_e},r_1,\ldots,r_N) 
+    &=& |n_1(r_1)\ldots n_N(r_N)\rangle \otimes |\tilde{n}_1(\epsilon_1)\ldots\tilde{n}_{N_e}(\epsilon_{N_e})\rangle 
+    \end{eqnarray}
+    where $N$ is the number of normal 1-electron states, $r$ refers to spatial coordinates, $\epsilon$ are the coordinates of the 1-electron tilde functions, and $|\ldots\rangle$ refers to a Slater determinant of 1-electron functions.
+    
+    In order to express these equations in terms of linear algebra some descretization is necessary. For the normal functions $n(r)$ these functions are expanded in a basis in the usual ways (e.g. Gaussian type basis functions, plane wave, etc.). The tilde functions are descretized on a grid as $\tilde{n}_s(\epsilon) = (\tilde{n}_s(\epsilon_1),\ldots,\tilde{n}_s(\epsilon_i),\ldots,\tilde{n}_s(\epsilon_N))$ such that each point in $\epsilon$ corresponds to a function in the normal space. I.e. $\tilde{n}_s^*(\epsilon_i)\tilde{n}_s(\epsilon_i)$ is the occupation of electron $s$ of normal function $i$.
+    
+    Having that both the normal and the tilde functions form orthonormal sets, i.e.
+    \begin{eqnarray}
+    \delta_{ij} &=& \langle n_i(r)|n_j(r)\rangle \\
+    \delta_{st} &=& \langle\tilde{n}_s(\epsilon)|\tilde{n}_t(\epsilon)\rangle
+    \end{eqnarray}
+    the expectation value of a 1-electron operator $O_1$ can be written as
+    \begin{eqnarray}
+    \langle O_1\rangle &=& \langle\Psi(\mathrm{\epsilon},\mathrm{r})|O_1|\Psi(\mathrm{\epsilon},\mathrm{r})\rangle
+    \end{eqnarray}
+    Because the regular 1-electron operators act only on the spatial coordinates of one electron the spatial coordinates of all other electrons can be integrated out.
+    \begin{eqnarray}
+    \langle O_1\rangle &=&
+    \sum_{i=1}^{N}|\tilde{n}_1(\epsilon_1)\ldots\tilde{n}_{N_e}(\epsilon_{N_e})\rangle\langle\tilde{n}_1(\epsilon'_1)\ldots\tilde{n}_{N_e}(\epsilon'_{N_e})|\langle n_1(r_1)|O_1|n_1(r_1)\rangle
+    \end{eqnarray}
+    Because the spatial orbitals are orthonormalized every coordinate integrated out that the operator does not act on contributes a factor of 1. Likewise the tilde functions are orthonormalized, and all $\epsilon$-coordinates but one can be integrated out as well to obtain
+    \begin{eqnarray}
+    \langle O_1\rangle
+    &=& \sum_{s=1}^{N_e}\sum_{i=1}^N
+        \tilde{n}_s^*(\epsilon)\tilde{n}_s(\epsilon)\langle n_i(r)|O_1|n_i(r)\rangle
+    \end{eqnarray}
+    At this point the $\epsilon$-coordinate needs some explanation as to what role it plays in these equations as up to now these coordinates are not connected to anything. To make the $\epsilon$-coordinates functional they are discretized onto a set of points $\epsilon_i$ where each point is also associated with an orbital of the normal system. I.e.
+    \begin{eqnarray}
+    \langle O_1\rangle
+    &=& \sum_{s=1}^{N_e}\sum_{i=1}^N
+        \tilde{n}_s^*(\epsilon_i)\tilde{n}_s(\epsilon_i)\langle n_i(r)|O_1|n_i(r)\rangle
+    \end{eqnarray}
+    That is the 1-electron density matrix is
+    \begin{eqnarray}
+    \label{Eq:D1}
+    D_1(r,r') &=& \sum_{s=1}^{N_e}\sum_{i=1}^N
+        \tilde{n}_s^*(\epsilon_i)\tilde{n}_s(\epsilon_i)|n_i(r)\rangle\langle n_i(r')|
+    \end{eqnarray}
+    
+    Likewise the expectation value of a 2-electron operator can be written as
+    \begin{eqnarray}
+    \langle O_2\rangle &=& \langle\Psi(\mathrm{\epsilon},\mathrm{r})|O_2|\Psi(\mathrm{\epsilon},\mathrm{r})\rangle
+    \end{eqnarray}
+    Again the 2-electron operator acts only on two spatial coordinates and all other spatial coordinates can be integrated out
+    \begin{eqnarray}
+    \langle O_2\rangle &=&
+    \sum_{i,j=1}^{N}|\tilde{n}_1(\epsilon_1)\ldots\tilde{n}_{N_e}(\epsilon_{N_e})\rangle\langle\tilde{n}_1(\epsilon'_1)\ldots\tilde{n}_{N_e}(\epsilon'_{N_e})|\langle n_i(r_1)n_j(r_2)|O_2|n_i(r_1)n_j(r_2)\rangle
+    \end{eqnarray}
+    Subsequently all $\epsilon$-coordinates but two can be integrated out
+    \begin{eqnarray}
+    \langle O_2\rangle &=&
+    \sum_{s,t=1}^{N_e}\sum_{i,j=1}^{N}|\tilde{n}_s(\epsilon_1)\tilde{n}_t(\epsilon_2)\rangle\langle\tilde{n}_s(\epsilon_1)\tilde{n}_t(\epsilon_2)|
+    \langle n_i(r_1)n_j(r_2)|O_2|n_i(r_1)n_j(r_2)\rangle
+    \end{eqnarray}
+    and finally the $\epsilon$-coordinates are discretized to arrive at
+    \begin{eqnarray}
+    \langle O_2\rangle &=&
+    \sum_{s,t=1}^{N_e}\sum_{i,j=1}^{N}|\tilde{n}_s(\epsilon_i)\tilde{n}_t(\epsilon_j)\rangle\langle\tilde{n}_s(\epsilon_i)\tilde{n}_t(\epsilon_j)|
+    \langle n_i(r_1)n_j(r_2)|O_2|n_i(r_1)n_j(r_2)\rangle
+    \end{eqnarray}
+    where for compactness of notation $\epsilon_i$ equates to point $i$ of $\epsilon_1$, and $\epsilon_j$ to point $j$ of $\epsilon_2$. In other words the index $i$ corresponds both to electron $1$ and the discretization point $i$, and likewise for $j$.
+
+    As a result the 2-electron density matrix is
+    \begin{eqnarray}
+    \label{Eq:D2}
+    D_2(r_1,r_2,r'_1,r'_2) 
+    &=  \sum_{s,t=1}^{N_e}\sum_{i,j=1}^N &
+        \left[
+        \tilde{n}_s^*(\epsilon_i)\tilde{n}_s(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_t(\epsilon_j)-\tilde{n}_s^*(\epsilon_i)\tilde{n}_t(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_s(\epsilon_j)
+        \right] \nonumber \\
+    &&  |n_i(r_1)n_j(r_2)\rangle\langle n_i(r'_1)n_j(r'_2)|
+    \end{eqnarray}
+    
+    Note that the 1- and 2-electron density matrices are N-representable by construction as they derive from a wave function. Also these density matrices correspond to systems of independent electrons. This is clear from the fact that the 2-electron density matrix is expanded in the same basis as the Hartree-Fock 2-electron density matrix just with different occupation numbers. Hence any energy expression derived from a TFD wave function as suggested here is free from electron correlation. 
+    
+    \item An alternative way to approach the construction of density matrices from natural orbitals and tilde functions would be to expand the wave function in the usual Slater determinants but model the corresponding CI-coefficients based on the tilde functions. The Full-CI wave function can be written as
+    \begin{eqnarray}
+    \Psi &=& \sum_I c_I \theta_I \\
+         &=& \sum_I c_I |\phi_{I1}(r_1)\phi_{I2(r_2)}\ldots\phi_{IN_e}(r_{N_e})\rangle
+    \end{eqnarray}
+    where $\phi_{Ix}$ is the orbital for electron $x$ in Slater determinant $I$ in the Full-CI expansion.
+    
+    Using the tilde functions the CI coefficients $c_I$ can be approximated as
+    \begin{eqnarray}
+    c_I &=& |\tilde{\phi}_1(\epsilon_{I1})\tilde{\phi}_2(\epsilon_{I2})\ldots\tilde{\phi}_{N_e}(\epsilon_{N_e})\rangle
+    \end{eqnarray}
+    I.e. the CI coefficients are approximated as anti-symmetrized products of discrete points of the tilde functions, where each discrete point corresponds to a natural orbital and every tilde function corresponds to an electron. 
+    
+    Next, instead of evaluating the various density matrices in the usual way they are instead evaluated as ensemble averages of the wave function. I.e. that is ensemble averages over single determinant wave functions given by
+    \begin{eqnarray}
+    \langle O_1\rangle 
+    &= \sum_I& \langle\tilde{\phi}_1(\epsilon_{I1})\ldots\tilde{\phi}_{N_e}(\epsilon_{N_e})|\tilde{\phi}_1(\epsilon_{I1})\ldots\tilde{\phi}_{N_e}(\epsilon_{N_e})\rangle\times \nonumber \\
+    &&         \langle\phi_{I1}(r_1)\ldots\phi_{IN_e}(r_{N_e})|O_1|\phi_{I1}(r_1)\phi_{I2(r_2)}\ldots\phi_{IN_e}(r_{N_e})\rangle
+    \end{eqnarray}
+    for 1-electron operators, and similarly for 2-electron operators.
+    This leads to the same 1-electron and 2-electron density matrices as obtained in equations Eq.(\ref{Eq:D1}) and Eq.(\ref{Eq:D2}). Obviously, as these density matrices are ensemble averages over single Slater determinants these density matrices represent uncorrelated states even though they can have non-integer occupation numbers.
+    
+    %{\bf Something about N-representability conditions?}
+    
+    \item The density matrices from Eq.(\ref{Eq:D1}) and Eq.(\ref{Eq:D2}) are constructed from a wave function and should, by construction, be N-representable. Regardless, as the method of construction is unusual, as is the expression for the density matrices, it seems prudent to explicitly check that they are actually N-representable. 
+    
+    \item The N-representability conditions of interest are the non-negativity of the density matrices, the upper limits on the occupation numbers, the sum rules or conditions on the trace, and that the 1-electron density matrix should be obtained when integrating the coordinates of one electron out from the 2-electron density matrix. 
+    
+    \item In the following subsections the N-representability of the 1- and 2-electron density matrices is considered. Whereas the 1-electron density matrix is straightforward, the 2-electron density matrix separates into three parts when dealing with spin-free Hamiltonians. The parts that relate to $\alpha\beta$-electron interactions can be written in terms of 1-electron density matrices. Hence the N-representability of these terms follows from the N-representability of the 1-electron density matrices. The $\alpha\alpha$ and $\beta\beta$ blocks of the 2-electron density matrices in general cannot be expressed in terms of 1-electron density matrices. Therefore these blocks need to be considered separately. Obviously the arguments that apply to the $\alpha\alpha$ block apply equally to the $\beta\beta$ block. Therefore the discussion will focus on the $\alpha$ block of the 1-electron density matrix and the $\alpha\alpha$ block of the 2-electron density matrix.
+\end{itemize}
+    
+\subsection{Non-negativity of the density matrices}
+
+\begin{itemize}
+    \item The 1-electron density matrix is given by Eq.(\ref{Eq:D1}). From this equation it follows that the 1-electron occupation numbers are given by $\sum_s^{N_e}\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i)$. I.e. the occupation numbers are sums of squares and therefore non-negative. 
+    \item The 2-electron density matrix for same spin electrons is given by Eq.(\ref{Eq:D2}). The quantities $\tilde{n}_s(\epsilon_i)$ are rotation matrices that express the tilde states in terms of natural orbitals. Therefore these matrices are also unitary matrices which have the property $U^T U = U U^T = I$. To show non-negativity of the matrix given by Eq.(\ref{Eq:D2}) it is required to show that 
+    \begin{eqnarray}
+    \label{Eq:D2_occ}
+    \sum_{s,t=1}^{N_e}\left[\tilde{n}_s^*(\epsilon_i)\tilde{n}_s(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_t(\epsilon_j)-\tilde{n}_s^*(\epsilon_i)\tilde{n}_t(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_s(\epsilon_j)\right] \ge 0
+    \end{eqnarray}
+    The first term is a product of a sum of squares and therefore obviously non-negative. Using the Cauchy-Bunyakovsky-Schwarz inequality~\cite{Cauchy_1821,Bunyakovsky_1859,Schwarz_1888}
+    \begin{eqnarray}
+    \left[\int_a^b\phi^*_1(x)\phi_2(x)dx\right]^2 \le \int_a^b \phi_1(x)^2 dx \int_a^b\phi_2(x)^2 dx 
+    \end{eqnarray}
+    and equating the integration with summations over $s$ and $t$ 
+    \begin{eqnarray}
+    \sum_{s=1}^{N_e}\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_j)\sum_{t=1}^{N_e}\tilde{n}^*_t(\epsilon_j)\tilde{n}_t(\epsilon_i) \le \sum_{s=1}^{N_e}\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i)\sum_{t=1}^{N_e}\tilde{n}^*_t(\epsilon_j)\tilde{n}_t(\epsilon_j)
+    \end{eqnarray}
+    is obtained. Hence the second term in Eq.(\ref{Eq:D2_occ}) is smaller than the first term, and as the first term is non-negative the inequality must hold.
+\end{itemize}
+
+\subsection{Occupation number upper limits}
+
+\begin{itemize} 
+    %\item As the density matrices correspond to uncorrelated states the N-representability conditions are also corresponding to such states. For the 1-electron density matrix this doesn't change anything. However, for the 2-electron density matrix the N-representability conditions are different for uncorrelated and correlated states. For uncorrelated states the occupation numbers of the 2-electron density matrix have to be between 0 and 1, whereas for correlated states they can be larger than 1.
+    \item The 1-electron occupation numbers are given by $\sum_s^{N_e}\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i)$. From the tilde functions being given by a unitary transformation of the natural orbitals we have that $\sum_s \tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i) = 1$. In practice the sum runs only over the occupied tilde functions and therefore the occupation numbers satisfy $\sum_s^{N_e}\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i) \le 1$.
+    \item The 2-electron occupation numbers follow from Eq.(\ref{Eq:D2_occ}), where the first term is just a sum over products of 1-electron density matrix occupation numbers. Hence, like the 1-electron occupation numbers this term is also limited from above by 1. The second term could be 0 if the tilde functions are unit vectors so that if $i \ne j$ then $\tilde{n}^*_t(\epsilon_i)\tilde{n}_t(\epsilon_j) = 0$. In that case the limit on the first term would prevail and the 2-electron occupation numbers are limited from above by 1. Note, however, that if $i = j$ then both terms in Eq.(\ref{Eq:D2_occ}) are identical and the corresponding 2-electron occupation number is strictly 0. This should come as no surprise as the corresponding state in the normal system would be the determinant $\langle\phi_i(r_1)\phi_i(r_2)|$ which is also 0 because of the anti-symmetry determinants.
+\end{itemize}
+
+\subsection{Sum rules or trace conditions}
+
+% For higher order density matrices these sum rules imply there is no self-interaction
+\begin{itemize}
+    \item The trace of the 1-electron density matrix should result in the number of electrons. The tilde functions form an orthonormal set of functions. This means that $\sum_i\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i) = 1$. As the occupation numbers are sums of squares over the occupied tilde functions $d_i = \sum_{s=1}^{N_e}\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i)$ we have that $\sum_i d_i = \sum_i\sum_{s=1}^{N_e}\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i)= \sum_{s=1}^{N_e}1 = N_e$
+    \item The trace of the 2-electron density matrix should result in the number electron pairs. The occupation numbers are given by
+    \begin{eqnarray}
+    \label{Eq:dij}
+    d_{ij} &=&
+    \sum_{s,t=1}^{N_e}\left[\tilde{n}_s^*(\epsilon_i)\tilde{n}_s(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_t(\epsilon_j)-\tilde{n}_s^*(\epsilon_i)\tilde{n}_t(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_s(\epsilon_j)\right]
+    \end{eqnarray}
+    As the tilde functions are an orthonormal set they obey the relationship
+    \begin{eqnarray}
+    \sum_i \tilde{n}^*_s(\epsilon_i)\tilde{n}_t(\epsilon_i) &=& \delta_{st}
+    \end{eqnarray}
+    Calculating the trace
+    \begin{eqnarray}
+    \sum_{ij}d_{ij} &=& \sum_{s,t=1}^{N_e}\sum_{ij}\left[\tilde{n}_s^*(\epsilon_i)\tilde{n}_s(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_t(\epsilon_j)-\tilde{n}_s^*(\epsilon_i)\tilde{n}_t(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_s(\epsilon_j)\right] \nonumber\\
+    &=& \sum_{s,t=1}^{N_e} [1_s1_t - \delta_{st}] \nonumber \\
+    &=& N_e^2 - N_e \nonumber \\
+    &=& N_e(N_e-1)
+    \end{eqnarray}
+    This result applies only to the same spin part of the 2-electron density matrix. The trace of the total 2-electron density matrix also involves the opposite spin part. For the opposite spin part we have the $\alpha\beta$ as well as the $\beta\alpha$ part contribution $2N_\alpha N_\beta$ to the trace. Combining this with $N_\alpha(N_\alpha-1)$ from the $\alpha\alpha$ block and $N_\beta(N_\beta-1)$ from the $\beta\beta$ block we get
+    \begin{eqnarray}
+    2N_\alpha N_\beta + N_\alpha(N_\alpha-1) + N_\beta(N_\beta-1) &=& [N_\alpha N_\beta + N_\alpha(N_\alpha-1)] + [N_\alpha N_\beta + N_\beta(N_\beta-1)] \nonumber\\
+    &=& N_\alpha(N_\alpha+N_\beta-1) + N_\beta(N_\alpha+N_\beta-1) \nonumber \\
+    &=& (N_\alpha+N_\beta)(N_\alpha+N_\beta-1) \nonumber \\
+    &=& N(N-1)
+    \end{eqnarray}
+    {\bf there must be a factor 1/2 here}
+\end{itemize}
+
+\subsection{Relation between density matrices of different orders}
+
+\begin{itemize}
+    \item The 1-electron density matrix should be obtained from integrating the coordinates of electron 2 out of the 2-electron density matrix.
+    \begin{eqnarray}
+        D_1(r_1,r'_1) &=& \frac{2}{N_e-1}\int D_2(r_1,r_2,r'_1,r_2)\mathrm{d}r_2
+    \end{eqnarray}
+    Note that integration over the coordinates of electron 2 here implies also integrating over $\epsilon_j$. The 2-electron density matrix is given in Eq.(\ref{Eq:D2}). First the integration over spatial coordinates is considered.
+    \begin{eqnarray}
+        \int|n_i(r_1)n_j(r_2)\rangle\langle n_i(r'_1)n_j(r_2)|\mathrm{d}r_2 &=& 
+        \frac{1}{2}\int [n_i^*(r_1)n_j^*(r_2)][n_i(r'_1)n_j(r_2)] \nonumber\\
+        && - [n_i^*(r_1)n_j^*(r_2)][n_i(r_2)n_j(r'_1)] \nonumber\\
+        && - [n_i^*(r_2)n_j^*(r_1)][n_i(r'_1)n_j(r_2)] \nonumber\\
+        && + [n_i^*(r_2)n_j^*(r_1)][n_i(r_2)n_j(r'_1)] \mathrm{d} r_2
+    \end{eqnarray}
+    Interchange the labels $i$ and $j$ in the last term and then integrating over the coordinates of electron 2, making use of the orthonormality of the natural orbitals we have
+    \begin{eqnarray}
+        \int|n_i(r_1)n_j(r_2)\rangle\langle n_i(r'_1)n_j(r_2)|\mathrm{d}r_2 &=& 
+        \frac{1}{2}\left( [n_i^*(r_1)][n_i(r'_1)] + [n_i^*(r_1)][n_i(r'_1)] \right) \nonumber \\
+        &=& n_i^*(r_1)n_i(r'_1) \nonumber \\
+        &=& |n_i(r_1)\rangle\langle n_i(r'_1)|
+    \end{eqnarray}
+    The next step is integrating $\epsilon_j$ out. 
+    \begin{eqnarray}
+        D_1(r_1,r'_1) &=& \frac{2}{N_e-1}\sum_i |n_i(r_1)\rangle\langle n_i(r'_1)|\sum_{s,t=1}^{N_e}\sum_j[\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i)\tilde{n}^*_t(\epsilon_j)\tilde{n}_t(\epsilon_j) \nonumber\\
+        &&- \tilde{n}^*_s(\epsilon_i)\tilde{n}_t(\epsilon_i)\tilde{n}^*_t(\epsilon_j)\tilde{n}_s(\epsilon_j)]
+    \end{eqnarray}
+    Making use of the orthonormality of the tilde functions obtains
+    \begin{eqnarray}
+        D_1(r_1,r'_1) &=& \frac{2}{N_e-1}\sum_i |n_i(r_1)\rangle\langle n_i(r'_1)|(N_e-1)\sum_{s}^{N_e}[\tilde{n}^*_s(\epsilon_i)\tilde{n}_s(\epsilon_i)]
+    \end{eqnarray}
+    which is the expression for the 1-electron density matrix.
+    {\bf fix factor 2}
+\end{itemize}
+
+
+\begin{itemize}
+    \item In the following sections the Full-CI energy expressions and the TFD wave function based energy expressions are compared for simple systems. From this comparison terms are identified that are needed to obtain the Full-CI energy from a TFD wave function. Here these terms will be interpreted as modifications of the Coulomb operator to account for electron correlation. 
+    %The obvious alternative interpretation would be that these terms represent modifications to the 2-electron density matrix to account for electron correlation. This interpretation raises questions about the N-representability of this modified density matrix. These questions are likely to be extremely hairy. The occupation numbers of the 2-electron density matrix are all non-negative but the off-diagonal elements of the true 2-electron density matrix can be both positive and negative. Trying to reconstruct this from an effective 1-electron model is asking for trouble. We'll leave this for a later point in time when we'll attempt a proper pair based representation, rather reconstructing electron correlation from effective 1-electron approaches.
+\end{itemize}
+
+\section{Comparing the TFD energy to the Full-CI energy for simple cases}
+\label{comparisonfullci}
+
+\begin{itemize}
+    \item In the previous section the main results from the TFD at zero temperature were reviewed for systems of electrons. Both the expressions for the 1-electron and 2-electron density matrices were derived. 
+    \item Quite obviously the 1-electron density matrix expression can generate the exact 1-electron density matrix. Hence for a properly chosen wave function any 1-electron energy term can be reproduced exactly.
+    \item Therefore any difference in energy from the of the expectation value of the TFD wave function and the exact energy has to come from the 2-electron contribution. 
+    \item In this section the TFD energy expression is compared against the exact energy expression to establish what terms would need to be added to the TFD energy to recover the exact energy.
+    \item Subsequently these terms will be analyzed for any generalizable characteristics.
+    \item The results obtained this way for the correlation of electrons with opposite spin are essentially the same as those of Goedecker. However, our generalization for arbitrary numbers of electrons and basis sets will be different.
+\end{itemize}
+
+%\subsection{2-electron systems}
+%\label{H2}
+
+\begin{itemize}
+    \item This problem is particularly simple, allowing for a direct comparison between the exact solution in terms of Slater determinants and the energy expressed in terms of the TFD wave function.
+    \item There are two kinds of problems here that are worth comparing and contrasting. 
+    \item One system involves a 2-electron system in a singlet state in the weak correlation limit.
+    \item The other system involves \ce{H2} with 2-electrons in 2 orbitals with arbitrary correlation strength.
+    \item In the first system the wave function is based on an arbitrary number of orbitals. The corresponding wave functions is
+    \begin{eqnarray}
+        \Psi &=& \sum_{i,j} c_{ij} |\phi^\alpha_i(r_1)\phi^\beta_j(r_2)\rangle \\
+        1 &=& \sum_{i,j}c_{ij}^2
+    \end{eqnarray}
+    Here it is assumed that $\phi_i$ are natural orbitals of the system in question. These natural orbitals can always be obtained from a full-CI calculation, in principle. The key reason for assuming natural orbitals is that it allows to relate the CI coefficients to the 1-electron density matrix occupation numbers.
+    \item The total energy of the system can be written as
+    \begin{eqnarray}
+        E &=& \sum_{i,j}\sum_{k,l}c_{ij}^*c_{kl}\left[
+        h_{ik}\delta_{jl} + \delta_{ik}h_{jl} + (ik|jl)
+        \right]
+    \end{eqnarray}
+    \item Because the wave function is expanded in natural orbitals the 1-electron density matrix is diagonal such that
+    \begin{eqnarray}
+        d_{ii} &=& \sum_j c_{ij}^*c_{ij}
+    \end{eqnarray}
+    \item The 2-electron density matrix is
+    \begin{eqnarray}
+        d_{ij,kl} &=& c_{ij}^*c_{kl}
+    \end{eqnarray}
+\end{itemize}
+
+\subsection{\ce{H2} in 2 orbitals}
+
+\begin{itemize}
+\item Consider H2 aligned along the z-axis in a minimal basis. The atoms are labeled A and B.
+\item The natural orbitals for this system are fixed by symmetry. The basis functions $\chi_A^S$ and 
+        $\chi_B^S$ are normalized. I.e. $\langle \chi_A^S|\chi_A^S\rangle = 1$. However, the basis 
+        functions  different atoms are not orthogonal. So $\langle \chi_A^S|\chi_B^S\rangle = S_{AB}$.
+\item From these basis functions we can construct 2 natural orbitals:
+         \begin{itemize}
+         \item $\phi_1 = N_1 \left(\chi_A^S + \chi_B^S\right)$ where $N_1 = 1/\sqrt{2+2S_{AB}}$
+         \item $\phi_2 = N_2 \left(\chi_A^S - \chi_B^S\right)$ where $N_2 = 1/\sqrt{2-2S_{AB}}$
+         \end{itemize}
+\item For the singlet ground state only 2 determinants contribute (others are symmetry forbidden). Hence  
+        the wave function is 
+        $\Psi = c_{11}|\phi_1^\alpha\phi_1^\beta\rangle + c_{22}|\phi_2^\alpha\phi_2^\beta\rangle $
+\item The 1-electron density matrix represented in the natural orbitals is given by
+         \begin{eqnarray}
+         D_{1} &=&
+         \left(\begin{matrix}
+         c_{11}^2 & 0 \\
+         0 & c_{22}^2
+         \end{matrix}\right) \\
+         &=&
+         \left(\begin{matrix}
+         d_{1} & 0 \\
+         0 & d_{2}
+         \end{matrix}\right)
+         \end{eqnarray}
+\item The $\alpha$-$\beta$ block of the 2-electron density matrix can be represented in
+        \begin{eqnarray}
+         D_{2} &=&
+         \left(\begin{matrix}
+         c_{11}^2 & 0 & 0 & c_{11}c_{22} \\
+         0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 \\
+         c_{22}c_{11} & 0 &0 & c_{22}^2
+         \end{matrix}\right)
+        \end{eqnarray}
+        In terms of the 1-electron density matrix occupation numbers this can also be written as
+        \begin{eqnarray}
+        \label{Eq:D2-2el-2orb}
+         D_{2} &=&
+         \left(\begin{matrix}
+         \sqrt{d_1^\alpha d_1^\beta} & 0 & 0 & -\sqrt[4]{d_1^\alpha d_1^\beta d_2^\alpha d_2^\beta} \\
+         0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 \\
+         -\sqrt[4]{d_1^\alpha d_1^\beta d_2^\alpha d_2^\beta} & 0 &0 & \sqrt{d_2^\alpha d_2^\beta} 
+         \end{matrix}\right)
+        \end{eqnarray}
+\item Writing the 2-electron density as an Cartesian product of 1-electron density matrices for an 
+         independent electron model gives
+         \begin{eqnarray}
+         D_{2} &=&
+         \left(\begin{matrix}
+         d_1^\alpha d_1^\beta & 0 & 0 & 0\\
+         0 & d_1^\alpha d_2^\beta & 0 & 0 \\
+         0 & 0 & d_2^\alpha d_1^\beta & 0 \\
+         0 & 0 &0 & d_2^\alpha d_2^\beta
+         \end{matrix}\right)
+        \end{eqnarray}
+\item The electron correlation can be obtained as
+         \begin{eqnarray}
+         \label{Eq:Ecorrelation-2el-2orb}
+         D_{2} &=&
+         \left(\begin{matrix}
+         \sqrt{d_1^\alpha d_1^\beta} - d_1^\alpha d_1^\beta & 0 & 0 & -\sqrt[4]{d_1^\alpha d_1^\beta d_2^\alpha d_2^\beta} \\
+         0 & - d_1^\alpha d_2^\beta & 0 & 0 \\
+         0 & 0 & - d_2^\alpha d_1^\beta & 0 \\
+         -\sqrt[4]{d_1^\alpha d_1^\beta d_2^\alpha d_2^\beta} & 0 &0 & \sqrt{d_2^\alpha d_2^\beta} - d_2^\alpha d_2^\beta
+         \end{matrix}\right)
+        \end{eqnarray}
+\item An important consideration for electron correlation is that this is accounted for by orbital pair
+         interactions. A particular important feature is that a pair of orbitals cannot contribute to the electron
+         correlation if even 1 orbital is not correlated. That means that any energy lowering contribution in 
+         Eq.(\ref{Eq:Ecorrelation-2el-2orb}) should vanish if an orbital involved has an occupation number
+         of 0 or 1. As written most contributions do not do that. They all go to 0 if an orbital is empty, but
+         they do not vanish if an orbital is fully occupied. Also note that this block of the 2-electron density 
+         matrix represents the correlation between $\alpha$ and $\beta$ electrons.
+\end{itemize}
+
+\subsection{\ce{H2} in 4 orbitals}
+\label{Subsect:h2-4orb}
+
+\begin{itemize}
+\item Like in the previous section we consider a basis set so that all natural orbitals are fixed by
+         symmetry. In this case the basis set is chosen to contain an $s$ function and the $p_x$ function.
+         The $p$-functions are also normalized but they have non-zero overlap on different centers. I.e. 
+         $\langle \chi_A^{P_x}|\chi_B^{P_x}\rangle = P_{AB}$. 
+\item With these basis functions the following natural orbitals can be constructed
+         \begin{itemize}
+         \item $\phi_1 = N_1 \left(\chi_A^S + \chi_B^S\right)$ where $N_1 = 1/\sqrt{2+2S_{AB}}$ (irrep. $A_g$)
+         \item $\phi_2 = N_2 \left(\chi_A^S - \chi_B^S\right)$ where $N_2 = 1/\sqrt{2-2S_{AB}}$ (irrep. $B_{1u}$)
+         \item $\phi_3 = N_3 \left(\chi_A^{P_x} + \chi_B^{P_x}\right)$ where $N_3 = 1/\sqrt{2+2P_{AB}}$ (irrep. $B_{3u}$)
+         \item $\phi_4 = N_4 \left(\chi_A^{P_x} - \chi_B^{P_x}\right)$ where $N_4 = 1/\sqrt{2-2P_{AB}}$ (irrep. $B_{2g}$)
+         \end{itemize}
+\item By symmetry the wave function is 
+         $\Psi = c_{11}|\phi_1^\alpha\phi_1^\beta\rangle + c_{22}|\phi_2^\alpha\phi_2^\beta\rangle + c_{33}|\phi_3^\alpha\phi_3^\beta\rangle + c_{44}|\phi_4^\alpha\phi_4^\beta\rangle $
+\item The resulting 1-electron density matrix is
+         \begin{eqnarray}
+         D_{1} &=&
+         \left(\begin{matrix}
+         c_{11}^2 & 0 & 0 & 0 \\
+         0 & c_{22}^2 & 0 & 0 \\
+         0 & 0 & c_{33}^2 & 0 \\
+         0 & 0 & 0 & c_{44}^2
+         \end{matrix}\right) \\
+         &=&
+         \left(\begin{matrix}
+         d_{1} & 0 & 0 & 0 \\
+         0 & d_{2} & 0 & 0 \\
+         0 & 0 & d_{3} & 0 \\
+         0 & 0 & 0 & d_{4} 
+         \end{matrix}\right)
+         \end{eqnarray}
+\item The $\alpha$-$\beta$ block of the 2-electron density matrix becomes
+         \setcounter{MaxMatrixCols}{16}
+         \begin{eqnarray}
+         \label{Eq:D2-2el-4orb}
+         D_{2} &=&
+         \begin{pmatrix}
+         c_{11}^2 & 0 & 0 & 0 & 0 & c_{11}c_{22} & 0 & 0 & 0 & 0 & c_{11}c_{33} & 0 & 0 & 0 & 0 & c_{11}c_{44} \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         c_{22}c_{11} & 0 & 0 & 0 & 0 & c_{22}^2 & 0 & 0 & 0 & 0 & c_{22}c_{33} & 0 & 0 & 0 & 0 & c_{22}c_{44} \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         c_{33}c_{11} & 0 & 0 & 0 & 0 & c_{33}c_{22} & 0 & 0 & 0 & 0 & c_{33}^2 & 0 & 0 & 0 & 0 & c_{33}c_{44} \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 &  0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         c_{44}c_{11} & 0 & 0 & 0 & 0 & c_{44}c_{22} & 0 & 0 & 0 & 0 & c_{44}c_{33} & 0 & 0 & 0 & 0 & c_{44}^2 
+         \end{pmatrix}
+         \end{eqnarray}
+\item As in Eq.(\ref{Eq:D2-2el-2orb}) we can assume that $c_{11} \approx 1$, i.e. the weak correlation limit,
+         and therefore the other wave function coefficients have to be negative to maximally lower the energy. 
+         However, if $c_{22}$ and $c_{33}$, for example, are negative then the term corresponding to
+         $c_{22}c_{33}$ has to be positive. Using this information, rewriting Eq.(\ref{Eq:D2-2el-4orb}) in terms of 
+         the 1-electron density matrix occupation numbers, and subtracting the independent particle 2-electron density
+         matrix, the following density matrix for the $\alpha$-$\beta$ electron correlation is obtained
+         \tiny
+         \begin{eqnarray}
+         \label{Eq:Ecorrelation-2el-4orb}
+         D_{2} &=&
+         \begin{pmatrix}
+         \sqrt{\da{1}\db{1}} -  \da{1}\db{1} & 0 & 0 & 0 & 0 & -\sqrt[4]{\da{1}\db{1}\da{2}\db{2}} & \ldots & -\sqrt[4]{\da{1}\db{1}\da{3}\db{3}} & \ldots & -\sqrt[4]{\da{1}\db{1}\da{4}\db{4}}  \\
+         0 & -\da{1}\db{2} & 0 & 0 &  0 & 0 & \ldots & 0 & \ldots & 0 \\
+         0 & 0 & -\da{1}\db{3} & 0 &  0 & 0 & \ldots & 0 & \ldots & 0 \\
+         0 & 0 & 0 & -\da{1}\db{4} &  0 & 0 & \ldots & 0 & \ldots & 0 \\
+         0 & 0 & 0 & 0 &  -\da{2}\db{1} & 0 & \ldots & 0 & \ldots & 0 \\
+         -\sqrt[4]{\da{2}\db{2}\da{1}\db{1}}  & 0 & 0 & 0 & 0 & \sqrt{\da{2}\db{2}} -  \da{2}\db{2}  & \ldots & \sqrt[4]{\da{2}\db{2}\da{3}\db{3}} & \ldots & \sqrt[4]{\da{2}\db{2}\da{4}\db{4}} \\
+         \vdots & \vdots & \vdots & \vdots &  \vdots & \vdots & \ldots & \vdots & \ldots & \vdots \\
+         -\sqrt[4]{\da{3}\db{3}\da{1}\db{1}} & \vdots & \vdots & \vdots &  \vdots & \sqrt[4]{\da{3}\db{3}\da{2}\db{2}} & \ldots & \sqrt{\da{3}\db{3}} -  \da{3}\db{3}  & \ldots & \sqrt[4]{\da{3}\db{3}\da{4}\db{4}} \\
+         \vdots & \vdots & \vdots & \vdots &  \vdots & \vdots & \ldots & \vdots & \ldots & \vdots \\
+         -\sqrt[4]{\da{4}\db{4}\da{1}\db{1}} & 0 & 0 & 0 & 0 & \sqrt[4]{\da{4}\db{4}\da{2}\db{2}} & \ldots & \sqrt[4]{\da{4}\db{4}\da{3}\db{3}} & \ldots& \sqrt{\da{4}\db{4}} -  \da{4}\db{4} 
+         \end{pmatrix}
+         \end{eqnarray}
+         \normalsize
+\end{itemize}
+
+\subsection{triplet \ce{H2} in 4 orbitals}
+\label{3h2}
+
+\begin{itemize}
+\item To see how electron correlation plays out among same spin electrons consider H2 in 
+         the triplet state. As a minimal basis for correlation 4 orbitals are needed and the same
+         basis set and orbitals as in subsection~\ref{Subsect:h2-4orb} are used.
+\item Due to symmetry the wave function is of $B_{1u}$ irrep. The orbitals are $A_g$, $B_{1u}$, $B_{3u}$, and $B_{2g}$ symmetry
+         which means there are only 2 determinants of $B_{1u}$ symmetry. Hence the wave function becomes:
+         \begin{table}
+         \begin{tabular}{ccccccccc}
+         $D_{2h}$ & $E$ & $C_2(x)$ & $C_2(y)$ & $C_2(z)$ & $i$ & $\sigma(xy)$ & $\sigma(xz)$ & $\sigma(yz)$ \\
+         \hline
+         $A_g$     & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 \\
+         $B_{2g}$  & +1 & -1 & +1 & -1 & +1 & -1 & +1 & -1 \\
+         $B_{3g}$  & +1 & +1 & -1 & -1 & +1 & -1 & -1 & +1 \\
+         $B_{1u}$  & +1 & -1 & -1 & +1 & -1 & -1 & +1 & +1 \\
+         $B_{2u}$  & +1 & -1 & +1 & -1 & -1 & +1 & -1 & +1 \\
+         $B_{3u}$  & +1 & +1 & -1 & -1 & -1 & +1 & +1 & -1 
+         \end{tabular}
+         \caption{$D_{2h}$ character table excerpt}
+         \end{table}
+         \begin{eqnarray}
+         \Psi &=& c_{12}|\phi^\alpha_1\phi^\alpha_2\rangle + c_{34}|\phi^\alpha_3\phi^\alpha_4\rangle 
+        \end{eqnarray}
+\item The resulting 1-electron density matrix is
+         \begin{eqnarray}
+         D_{1} &=&
+         \left(\begin{matrix}
+         c_{12}^2 & 0 & 0 & 0 \\
+         0 & c_{12}^2 & 0 & 0 \\
+         0 & 0 & c_{34}^2 & 0 \\
+         0 & 0 & 0 & c_{34}^2
+         \end{matrix}\right) \\
+         &=&
+         \left(\begin{matrix}
+         d_{1} & 0 & 0 & 0 \\
+         0 & d_{2} & 0 & 0 \\
+         0 & 0 & d_{3} & 0 \\
+         0 & 0 & 0 & d_{4} 
+         \end{matrix}\right)
+         \end{eqnarray}
+         where also $d_1 = d_2$ and $d_3 = d_4$.
+\item In the case of the $\alpha$-$\beta$ block of the 2-electron density matrix this block can be
+         expressed in terms of a Cartesian product of 1-electron density matrices. In the case under
+         consideration here the 2-electron density matrix has to be constructed from the tilde 
+         functions. In this case there are 2 electrons so 2 orthonormal tilde functions are needed.
+        
+         \begin{tabular}{c|cc}
+               & $\tilde{\phi}_1$ & $\tilde{\phi}_2$ \\
+         \hline
+         $\phi_1$ & $\sqrt{d_1}$ & $0$ \\
+         $\phi_2$ & $0$               & $\sqrt{d_2}$ \\
+         $\phi_3$ & $\sqrt{d_3}$ & $0$ \\
+         $\phi_4$ & $0$               & $\sqrt{d_4}$
+         \end{tabular}
+         
+         Because of the particular structure of these tilde functions the exchange term in the
+         2-electron occupation number is identical zero. The remaining term is 
+         \begin{eqnarray} 
+         \frac{1}{2}\left(\tilde{\phi}_1^*(\epsilon_1)\tilde{\phi}_1(\epsilon_1)\tilde{\phi}_2^*(\epsilon_2)\tilde{\phi}_2(\epsilon_2)+\tilde{\phi}_2^*(\epsilon_1)\tilde{\phi}_2(\epsilon_1)\tilde{\phi}_1^*(\epsilon_2)\tilde{\phi}_1(\epsilon_2)\right)
+         \end{eqnarray}, 
+         giving
+         \begin{eqnarray}
+         \label{Eq:D2aa-1-electron}
+         D_2 &=&
+         \begin{pmatrix}
+         \frac{1}{2}d_1 d_2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & \frac{1}{2}d_1 d_4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & \frac{1}{2}d_2 d_1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & \frac{1}{2}d_2 d_3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{1}{2}d_3 d_2 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{1}{2}d_3 d_4 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{1}{2}d_4 d_1 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{1}{2}d_4 d_3  \\
+         \end{pmatrix}
+         \end{eqnarray}
+         Note that the basis of this matrix is $|\phi^\alpha_1\phi^\alpha_2\rangle$,
+         $|\phi^\alpha_1\phi^\alpha_3\rangle$, $|\phi^\alpha_1\phi^\alpha_4\rangle$,
+         $|\phi^\alpha_2\phi^\alpha_1\rangle$, $|\phi^\alpha_2\phi^\alpha_3\rangle$,
+         $|\phi^\alpha_2\phi^\alpha_4\rangle$, $|\phi^\alpha_3\phi^\alpha_1\rangle$,
+         $|\phi^\alpha_3\phi^\alpha_2\rangle$, $|\phi^\alpha_3\phi^\alpha_4\rangle$,
+         $|\phi^\alpha_4\phi^\alpha_1\rangle$, $|\phi^\alpha_4\phi^\alpha_2\rangle$,
+         and $|\phi^\alpha_4\phi^\alpha_3\rangle$, everything being $0$ because of
+         the antisymmetry of the wave function.
+\item The $\alpha$-$\alpha$-block of the 2-electron density matrix is
+         \begin{eqnarray}
+         D_2 &=&
+         \begin{pmatrix}
+         c_{12}^*c_{12} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & c_{12}^*c_{34} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         c_{34}^*c_{12} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 &  c_{34}^*c_{34} \\
+         \end{pmatrix} \\
+         \label{Eq:D2aa-wfn}
+         &=&
+         \begin{pmatrix}
+         \sqrt{d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\sqrt[4]{d_{1}d_{2}d_{3}d_{4}} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         -\sqrt[4]{d_{3}d_{4}d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \sqrt{d_{3}d_{4}} \\
+         \end{pmatrix} 
+         \label{Eq:D2aa-2el-4orb}
+         \end{eqnarray}
+\item Combining Eq.(\ref{Eq:D2aa-1-electron}) and Eq.(\ref{Eq:D2aa-wfn}) the following 2-electron
+         density matrix block we have for the 2-electron correlation density matrix
+         \tiny
+         \begin{eqnarray}
+         \label{Eq:D2aa-correlation}
+         D_2 &=&
+         \begin{pmatrix}
+         \sqrt{d_{1}d_{2}}-\frac{1}{2}d_1 d_2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\sqrt[4]{d_{1}d_{2}d_{3}d_{4}} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & -\frac{1}{2}d_1 d_4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & -\frac{1}{2}d_2 d_1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & -\frac{1}{2}d_2 d_3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & -\frac{1}{2}d_3 d_2 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\frac{1}{2}d_3 d_4 & 0 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\frac{1}{2}d_4 d_1 & 0 & 0  \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+         -\sqrt[4]{d_{3}d_{4}d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \sqrt{d_{3}d_{4}}-\frac{1}{2}d_4 d_3  \\
+         \end{pmatrix}
+         \end{eqnarray}
+         \normalsize
+         Note that in this equation normally the occupation numbers of the 2-electron density matrix should appear
+         in a form that cannot be cast in terms of the 1-electron density matrices. In this specific case it happens that
+         it can be cast in that form. Also note that because of the constraint on the orbital pairs due to the
+         anti-symmetry there are far fewer off-diagonal contributions relative to the basis size than in the case of
+         $\alpha$-$\beta$ block.
+\end{itemize}
+
+\subsection{triplet \ce{H2} in 6 orbitals}
+
+\begin{itemize}
+\item To see how the triplet system extends to a larger basis another 2 functions are added. In this case the $p_y$ basis functions.
+\item Again, the natural orbitals are determined by symmetry. 
+\item With these basis functions the following natural orbitals can be constructed
+         \begin{itemize}
+         \item $\phi_1 = N_1 \left(\chi_A^S + \chi_B^S\right)$ where $N_1 = 1/\sqrt{2+2S_{AB}}$ (irrep. $A_g$)
+         \item $\phi_2 = N_2 \left(\chi_A^S - \chi_B^S\right)$ where $N_2 = 1/\sqrt{2-2S_{AB}}$ (irrep. $B_{1u}$)
+         \item $\phi_3 = N_3 \left(\chi_A^{P_x} + \chi_B^{P_x}\right)$ where $N_3 = 1/\sqrt{2+2P_{AB}}$ (irrep. $B_{3u}$)
+         \item $\phi_4 = N_4 \left(\chi_A^{P_x} - \chi_B^{P_x}\right)$ where $N_4 = 1/\sqrt{2-2P_{AB}}$ (irrep. $B_{2g}$)
+         \item $\phi_5 = N_3 \left(\chi_A^{P_y} + \chi_B^{P_y}\right)$  (irrep. $B_{2u}$)
+         \item $\phi_6 = N_4 \left(\chi_A^{P_y} - \chi_B^{P_y}\right)$  (irrep. $B_{3g}$)
+         \end{itemize}
+\item The wavefunction becomes
+         \begin{eqnarray}
+         \Psi &=& c_{12}|\phi^\alpha_1\phi^\alpha_2\rangle + c_{34}|\phi^\alpha_3\phi^\alpha_4\rangle +
+         c_{56}|\phi^\alpha_5\phi^\alpha_6\rangle
+        \end{eqnarray}
+\item The resulting 1-electron density matrix is
+         \begin{eqnarray}
+         D_{1} &=&
+         \left(\begin{matrix}
+         c_{12}^2 & 0 & 0 & 0 & 0 & 0 \\
+         0 & c_{12}^2 & 0 & 0 & 0 & 0 \\
+         0 & 0 & c_{34}^2 & 0 & 0 & 0 \\
+         0 & 0 & 0 & c_{34}^2 & 0 & 0 \\
+         0 & 0 & 0 & 0 & c_{56}^2 & 0 \\
+         0 & 0 & 0 & 0 & 0 & c_{56}^2
+         \end{matrix}\right) \\
+         &=&
+         \left(\begin{matrix}
+         d_{1} & 0 & 0 & 0 & 0 & 0 \\
+         0 & d_{2} & 0 & 0 & 0 & 0 \\
+         0 & 0 & d_{3} & 0 & 0 & 0 \\
+         0 & 0 & 0 & d_{4} & 0 & 0 \\
+         0 & 0 & 0 & 0 & d_{5} & 0 \\
+         0 & 0 & 0 & 0 & 0 & d_{6}
+         \end{matrix}\right)
+         \end{eqnarray}
+         where also $d_1 = d_2$, $d_3 = d_4$, and $d_5 = d_6$.
+\item As before, two tilde functions are needed that generate the correct 1-electron density matrix occupation numbers and are orthonormal. Similar to before, the tilde functions are chosen as:
+
+         \begin{tabular}{c|cc}
+               & $\tilde{\phi}_1$ & $\tilde{\phi}_2$ \\
+         \hline
+         $\phi_1$ & $\sqrt{d_1}$ & $0$ \\
+         $\phi_2$ & $0$               & $\sqrt{d_2}$ \\
+         $\phi_3$ & $\sqrt{d_3}$ & $0$ \\
+         $\phi_4$ & $0$               & $\sqrt{d_4}$ \\
+         $\phi_5$ & $\sqrt{d_5}$ & $0$ \\
+         $\phi_6$ & $0$               & $\sqrt{d_6}$
+         \end{tabular}
+
+         Again because of the form of the tilde functions any exchange terms in the 2-electron density matrix are going to be 0, and only the Coulomb part survives. These tilde functions give rise to the following 2-electron density matrix contribution
+         \begin{eqnarray}
+         D_2 &=&
+         \begin{pmatrix}
+         \half d_1 d_2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & \half d_1 d_4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 &  0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & \half d_1 d_6 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \half d_3 d_4 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \half d_3 d_6 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \half d_5 d_6 \\
+         \end{pmatrix}
+         \end{eqnarray}
+\item Expressing the $\alpha$-$\alpha$ block of the 2-electron density matrix in the basis 
+         $|\phi^\alpha_1\phi^\alpha_2\rangle$,
+         $|\phi^\alpha_1\phi^\alpha_3\rangle$,
+         $|\phi^\alpha_1\phi^\alpha_4\rangle$,
+         $|\phi^\alpha_1\phi^\alpha_5\rangle$,
+         $|\phi^\alpha_1\phi^\alpha_6\rangle$,
+         $|\phi^\alpha_2\phi^\alpha_3\rangle$,
+         $|\phi^\alpha_2\phi^\alpha_4\rangle$,
+         $|\phi^\alpha_2\phi^\alpha_5\rangle$,
+         $|\phi^\alpha_2\phi^\alpha_6\rangle$,
+         $|\phi^\alpha_3\phi^\alpha_4\rangle$,
+         $|\phi^\alpha_3\phi^\alpha_5\rangle$,
+         $|\phi^\alpha_3\phi^\alpha_6\rangle$,
+         $|\phi^\alpha_4\phi^\alpha_5\rangle$,
+         $|\phi^\alpha_4\phi^\alpha_6\rangle$,
+         $|\phi^\alpha_5\phi^\alpha_6\rangle$
+         the exact matrix is
+         \begin{eqnarray}
+         D_2 &=&
+         \begin{pmatrix}
+         c_{12}^*c_{12} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & c_{12}^*c_{34} & 0 & 0 & 0 & 0 & c_{12}^*c_{56} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         c_{34}^*c_{12} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & c_{34}^*c_{34} & 0 & 0 & 0 & 0 & c_{34}^*c_{56} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         c_{56}^*c_{12} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & c_{56}^*c_{34} & 0 & 0 & 0 & 0 & c_{56}^*c_{56} \\
+         \end{pmatrix} \\
+         \label{Eq:D2aa6-wfn}
+         &=&
+         \begin{pmatrix}
+         \sqrt{d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\sqrt[4]{d_{1}d_{2}d_{3}d_{4}} & 0 & 0 & 0 & 0 & -\sqrt[4]{d_{1}d_{2}d_{5}d_{6}} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         -\sqrt[4]{d_{3}d_{4}d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \sqrt{d_{3}d_{4}} & 0 & 0 & 0 & 0 & \sqrt[4]{d_{3}d_{4}d_{5}d_{6}} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         -\sqrt[4]{d_{5}d_{6}d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \sqrt[4]{d_{5}d_{6}d_{3}d_{4}} & 0 & 0 & 0 & 0 & \sqrt{d_{5}d_{6}} \\
+         \end{pmatrix}  
+         \label{Eq:D2aa-2el-6orb}
+         \end{eqnarray}
+\item The resulting 2-electron correlation density matrix is 
+         \tiny
+         \begin{eqnarray}
+         D_2 &=&
+         \begin{pmatrix}
+         \sqrt{d_{1}d_{2}}-\half d_1 d_2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\sqrt[4]{d_{1}d_{2}d_{3}d_{4}} & 0 & 0 & 0 & 0 & -\sqrt[4]{d_{1}d_{2}d_{5}d_{6}} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & -\half d_1 d_4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & -\half d_1 d_6 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         -\sqrt[4]{d_{3}d_{4}d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \sqrt{d_{3}d_{4}}-\half d_3 d_4 & 0 & 0 & 0 & 0 & \sqrt[4]{d_{3}d_{4}d_{5}d_{6}} \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -\half d_3 d_6 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+         -\sqrt[4]{d_{5}d_{6}d_{1}d_{2}} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \sqrt[4]{d_{5}d_{6}d_{3}d_{4}} & 0 & 0 & 0 & 0 & \sqrt{d_{5}d_{6}}-\half d_5 d_6 \\
+         \end{pmatrix}  
+         \end{eqnarray}
+         \normalsize
+\end{itemize}
+
+\subsection{\ce{H4} in 4 orbitals}
+
+\begin{itemize}
+\item In this section a chemical system with more electrons than 2 is considered. 
+         The system under consideration is H4 in a rectangular configuration. 
+         The point group of this system is D2h and the 4 orbitals have the irreps $A_g$,
+         $B_{2u}$, $B_{3u}$, and $B_{1g}$.
+         The atom coordinates are of the form
+         \begin{verbatim}
+         H_A  -X -Y  0
+         H_B  -X  Y  0
+         H_C   X  Y  0
+         H_D   X -Y  0
+         \end{verbatim}
+         where $Y > X$.
+         The natural orbitals have the following nodal structure
+         \begin{itemize}
+         \item $\phi_1 = N_1\left(\chi_A^S + \chi_B^S + \chi_C^S + \chi_D^S\right)$
+         \item $\phi_2 = N_2\left(\chi_A^S - \chi_B^S - \chi_C^S + \chi_D^S\right)$
+         \item $\phi_3 = N_3\left(\chi_A^S + \chi_B^S - \chi_C^S - \chi_D^S\right)$
+         \item $\phi_4 = N_4\left(\chi_A^S - \chi_B^S + \chi_C^S - \chi_D^S\right)$
+         \end{itemize}
+\item The wave function expanded in natural orbitals is
+         \begin{eqnarray}
+         \Psi &=& c_{1122}|\phi_1^\alpha\phi_1^\beta\phi_2^\alpha\phi_2^\beta\rangle +
+                        c_{1133}|\phi_1^\alpha\phi_1^\beta\phi_3^\alpha\phi_3^\beta\rangle +
+                        c_{1144}|\phi_1^\alpha\phi_1^\beta\phi_4^\alpha\phi_4^\beta\rangle + \nonumber\\
+                 &&  c_{2233}|\phi_2^\alpha\phi_2^\beta\phi_3^\alpha\phi_3^\beta\rangle +
+                        c_{2244}|\phi_2^\alpha\phi_2^\beta\phi_4^\alpha\phi_4^\beta\rangle +
+                        c_{3344}|\phi_3^\alpha\phi_3^\beta\phi_4^\alpha\phi_4^\beta\rangle + \nonumber\\
+                 &&  c_{1234}|\phi_1^\alpha\phi_2^\beta\phi_3^\alpha\phi_4^\beta\rangle +
+                        c_{2143}|\phi_2^\alpha\phi_1^\beta\phi_4^\alpha\phi_3^\beta\rangle + 
+                        c_{1243}|\phi_1^\alpha\phi_2^\beta\phi_4^\alpha\phi_3^\beta\rangle + \nonumber\\
+                 &&  c_{2134}|\phi_2^\alpha\phi_1^\beta\phi_3^\alpha\phi_4^\beta\rangle + 
+                        c_{1324}|\phi_1^\alpha\phi_3^\beta\phi_2^\alpha\phi_4^\beta\rangle +
+                        c_{3142}|\phi_3^\alpha\phi_1^\beta\phi_4^\alpha\phi_2^\beta\rangle
+         \end{eqnarray}
+\item The $\alpha$ 1-electron density matrix is
+         \begin{eqnarray}
+         D_1 &=&
+         \begin{pmatrix}
+         \begin{array}{l}
+         c_{1122}^2+ \\
+         c_{1133}^2+ \\
+         c_{1144}^2+ \\
+         c_{1234}^2+ \\
+         c_{1243}^2+ \\
+         c_{1324}^2 
+         \end{array}
+         & 0 & 0 & 0 \\
+         0 & 
+         \begin{array}{l}
+         c_{1122}^2+ \\
+         c_{2233}^2+ \\
+         c_{2244}^2+ \\
+         c_{2143}^2+ \\
+         c_{2134}^2+ \\
+         c_{1324}^2
+         \end{array}
+         & 0 & 0 \\
+         0 & 0 &
+         \begin{array}{l}
+         c_{1133}^2+ \\
+         c_{2233}^2+ \\
+         c_{3344}^2+ \\
+         c_{1234}^2+ \\
+         c_{2134}^2+ \\
+         c_{3142}^2
+         \end{array}
+         & 0 \\
+         0 & 0 & 0 &
+         \begin{array}{l}
+         c_{1144}^2+ \\
+         c_{2244}^2+ \\
+         c_{3344}^2+ \\
+         c_{2143}^2+ \\
+         c_{1243}^2+ \\
+         c_{3142}^2
+         \end{array} \\
+         \end{pmatrix}
+         \end{eqnarray}
+\item The $\alpha$-$\beta$ and $\alpha$-$\alpha$ 2-electron density matrices, respectively are
+         \eject
+         \pdfpagewidth=16.5in
+         \pdfpageheight=11.7in
+         \tiny
+         \include{d2ab}
+         \include{d2aa}
+         \normalsize
+         \eject
+         \pdfpagewidth=\classpagewidth
+         \pdfpageheight=\classpageheight
+\end{itemize}
+
+\subsection{Comments on the correlation energy}
+\label{Sec:Comments}
+
+\begin{itemize}
+\item As noted before the correlation energy coming from a set of correlated orbitals should go to zero if one of the orbitals is not correlated. The expressions here do not do that under all circumstances. However, in all cases where the correlation energy can be cast in terms of 1-electron density matrix elements the energy expression corresponds to a 2-electron system. The electrons in those cases either fall into different spin channels (i.e. for the $\alpha$-$\beta$ correlation) or different spatial symmetries (bonding and anti-bonding orbitals in the $\alpha$-$\alpha$ correlation). Hence, for a single electron fully occupying a particular orbital all other orbitals must have zero occupation for the same electron. In that situation these expressions remain valid.
+\item In the general case energy expressions are needed for arbitrary numbers of electrons. As shown in the last subsection when the number of electrons increases to 4 (or higher) the energy expression contains many more terms that prevent the 2-electron correlations from being expressed in terms of the 1-electron density matrix quantities. Therefore trying to approach the 2-electron correlation energy from that angle seems ineffective. 
+\item Revisiting the 2-electron systems with 2 states per electron there is an opportunity to rephrase these expressions such that the correlation contributions go to zero when one of the orbital is not correlated (i.e. completely empty or fully occupied). The only exceptions are the diagonal terms but their correlation effects raise the total energy and therefore they act as counterpoints in the energy minimization. Hence their effects are not considered problematic.
+\item Consider the off-diagonal terms in Eq.~(\ref{Eq:Ecorrelation-2el-2orb}) this term generates spurious correlation energy contributions if both orbitals 1 and 2 are fully occupied. The reason is that this term is only valid for the case of 1 electron in 2 states. However, we easily incorporate the 2 state condition into this expression. For this use that $d_1+d_2 = 1$ leading to 
+\begin{eqnarray}
+\sqrt[4]{d_1^\alpha d_1^\beta d_2^\alpha d_2^\beta}
+&=& \sqrt[8]{d_1^\alpha d_1^\alpha d_1^\beta d_1^\beta d_2^\alpha d_2^\alpha d_2^\beta d_2^\beta} \\
+&=& \sqrt[8]{d_1^\alpha (1-d_2^\alpha) d_1^\beta (1-d_2^\beta) d_2^\alpha (1-d_1^\alpha) d_2^\beta (1-d_1^\beta)} \\
+&=& \sqrt[8]{d_1^\alpha (1-d_1^\alpha) d_1^\beta (1-d_1^\beta) d_2^\alpha (1-d_2^\alpha) d_2^\beta (1-d_2^\beta)}
+\end{eqnarray}
+\item A similar situation arises in Eq.~(\ref{Eq:D2aa-correlation}) where the occupation numbers are related by $d_1+d_3 = 1$ and $d_2+d_4 = 1$ leading to
+\begin{eqnarray}
+\sqrt[4]{d_1 d_2 d_3 d_4}
+&=& \sqrt[8]{d_1 d_1 d_2 d_2 d_3 d_3 d_4 d_4} \\
+&=& \sqrt[8]{d_1 (1-d_3) d_2 (1-d_4) d_3 (1-d_1) d_4 (1-d_2)} \\
+&=& \sqrt[8]{d_1 (1-d_1) d_2 (1-d_2) d_3 (1-d_3) d_4 (1-d_4)}
+\end{eqnarray}
+\item Note that while the TFD wavefunction in general leads to 2-electron occupation numbers that cannot expressed in terms of 1-electron occupation numbers the correlation energy as given in Eq.~(\ref{Eq:D2aa-correlation}) is given in terms of the 1-electron occupation numbers. This result is certainly surprising but it is a consequence of the simplicity of the system for which this analysis can be performed. For a more complex system where the tilde function exchange terms do not vanish the analysis is entirely infeasible. So while the result obtained is certainly an approximation it is the only result that can be derived with the approach followed in this work.
+\item Equations such as~\ref{Eq:D2-2el-2orb}, \ref{Eq:D2-2el-4orb}, \ref{Eq:D2aa-2el-4orb}, and~\ref{Eq:D2aa-2el-6orb} have many 0 values on the diagonal that result from the symmetries of the orbitals and the Slater determinants constructed from them. These symmetries essentially apply only to homo-nuclear diatomic molecules with 2-electrons. For general molecules these symmetries will not be present and as a result the structure of the 2-electron density matrices will be significantly different.
+\item The diagonal elements of as represented in Eqs.~\ref{Eq:D2-2el-2orb} and~\ref{Eq:D2-2el-4orb} only sum to the correct number of electron pairs when that number is 1. For systems with more electrons the trace condition is violated.
+\end{itemize}
+
+\section{Developing a general natural orbital functional approach}
+\subsection{General considerations}
+\begin{itemize}
+\item As discussed in section~\ref{Sec:Comments} the approaches discussed so far are valid only in very special cases. For any useful model something much more general is needed. 
+\item As a starting point the effective 1-electron model from the TFD wavefunction can be taken. The resulting 2-electron density matrices are non-negative and satisfy the required trace rules. These expressions do not account for electron correlation though.
+\item From the weak interaction limit the sign of the correlation term can be decided. If the correlation involves orbitals with indeces $i$, $j$, $k$, and $l$, and the occupation numbers are $d_i$, $d_j$, $d_k$, and $d_l$, then the sign is $+$ if either all orbitals are highly occupied, i.e. $d_i>1/2$ and $d_j>1/2$ and $d_k>1/2$ and $d_l>1/2$, or all orbitals are lowly occupied, i.e. $d_i<1/2$ and $d_j<1/2$ and $d_k<1/2$ and $d_l<1/2$. In all other cases the sign is $-$.
+\item From the equations~\ref{Eq:D2-2el-2orb}, \ref{Eq:D2-2el-4orb}, \ref{Eq:D2aa-2el-4orb}, and~\ref{Eq:D2aa-2el-6orb} the form of the correlation terms can be extracted. 
+\item From the $\alpha$-$\beta$ part of the 2-electron density matrix we get that if there are two diagonal elements $d_i^\alpha d_j^\beta$ and $d_k^\alpha d_l^\beta$, where $i \neq k$ and $j \neq l$ then the correlation term has the form $c_{\alpha\beta}\sqrt[p_{\alpha\beta}]{d_i^\alpha(1-d_i^\alpha)d_j^\beta(1-d_j^\beta)d_k^\alpha(1-d_k^\alpha)d_l^\beta(1-d_l^\beta)}$.
+\item From the $\alpha$-$\alpha$ part of the 2-electron density matrix we get that if there are two diagonal elements $d_{ij}^{\alpha\alpha}$ and $d_{kl}^{\alpha\alpha}$, where $i \neq k$ and $j \neq l$ then the correlation term has the form $c_{\alpha\alpha}\sqrt[p_{\alpha\alpha}]{d_{ij}^{\alpha\alpha}(1-d_{ij}^{\alpha\alpha})d_{kl}^{\alpha\alpha}(1-d_{kl}^{\alpha\alpha})}$.
+\item The order of the roots $p_{\alpha\alpha}$ and $p_{\alpha\beta}$ as well as the coefficients $c_{\alpha\alpha}$ and $c_{\alpha\beta}$ have to be chosen such that the density matrix remains non-negative. 
+\item The roots have to satisfy $0 < p \le 1$.
+\item The eigenvalues of the density matrix can be estimated by considering a 2-by-2 matrix of the form
+      \begin{eqnarray}
+      D &=& \begin{pmatrix}
+            n & c\sqrt[p]{n(n-1)m(1-m)} \\
+            c\sqrt[p]{n(n-1)m(1-m)} & m \\
+            \end{pmatrix}
+      \end{eqnarray}
+      for which the eigenvalues can be found as
+      \begin{eqnarray}
+      b &=& \frac{D_{22}-D_{11}}{2D_{12}} \\
+      t &=& \frac{\sgn{b}}{\abs{b}+\sqrt{b^2+1}} \\
+      \epsilon_1 &=& D_{11} - t D_{12} \\
+      \epsilon_2 &=& D_{22} + t D_{12}
+      \end{eqnarray}
+      For density matrices both $n$ and $m$ must satisfy $n \ge 0$ and $m \ge 0$. Hence, if $c = 0$ then the density matrix is trivially non-negative irrespective of the value of $p$. Some simple experiments show that for the density matrix to be non-negative we get for some examples of $p$ the maximum coefficients shown in Table~\ref{table:max_c}.
+      \begin{table}
+      \begin{tabular}{|c|c|}
+      \hline\hline 
+      $p$ & $\max c$ \\
+      \hline
+      1/4 & 0.01776 \\
+      1/2 & 1.00000 \\
+      3/4 & 3.54967 \\
+      1   & 7.38157 \\
+      \hline\hline
+      \end{tabular}
+      \caption{Maximum values for the coefficient $c$ of the off-diagonal element for given values of $p$ to ensure that the density matrix is non-negative}
+      \label{table:max_c}
+      \end{table}
+\item Note that the results in the previous bullet were obtained for a 2-by-2 matrix. For real matrices there are likely to be multiple interactions that conspire to push the density matrix out of its non-negativity requirement. Therefore, for real applications the coefficients likely have to be smaller than those given in Table~\ref{table:max_c}.
+\item One final note, the weak correlation limit is one particular approximation. The fact that the off-diagonal term might change sign when the occupation of an orbital goes through $1/2$ can potentially cause discontinuities in the energy expression. If such a thing were to happen a way to resolve this is to have two models and continuously switch between them based on the orbital occupations. For example we can write
+\begin{eqnarray}
+1 &=& \cos^2(2\pi n) + \sin^2(2\pi n)
+\end{eqnarray}
+where $n$ runs from 0 to 1. This expression can be taken to as high a power as there are orbital occupations involved. Next factors involving the cosines can be used to evaluate the weights of the weak correlation limit off-diagonal terms, and the factors involving the sines can be used to evaluate the weights of the strong correlation limit. The strong correlation limit can be a model where all off-diagonal elements have a negative sign, so there is no sign switching at half occupation. The contribution of the weak correlation around half occupation would be 0 and therefore discontinuities would be avoided. At this point it is obviously not clear whether such an approach will ever be needed, but if so then this is one option.
+\end{itemize}
+
+\subsection{Formulation of the energy expression}
+
+\begin{itemize}
+\item First some comments on notation. The Greek letters $\alpha$, $\beta$, and $\sigma$ refer to the electron spin, where $\sigma$ can be either $\alpha$ or $\beta$ spin and is often used in spin summations.
+\item The atomic orbitals are labeled with indeces $\mu$, and $\nu$.
+\item The basis functions are labeled with indeces $a$, $b$, $c$, and $d$.
+\item The natural orbitals are labeled with indeces $i$, $j$, $k$, and $l$.
+\item The tilde functions are labeled with indeces $s$, $t$, $u$, and $v$.
+\item The basis functions form an orthonormal set, i.e. $\sum_{\mu\nu}\mnsd{\mu a}S_{\mu\nu}\mns{\nu b} = \delta_{ab}$. In other words $m = S^{-1/2}$.
+\item The natural orbitals form an orthonormal set, i.e. $\sum_{ab}\nnsd{ai}\delta_{ab}\nns{bj} = \delta_{ij}$. Note we express the natural orbitals in an orthonormal basis. This gives us the opportunity to build a finite temperature model in the same formulation if we want to.
+\item The tilde orbitals also form an orthonormal set, i.e. $\sum_{ij}\tnsd{is}\delta_{ij}\tns{jt} = \delta_{st}$
+\item The Lagrangian can be formulated as
+      \begin{eqnarray}
+      \mathcal{L}(\nNa,\tNa,\nNb,\tNb,\nLa,\tLa,\nLb,\tLb) &=& 
+      \mathcal{E}(\nNa,\tNa,\nNb,\tNb) + \nonumber\\
+      &&\sum_{\sigma=\{\alpha,\beta\}}\mathcal{S}(\nNs,\nLs) +
+      \sum_{\sigma=\{\alpha,\beta\}}\mathcal{T}(\tNs,\tLs)
+      \end{eqnarray}
+      where
+      \begin{eqnarray}
+      \mathcal{S}(\nNs,\nLs) &=& \nLs\left(I-\left(\nNs\right)^T \nNs\right) \\
+      \mathcal{T}(\tNs,\tLs) &=& \tLs\left(I-\left(\tNs\right)^T \tNs\right) \\
+      \mathcal{E}(\nNa,\tNa,\nNb,\tNb) &=& \sum_{\sigma=\{\alpha,\beta\}}H\Ds(\nNs,\tNs) + \nonumber\\
+      && \sum_{\sigma,\sigma'=\{\alpha,\beta\}}(ab|cd)\Wst(\nNs,\tNs,\nNt,\tNt) \\
+      \Ds(\nNs,\tNs) &=& \sum_i \nNsd{ai} \ds{i}(\tNs) \nNs_{bi} \\
+      \ds{i}(\tNs) &=& \sum_{s=1}^{\nels}\tNsd{is}\tNs_{is} \\
+      \Wst(\nNs,\tNs,\nNt,\tNt) &=& \sum_{i,j,k,l}\nNsd{ai}\nNs_{bj}\nNtd{ck}\nNt_{dl}f^{\sigma\sigma'}_{ijkl}(\tNs,\tNt) \\
+      f^{\sigma\sigma'}_{ijkl}(\tNs,\tNt) 
+               &=& \delta_{ij}\delta_{kl}\ds{i}(\tNs)\dt{k}(\tNt) \nonumber \\
+               &+& (1-\delta_{ij})(1-\delta_{kl})s(\ds{i},\ds{j},\dt{k},\dt{l}) \nonumber \\
+               &&  g(\ds{i})g(\ds{j})g(\dt{k})g(\dt{l}) \\
+      g(d) &=& c(d(1-d))^y \\
+      s(\ds{i},\ds{j},\dt{k},\dt{l}) &=& \left\{\begin{array}{cl}
+      +1, & (\ds{i} > 1/2) \& (\ds{j} > 1/2) \& \\
+          & (\ds{k} > 1/2) \& (\ds{l} > 1/2) \\
+      +1, & (\ds{i} \leq 1/2) \& (\ds{j} \leq 1/2) \& \\
+          & (\ds{k} \leq 1/2) \& (\ds{l} \leq 1/2) \\
+      -1, & \mathrm{otherwise}
+      \end{array}
+      \right. \\
+      \Wss(\nNs,\tNs,\nNs,\tNs) &=& \sum_{i,j,k,l} \left[\begin{array}{c}
+      \nNsd{ai}\nNs_{bj}\nNsd{ck}\nNs_{dl} - \\
+      \nNsd{ai}\nNs_{bl}\nNsd{ck}\nNs_{dj} - \\
+      \nNsd{ak}\nNs_{bj}\nNsd{ci}\nNs_{dl} + \\
+      \nNsd{ak}\nNs_{bl}\nNsd{ci}\nNs_{dj}
+      \end{array}\right] f^{\sigma\sigma}_{ijkl}(\tNs) \\
+      f^{\sigma\sigma}_{ijkl}(\tNs)
+           &=& \delta_{ij}\delta_{kl}(1-\delta_{ik})d_{ik}(\tNs) \nonumber \\
+           &+& (1-\delta_{ij})(1-\delta_{ik})(1-\delta_{il})(1-\delta_{jk})(1-\delta_{jl})(1-\delta_{kl}) \nonumber \\
+           &&  s(\ds{i},\ds{j},\ds{k},\ds{l})g(\ds{ik})g(\ds{jl}) \\
+      d_{ij} &=& \sum_{s,t=1}^{N_e}\left[\tilde{n}_s^*(\epsilon_i)\tilde{n}_s(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_t(\epsilon_j)\right. \nonumber \\
+      && \left.-\tilde{n}_s^*(\epsilon_i)\tilde{n}_t(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_s(\epsilon_j)\right]
+      \end{eqnarray}
+\item To optimize this energy expression the derivatives of it are required. As the energy is a function of both 
+      the orbitals and the tilde functions separate derivative with respect to each are needed.
+\item First consider derivatives with respect to the tilde functions:
+      \begin{eqnarray}
+      \frac{\partial\ds{i}(\tNs)}{\partial\tNs_{ku}} &=& \delta_{ik}\tNsd{ku} \\
+      \frac{\partial d_{ij}}{\partial\tNs_{ku}} &=& \sum_{t=1}^{N_e}\delta_{ik}\left[
+      \tilde{n}_u^*(\epsilon_i)\tilde{n}_t^*(\epsilon_j)\tilde{n}_t(\epsilon_j)-
+      \tilde{n}_t^*(\epsilon_i)\tilde{n}_u^*(\epsilon_j)\tilde{n}_t(\epsilon_j)
+      \right] \\
+      \frac{\partial g(d)}{\partial n} &=& cy(d(1-d))^{y-1}\left(1-2d\right)\frac{\partial d}{\partial n} \\ 
+      \frac{\partial f^{\sigma\sigma}_{ijkl}(\tNs)}{\partial\tNs_{mu}}
+      &=& \delta_{ij}\delta_{kl}(1-\delta_{ik})\frac{\partial d_{ik}(\tNs)}{\partial \tNs_{mu}} \nonumber \\
+      &+& (1-\delta_{ij})(1-\delta_{ik})(1-\delta_{il})(1-\delta_{jk})(1-\delta_{jl})(1-\delta_{kl}) \nonumber \\
+      && s(\ds{i},\ds{j},\ds{k},\ds{l}) 
+         \left(\frac{\partial g(\ds{ik})}{\partial \tNs_{mu}}g(\ds{jl})+g(\ds{ik})\frac{\partial g(\ds{jl})}{\partial \tNs_{mu}}\right) \\
+      \frac{\partial f^{\sigma\sigma'}_{ijkl}(\tNs,\tNt)}{\partial\tNs_{mu}} 
+      &=& \delta_{ij}\delta_{kl}\dt{k}(\tNt)\frac{\partial\ds{i}(\tNs)}{\partial\tNs_{mu}} \nonumber \\
+      &+& (1-\delta_{ij})(1-\delta_{kl}) s(\ds{i},\ds{j},\dt{k},\dt{l})  g(\dt{k}) g(\dt{l}) \nonumber \\
+      && \left(g(\ds{j}) \frac{\partial g(\ds{i})}{\partial\tNs_{mu}} + g(\ds{i}) \frac{\partial g(\ds{j})}{\partial\tNs_{mu}}\right) \\
+      \frac{\partial \Wss(\nNs,\tNs,\nNs,\tNs)}{\partial\tNs_{mu}}
+      &=& \sum_{i,j,k,l} \left[\begin{array}{c}
+      \nNsd{ai}\nNs_{bj}\nNsd{ck}\nNs_{dl} - \\
+      \nNsd{ai}\nNs_{bl}\nNsd{ck}\nNs_{dj} - \\
+      \nNsd{ak}\nNs_{bj}\nNsd{ci}\nNs_{dl} + \\
+      \nNsd{ak}\nNs_{bl}\nNsd{ci}\nNs_{dj}
+      \end{array}\right] 
+      \frac{\partial f^{\sigma\sigma}_{ijkl}(\tNs)}{\partial\tNs_{mu}} \\
+      \frac{\partial \Wst(\nNs,\tNs,\nNt,\tNt)}{\partial\tNs_{mu}} &=& \sum_{i,j,k,l}\nNsd{ai}\nNs_{bj}\nNtd{ck}\nNt_{dl}
+      \frac{\partial f^{\sigma\sigma'}_{ijkl}(\tNs,\tNt)}{\partial\tNs_{mu}} \\
+      \frac{\partial\Ds(\nNs,\tNs)}{\partial\tNs_{mu}}
+      &=& \sum_i \nNsd{ai} \nNs_{bi} 
+      \frac{\partial\ds{i}(\tNs)}{\partial\tNs_{mu}} \\
+      \frac{\partial\mathcal{E}(\nNa,\tNa,\nNb,\tNb)}{\partial\tNu_{mu}}
+      &=& \sum_{\sigma=\{\alpha,\beta\}}H
+          \frac{\partial\Ds(\nNs,\tNs)}{\partial\tNu_{mu}} + \nonumber\\
+      &&  \sum_{\sigma,\sigma'=\{\alpha,\beta\}}(ab|cd)
+          \frac{\partial\Wst(\nNs,\tNs,\nNt,\tNt)}{\partial\tNu_{mu}} \\
+      \frac{\partial\mathcal{T}(\tNs,\tLs)}{\partial\tNs_{mu}}
+      &=& -\tLs\left(\tNs\right)^T 
+      \end{eqnarray}
+      \begin{eqnarray}
+      \frac{\partial\mathcal{L}(\nNa,\tNa,\nNb,\tNb,\nLa,\tLa,\nLb,\tLb)}{\partial\tNt_{mu}} &=& 
+      \frac{\partial\mathcal{E}(\nNa,\tNa,\nNb,\tNb)}{\partial\tNt_{mu}} + \nonumber\\
+      && \sum_{\sigma=\{\alpha,\beta\}}\frac{\partial\mathcal{T}(\tNs,\tLs)}{\partial\tNt_{mu}} \\
+      &=& 0
+      \end{eqnarray}
+\item The equation above boils down to an eigenvalue problem.
+\item Second consider derivatives with respect to the normal functions:
+      \begin{eqnarray}
+      \frac{\partial\Ds(\nNs,\tNs)}{\partial\nNs_{em}} &=& \delta_{eb}\nNsd{am} \ds{m}(\tNs) \\
+      \frac{\partial\Wst(\nNs,\tNs,\nNt,\tNt)}{\partial\nNs_{em}} &=& \sum_{i,k,l}\delta_{be}\nNsd{ai}\nNtd{ck}\nNt_{dl}f^{\sigma\sigma'}_{imkl}(\tNs,\tNt) \\
+      \frac{\partial\Wss(\nNs,\tNs,\nNs,\tNs)}{\partial\nNs_{em}} &=&
+      \sum_{i,j,k,l} \left[\begin{array}{c}
+      \delta_{eb}\delta_{mj}\nNsd{ai}\nNsd{ck}\nNs_{dl} + \delta_{ed}\delta_{ml}\nNsd{ai}\nNs_{bj}\nNsd{ck} - \\
+      \delta_{eb}\delta_{ml}\nNsd{ai}\nNsd{ck}\nNs_{dj} - \delta_{ed}\delta_{mj}\nNsd{ai}\nNs_{bl}\nNsd{ck} - \\
+      \delta_{eb}\delta_{mj}\nNsd{ak}\nNsd{ci}\nNs_{dl} - \delta_{ed}\delta_{ml}\nNsd{ak}\nNs_{bj}\nNsd{ci} + \\
+      \delta_{eb}\delta_{ml}\nNsd{ak}\nNsd{ci}\nNs_{dj} + \delta_{ed}\delta_{mj}\nNsd{ak}\nNs_{bl}\nNsd{ci}
+      \end{array}\right] \nonumber \\
+      && f^{\sigma\sigma}_{ijkl}(\tNs) \\
+      \frac{\partial\mathcal{E}(\nNa,\tNa,\nNb,\tNb)}{\partial\nNs_{em}} &=& 
+      \sum_{\sigma=\{\alpha,\beta\}}H\frac{\partial\Ds(\nNs,\tNs)}{\partial\nNs_{em}} + \nonumber\\
+      && \sum_{\sigma,\sigma'=\{\alpha,\beta\}}(ab|cd)\frac{\partial\Wst(\nNs,\tNs,\nNt,\tNt)}{\partial\nNs_{em}} \\
+      \frac{\partial\mathcal{S}(\nNs,\nLs)}{\partial\nNs_{em}} &=& -\nLs\left(\nNs\right)^T 
+      \end{eqnarray}
+      \begin{eqnarray}
+      \frac{\partial\mathcal{L}(\nNa,\tNa,\nNb,\tNb,\nLa,\tLa,\nLb,\tLb)}{\partial\nNt_{em}} &=& 
+      \frac{\partial\mathcal{E}(\nNa,\tNa,\nNb,\tNb)}{\partial\nNt_{em}} + \nonumber\\
+      &&\sum_{\sigma=\{\alpha,\beta\}}\frac{\partial\mathcal{S}(\nNs,\nLs)}{\partial\nNt_{em}} \\
+      &=& 0
+      \end{eqnarray}
+\end{itemize}
+
+
+\section{Discussion}
+\label{discussion}
+
+\section{Conclusions}
+\label{conclusion}
+
+% If in two-column mode, this environment will change to single-column format so that long equations can be displayed. 
+% Use only when necessary.
+%\begin{widetext}
+%$$\mbox{put long equation here}$$
+%\end{widetext}
+
+% Figures should be put into the text as floats. 
+% Use the graphics or graphicx packages (distributed with LaTeX2e).
+% See the LaTeX Graphics Companion by Michel Goosens, Sebastian Rahtz, and Frank Mittelbach for examples. 
+%
+% Here is an example of the general form of a figure:
+% Fill in the caption in the braces of the \caption{} command. 
+% Put the label that you will use with \ref{} command in the braces of the \label{} command.
+%
+% \begin{figure}
+% \includegraphics{}%
+% \caption{\label{}}%
+% \end{figure}
+
+% Tables may be be put in the text as floats.
+% Here is an example of the general form of a table:
+% Fill in the caption in the braces of the \caption{} command. Put the label
+% that you will use with \ref{} command in the braces of the \label{} command.
+% Insert the column specifiers (l, r, c, d, etc.) in the empty braces of the
+% \begin{tabular}{} command.
+%
+% \begin{table}
+% \caption{\label{} }
+% \begin{tabular}{}
+% \end{tabular}
+% \end{table}
+
+% If you have acknowledgments, this puts in the proper section head.
+%\begin{acknowledgments}
+% Put your acknowledgments here.
+%\end{acknowledgments}
+
+% Create the reference section using BibTeX:
+\bibliography{references}
+
+\end{document}
+%
+% ****** End of file aiptemplate.tex ******
