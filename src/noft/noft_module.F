@@ -18,7 +18,9 @@ c-----------------------------------------------------------------------
 #include "noft_files_tp.fh"
 #include "noft_instances_tp.fh"
 #include "noft_lindep_tp.fh"
+#include "noft_operator_tp.fh"
 #include "noft_parameter_tp.fh"
+#include "noft_wavefunction_tp.fh"
       contains
 #include "noft_load_basis.fi"
 #include "noft_load_geometry.fi"

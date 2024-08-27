@@ -1,0 +1,19 @@
+!-----------------------------------------------------------------------
+!> \brief Data type to hold operators
+!>
+!> The key operators in the model are:
+!> - The 1-electron operator (kinetic + nuclear attraction energy)
+!> - The 2-electron operator (2-electron repulsion)
+!> - The overlap matrix
+!> Each of these operators will be stored in a global array. This data
+!> type holds all these operators together.
+!>
+      type noft_operators_tp
+        !> The 1-electron operator (T+V)
+        integer :: el_1
+        !> The 2-electron operator
+        integer :: el_2
+        !> The overlap operator
+        integer :: s
+      end type noft_operators_tp
+!-----------------------------------------------------------------------
