@@ -1,0 +1,26 @@
+!-----------------------------------------------------------------------
+!> \brief Destroy the data structures for the operators
+!>
+!> We need to destroy global arrays storing the following operators:
+!> - the overlap matrix
+!> - the 1-electron integrals (T+V)
+!> - the 2-electron integrals
+!>
+      subroutine noft_destroy_operators(noft_oper)
+      implicit none
+#include "errquit.fh"
+      type(noft_operators_tp), intent(inout) :: noft_oper
+!
+!     Local
+!
+      character(len=23), parameter :: pname = "noft_destroy_operators"
+!
+      if (.not.nga_destroy(noft_oper%s))
+     &  call errquit(pname//" failed to destroy overlap",0,GA_ERR)
+      if (.not.nga_destroy(noft_oper%el_1))
+     &  call errquit(pname//" failed to destroy 1-electron",0,GA_ERR)
+      if (.not.nga_destroy(noft_oper%el_2))
+     &  call errquit(pname//" failed to destroy 2-electron",0,GA_ERR)
+!
+      end subroutine noft_destroy_operators
+!-----------------------------------------------------------------------

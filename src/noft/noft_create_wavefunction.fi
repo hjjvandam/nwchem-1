@@ -1,0 +1,49 @@
+!-----------------------------------------------------------------------
+!> \brief Create the data structures for the wavefunction
+!>
+!> We need global arrays to store the following sets of vectors:
+!> - the orthogonalizing transformation
+!> - the alpha- and beta-molecular orbitals
+!> - the alpha- and beta-tilde orbitals
+!> In order to initialize these sets of vectors we need to know:
+!> - the number of basis functions
+!> - the number of molecular orbitals
+!>
+      subroutine noft_create_wavefunction(noft_params,noft_wavefunction)
+      implicit none
+#include "errquit.fh"
+#include "mafdecls.fh"
+      type(noft_parameter_tp),    intent(in)  :: noft_params
+      type(noft_wavefunction_tp), intent(out) :: noft_wavefunctionoper
+!
+!     Local
+!
+      character(len=22), parameter :: pname = "noft_create_wavefunction"
+      integer :: dims(2)
+      integer :: chunk(2)
+!
+      chunk = 10
+      dims(1) = noft_params%nao
+      dims(2) = noft_params%nso
+      if (.not.nga_create(mt_dbl,2,dims,"orthog",chunk,
+     &                    noft_wavefunction%so))
+     &  call errquit(pname//" failed to create orthogonalizer",0,GA_ERR)
+      dims(1) = noft_params%nso
+      dims(2) = noft_params%nmo
+      if (.not.nga_create(mt_dbl,2,dims,"alpha mos",chunk,
+     &                    noft_wavefunction%mo_a))
+     &  call errquit(pname//" failed to create alpha MOs",0,GA_ERR)
+      if (.not.nga_create(mt_dbl,2,dims,"beta mos",chunk,
+     &                    noft_wavefunction%mo_b))
+     &  call errquit(pname//" failed to create beta MOs",0,GA_ERR)
+      dims(1) = noft_params%nmo
+      dims(2) = noft_params%nto
+      if (.not.nga_create(mt_dbl,2,dims,"alpha tos",chunk,
+     &                    noft_wavefunction%to_a))
+     &  call errquit(pname//" failed to create alpha TOs",0,GA_ERR)
+      if (.not.nga_create(mt_dbl,2,dims,"beta tos",chunk,
+     &                    noft_wavefunction%to_b))
+     &  call errquit(pname//" failed to create beta TOs",0,GA_ERR)
+!
+      end subroutine noft_create_wavefunction
+!-----------------------------------------------------------------------

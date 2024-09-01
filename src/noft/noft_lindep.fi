@@ -1,0 +1,99 @@
+!-----------------------------------------------------------------------
+!> \brief Calculate the orthogonalizing transformation
+!>
+!> Diagonalize the overlap matrix and find how many linearly independent
+!> vectors there are. In addition calculate the orthogonalizing 
+!> transformation from the eigenvectors.
+!>
+      subroutine noft_lindep(g_s,g_s12,nindep,tol)
+      implicit none
+#include "errquit.fh"
+#include "stdio.fh"
+#include "mafdecls.fh"
+#include "global.fh"
+!>    The GA handle for the overlap matrix
+      integer, intent(in)    :: g_s
+!>    The GA handle for the S^{-1/2} matrix
+      integer, intent(inout) :: g_s12 
+!
+      integer, intent(out)      :: nindep ! the number of linearly 
+                                          ! independent vectors
+      real(kind=dp), intent(in) :: tol    ! the eigenvalue cutoff
+!
+      integer :: itype
+      integer :: ndim
+      integer :: idims(ga_max_dim)
+      integer :: nao       ! the number of basis functions
+      integer :: ii        ! counter
+      integer :: jj        ! counter
+      integer :: kk        ! counter
+      integer :: nproc     ! the number of processor ranks
+      integer :: iproc     ! the current processor rank
+      integer :: ilo,ihi   ! row limits on the local block
+      integer :: jlo,jhi   ! column limits on the local block
+      integer :: islo,ishi ! row limits on the local block
+      integer :: jslo,jshi ! column limits on the local block
+      integer :: k_v       ! memory location for the local block of v
+      integer :: ldv       ! leading dimension of the local block of v
+!
+      real(kind=dp)              :: dnrm
+      real(kind=dp), allocatable :: eigval(:)
+      real(kind=dp), allocatable :: vi(:,:)
+      real(kind=dp), allocatable :: vj(:,:)
+      real(kind=dp), allocatable :: s12(:,:)
+!
+      character(lin=12), parameter :: pname = "noft_lindep:"
+!
+      nproc = ga_nnodes()
+      iproc = ga_nodeid()
+!
+      call nga_inquire(g_s,itype,ndim,idims)
+      nao = idims(1)
+      if (ndim.ne.2) then
+        call errquit(pname//" wrong number of dimensions",ndim,UERR)
+      endif
+      if (idims(1).ne.idims(2)) then
+        call errquit(pname//" non-square overlap matrix",
+     &               idims(2)-idims(1),UERR)
+      endif
+!
+      allocate(eigval(1:nao))
+!
+#ifdef PARALLEL_DIAG
+#ifdef SCALAPACK
+      call ga_pdsyev(g_s, g_s12, eigval, 0)
+#else
+      call ga_diag_std(g_s, g_s12, eigval)
+#endif
+#else
+      call ga_diag_std_seq(g_s, g_s12, eigval)
+#endif
+!
+      nindep = 0
+      do ii = 1, nao
+        if (eigval(ii).ge.tol) nindep = nindep + 1
+      enddo
+      if (nao-nindep.gt.0.and.iproc.eq.0) then
+        write(luout,'(" !! The overlap matrix has ",i5,
+     &                " vectors deemed linearly dependent with"/
+     &                "    eigenvalues:")')nao-nindep
+        write(luout,'(1p,8d9.2)')(eigval(ii),ii=1,nao-nindep)
+        write(luout,*)
+      endif
+!
+!     scale eigenvectors to obtain S^{-1/2}
+!
+      call ga_distribution(g_s12,iproc,ilo,ihi,jlo,jhi)
+      call ga_access(g_s12,ilo,ihi,jlo,jhi,k_v,ldv)
+      do jj = 0, jhi-jlo
+        dnrm = 1.0d0/sqrt(eigval(jlo+jj))
+        do ii = 0, ihi-ilo
+          dbl_mb(k_v+jj*ldv+ii) = dbl_mb(k_v+jj*ldv+ii)*dnrm
+        enddo
+      enddo
+!
+      deallocate(eigval)
+!
+      end subroutine noft_lindep
+!
+!-----------------------------------------------------------------------

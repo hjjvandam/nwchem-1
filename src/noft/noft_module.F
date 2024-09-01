@@ -23,6 +23,10 @@ c-----------------------------------------------------------------------
 #include "noft_wavefunction_tp.fh"
       contains
 #include "noft_create_operators.fi"
+#include "noft_create_wavefunction.fi"
+#include "noft_destroy_operators.fi"
+#include "noft_destroy_wavefunction.fi"
+#include "noft_lindep.fi"
 #include "noft_load_basis.fi"
 #include "noft_load_geometry.fi"
 #include "noft_load_geometry_basis.fi"

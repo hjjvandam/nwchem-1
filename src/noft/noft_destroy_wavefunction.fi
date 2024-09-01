@@ -1,0 +1,35 @@
+!-----------------------------------------------------------------------
+!> \brief Destory the data structures for the wavefunction
+!>
+!> We need global arrays to store the following sets of vectors:
+!> - the orthogonalizing transformation
+!> - the alpha- and beta-molecular orbitals
+!> - the alpha- and beta-tilde orbitals
+!> In order to initialize these sets of vectors we need to know:
+!> - the number of basis functions
+!> - the number of molecular orbitals
+!>
+      subroutine noft_destroy_wavefunction(noft_wavefunction)
+      implicit none
+#include "errquit.fh"
+#include "mafdecls.fh"
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+!
+!     Local
+!
+      character(len=22), parameter :: pname="noft_destroy_wavefunction"
+!
+      if (.not.nga_destroy(noft_wavefunction%so))
+     &  call errquit(pname//" failed to destroy orthogonalizer",
+     &               0,GA_ERR)
+      if (.not.nga_destroy(noft_wavefunction%mo_a))
+     &  call errquit(pname//" failed to destroy alpha MOs",0,GA_ERR)
+      if (.not.nga_destroy(noft_wavefunction%mo_b))
+     &  call errquit(pname//" failed to destroy beta MOs",0,GA_ERR)
+      if (.not.nga_destroy(noft_wavefunction%to_a))
+     &  call errquit(pname//" failed to destroy alpha TOs",0,GA_ERR)
+      if (.not.nga_destroy(noft_wavefunction%to_b))
+     &  call errquit(pname//" failed to destroy beta TOs",0,GA_ERR)
+!
+      end subroutine noft_destroy_wavefunction
+!-----------------------------------------------------------------------
