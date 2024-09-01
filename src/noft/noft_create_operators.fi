@@ -10,18 +10,15 @@
 !> the operators by atoms also helps with the parallelization (but not
 !> implemented for now).
 !>
-      subroutine noft_create_operators(noft_params,noft_instances,
-     &                                 noft_oper)
+      subroutine noft_create_operators(noft_params,noft_oper)
       implicit none
 #include "errquit.fh"
 #include "mafdecls.fh"
       type(noft_parameter_tp), intent(in)  :: noft_params
-      type(noft_instance_tp),  intent(in)  :: noft_instances
       type(noft_operators_tp), intent(out) :: noft_oper
 !
 !     Local
 !
-      integer :: nao ! the number of atomic basis functions
       character(len=22), parameter :: pname = "noft_create_operators"
       integer :: dims(4)
       integer :: chunk(4)
