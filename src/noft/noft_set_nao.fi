@@ -1,0 +1,22 @@
+!-----------------------------------------------------------------------
+!> \brief Set number of AOs
+!>
+!> Retrieve the number of AOs from the basis set and store it in the
+!> parameters structure.
+!>
+      subroutine noft_set_nao(noft_instances,noft_params)
+      implicit none
+#include "basis.fh"
+#include "errquit.fh"
+      type(noft_instance_tp),  intent(in)    :: noft_instances
+      type(noft_parameter_tp), intent(inout) :: noft_params
+!
+!     Local
+!
+      character(len=12), parameter :: pname = "noft_set_nao"
+!
+      if (.not.bas_numbf(noft_instance%basis,noft_params%nao))
+     &  call errquit(pname//" no basis functions",0,BASIS_ERR)
+!
+      end subroutine noft_set_nao
+!-----------------------------------------------------------------------
