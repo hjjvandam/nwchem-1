@@ -1,0 +1,82 @@
+!-----------------------------------------------------------------------
+!> \brief Calculate the overlap matrix
+!>
+      subroutine noft_compute_overlap(noft_instances,noft_oper)
+      implicit none
+#include "bas.fh"
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+!>
+      type(noft_instances_tp), intent(in)    :: noft_instances
+      type(noft_operators_tp), intent(inout) :: noft_oper
+!
+      integer :: max1e ! The integral buffer size.
+      integer :: mem1  ! The scratch memory size for the integral code.
+!
+      integer :: l_buf, k_buf ! The buffer memory segment
+      integer :: l_scr, k_scr ! The scratch memory segment
+!
+      integer :: iproc   ! the processor rank
+      integer :: nproc   ! the number of processors
+      integer :: nshell  ! the number of shells
+      integer :: ishell  ! the i-shell number
+      integer :: jshell  ! the j-shell number
+!
+      integer :: ilo, ihi ! the basis function limits
+      integer :: jlo, jhi ! the basis function limits
+      integer :: klo, khi ! the local matrix block limits
+      integer :: llo, lhi ! the local matrix block limits
+!
+      integer :: basis
+!
+      character(len=13), parameter :: pname = "wfn1_gen_mat:"
+!
+      iproc = ga_nodeid()
+      nproc = ga_nnodes()
+      basis = noft_instances%basis
+!
+      call ga_zero(noft_oper%s)
+      call ga_distribution(noft_oper%s,iproc,klo,khi,llo,lhi)
+!
+      if (.not.bas_numcont(basis,nshell)) call errquit
+     &  (pname//" bas_numcont failed for basis",basis,
+     &   BASIS_ERR)
+!
+      call int_mem_1e(max1e,mem1)
+      if (.not. MA_push_get(MT_DBL,max1e,pname//'buf',l_buf,k_buf))
+     &  call errquit(pname//' ma buf failed', max1e, MA_ERR)
+      if (.not. MA_push_get(MT_DBL,mem1,pname//'scr',l_scr,k_scr))
+     &  call errquit(pname//' ma scr failed', mem1, MA_ERR)
+!
+      do jshell = 1, nshell
+        if (.not.bas_cn2bfr(basis,jshell,jlo,jhi)) then
+          call errquit(pname//' bas_cn2bfr',jshell,BASIS_ERR)
+        endif
+        if (klo.le.jlo.and.jlo.le.khi) then
+          do ishell = 1, nshell
+            if (.not.bas_cn2bfr(basis,ishell,ilo,ihi)) then
+              call errquit(pname//' bas_cn2bfr',ishell,BASIS_ERR)
+            endif
+            if (llo.le.ilo.and.ilo.le.lhi) then
+!
+!             Overlap
+!
+              call int_1eov(basis,jshell,basis,ishell,
+     &                      mem1,dbl_mb(k_scr),
+     &                      max1e,dbl_mb(k_buf))
+              call ga_acc(noft_oper%s,ilo,ihi,jlo,jhi,dbl_mb(k_buf),
+     &                    ihi-ilo+1,1.0d0)
+            endif
+          enddo
+        endif
+      enddo
+!
+      if (.not. MA_pop_stack(l_scr)) call errquit
+     &  (pname//' pop scr failed', 0, MA_ERR)
+      if (.not. MA_pop_stack(l_buf)) call errquit
+     &  (pname//' pop buf failed', 0, MA_ERR)
+!
+      end subroutine noft_compute_overlap
+!
+!-----------------------------------------------------------------------
