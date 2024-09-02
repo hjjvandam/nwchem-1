@@ -11,12 +11,14 @@
 !
 !     Local
 !
-#include "basis.fh"
+#include "bas.fh"
 #include "errquit.fh"
 #include "rtdb.fh"
 !
       character(len=15), parameter :: pname = "noft_load_basis"
       integer :: nbf
+      logical, external :: int_normalize ! no header file for this
+                                         ! function!?
 !
 !     Code
 !
@@ -30,5 +32,5 @@
       if (.not.int_normalize(rtdb,instances%basis))
      &  call errquit(pname//' int_normalize failed', 0, INT_ERR)
 !
-      end
+      end subroutine noft_load_basis
 !-----------------------------------------------------------------------

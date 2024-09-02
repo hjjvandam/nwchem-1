@@ -12,6 +12,7 @@
       subroutine noft_destroy_wavefunction(noft_wavefunction)
       implicit none
 #include "errquit.fh"
+#include "global.fh"
 #include "mafdecls.fh"
       type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
 !

@@ -9,6 +9,7 @@
       subroutine noft_destroy_operators(noft_oper)
       implicit none
 #include "errquit.fh"
+#include "global.fh"
       type(noft_operators_tp), intent(inout) :: noft_oper
 !
 !     Local

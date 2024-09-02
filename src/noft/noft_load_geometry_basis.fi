@@ -19,5 +19,5 @@
       call noft_load_geometry(rtdb,instances)
       call noft_load_basis(rtdb,instances)
 !
-      end
+      end subroutine noft_load_geometry_basis
 !-----------------------------------------------------------------------

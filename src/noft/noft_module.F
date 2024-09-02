@@ -18,10 +18,12 @@ c-----------------------------------------------------------------------
 #include "noft_files_tp.fh"
 #include "noft_instances_tp.fh"
 #include "noft_lindep_tp.fh"
-#include "noft_operator_tp.fh"
+#include "noft_operators_tp.fh"
 #include "noft_parameter_tp.fh"
 #include "noft_wavefunction_tp.fh"
       contains
+#include "noft_compute_1electron.fi"
+#include "noft_compute_overlap.fi"
 #include "noft_create_operators.fi"
 #include "noft_create_wavefunction.fi"
 #include "noft_destroy_operators.fi"

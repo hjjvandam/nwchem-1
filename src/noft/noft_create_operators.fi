@@ -13,6 +13,7 @@
       subroutine noft_create_operators(noft_params,noft_oper)
       implicit none
 #include "errquit.fh"
+#include "global.fh"
 #include "mafdecls.fh"
       type(noft_parameter_tp), intent(in)  :: noft_params
       type(noft_operators_tp), intent(out) :: noft_oper

@@ -42,7 +42,7 @@
       real(kind=dp), allocatable :: vj(:,:)
       real(kind=dp), allocatable :: s12(:,:)
 !
-      character(lin=12), parameter :: pname = "noft_lindep:"
+      character(len=12), parameter :: pname = "noft_lindep:"
 !
       nproc = ga_nnodes()
       iproc = ga_nodeid()

@@ -12,9 +12,10 @@
       subroutine noft_create_wavefunction(noft_params,noft_wavefunction)
       implicit none
 #include "errquit.fh"
+#include "global.fh"
 #include "mafdecls.fh"
       type(noft_parameter_tp),    intent(in)  :: noft_params
-      type(noft_wavefunction_tp), intent(out) :: noft_wavefunctionoper
+      type(noft_wavefunction_tp), intent(out) :: noft_wavefunction
 !
 !     Local
 !
