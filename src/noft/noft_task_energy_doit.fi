@@ -34,5 +34,6 @@ c-----------------------------------------------------------------------
       call noft_load_geometry_basis(rtdb,noft_instances)
       call noft_set_nao(noft_instances,noft_params)
       call noft_create_operators(noft_params,noft_oper)
+      call noft_compute_operators(noft_instances,noft_oper)
       end function noft_task_energy_doit
 c-----------------------------------------------------------------------

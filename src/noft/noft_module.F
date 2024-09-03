@@ -23,6 +23,7 @@ c-----------------------------------------------------------------------
 #include "noft_wavefunction_tp.fh"
       contains
 #include "noft_compute_1electron.fi"
+#include "noft_compute_operators.fi"
 #include "noft_compute_overlap.fi"
 #include "noft_create_operators.fi"
 #include "noft_create_wavefunction.fi"
