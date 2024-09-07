@@ -1,0 +1,22 @@
+!-----------------------------------------------------------------------
+!> \brief Print the basis set if desired
+!>
+      subroutine noft_print_basis(noft_instances)
+      implicit none
+#include "errquit.fh"
+#include "bas.fh"
+#include "global.fh"
+#include "util.fh"
+      type(noft_instances_tp) :: noft_instances
+      integer :: iproc
+      character(len=20), parameter :: pname = "noft_print_basis:"
+!
+      iproc = ga_nodeid()
+      if(iproc.eq.0.and.util_print('basis', print_high)) then
+        if(.not.bas_print(noft_instances%basis)) call errquit(
+     &       pname//' basis print failed',0, BASIS_ERR)
+      endif
+!
+      end subroutine noft_print_basis
+!
+!-----------------------------------------------------------------------

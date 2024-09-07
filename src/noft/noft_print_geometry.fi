@@ -1,0 +1,22 @@
+!-----------------------------------------------------------------------
+!> \brief Print the molecular geometry if desired
+!>
+      subroutine noft_print_geometry(noft_instances)
+      implicit none
+#include "errquit.fh"
+#include "geom.fh"
+#include "global.fh"
+#include "util.fh"
+      type(noft_instances_tp) :: noft_instances
+      integer :: iproc
+      character(len=20), parameter :: pname = "noft_print_geometry:"
+!
+      iproc = ga_nodeid()
+      if(iproc.eq.0.and.util_print('geometry', print_high)) then
+        if(.not.geom_print(noft_instances%geom)) call errquit(
+     &       pname//' geom print failed',0, GEOM_ERR)
+      endif
+!
+      end subroutine noft_print_geometry
+!
+!-----------------------------------------------------------------------
