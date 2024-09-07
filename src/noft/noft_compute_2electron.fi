@@ -1,0 +1,109 @@
+!-----------------------------------------------------------------------
+!> \brief Compute 2-electron operator
+!>
+!> The 2-electron integral has the interface
+!>
+!>    int_2e4c(bas1,a1,b1,bas2,c2,d2,mem,scr,max2e,eri)
+!>
+!> where bas1 is the handle for the basis set for electron 1,
+!> bas2 is the handle for the basis set for electron 2,
+!> a1 and b1 are shells for electron 1, c2 and d2 are shells for
+!> electron 2, mem is the size of the scratch memory scr, and
+!> max2e is the maximum number of electron repulsion integrals eri.
+!>
+      subroutine noft_compute_2electron(noft_instances,noft_oper)
+      implicit none
+#include "bas.fh"
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+!
+      type(noft_instances_tp), intent(in)    :: noft_instances
+      type(noft_operators_tp), intent(inout) :: noft_oper
+!
+!     Local
+!
+      character(len=22), parameter :: pname = "noft_compute_2electron:"
+!
+      integer :: iproc          ! the current rank
+      integer :: nproc          ! the number of ranks
+      integer :: ilo(4), ihi(4) ! the lower and upper limits of the
+                                ! local block of ERI tensor
+      integer :: nshell         ! the number of shells in the basis set
+      integer :: isha           ! the a-center shell
+      integer :: ishb           ! the b-center shell
+      integer :: ishc           ! the c-center shell
+      integer :: ishd           ! the d-center shell
+      integer :: ialo, iahi, la ! the a-center basis functions
+      integer :: iblo, ibhi, lb ! the b-center basis functions
+      integer :: iclo, ichi, lc ! the c-center basis functions
+      integer :: idlo, idhi, ld ! the d-center basis functions
+!
+      integer :: max2e, mem2    ! scratch memory sizes
+      integer :: basis
+!
+      real(kind=dp), allocatable :: scr(:)
+      real(kind=dp), allocatable :: eri(:)
+!
+      integer :: jlo(4), jhi(4) ! global array limits
+      integer :: jld(4)         ! leading dimensions
+!
+!     Code
+!
+      iproc = ga_nodeid()
+      nproc = ga_nnodes()
+      basis = noft_instances%basis
+      call nga_distribution(noft_oper%el_2,iproc,ilo,ihi)
+!
+      if (.not. bas_numcont(basis, nshell))
+     &    call errquit(pname//" bas_numcont failed for basis",
+     &                 basis, BASIS_ERR)
+      call int_mem_2e4c(max2e,mem2)
+      allocate(scr(1:mem2),eri(1:max2e))
+!
+      do ishd = 1, nshell
+        if (.not. bas_cn2bfr(basis, ishd, idlo, idhi))
+     &      call errquit(pname//' bas_cn2bfr', basis, BASIS_ERR)
+        if (ilo(4).le.idlo.and.idlo.le.ihi(4)) then
+          do ishc = 1, nshell
+            if (.not. bas_cn2bfr(basis, ishc, iclo, ichi))
+     &          call errquit(pname//' bas_cn2bfr', basis, BASIS_ERR)
+            if (ilo(3).le.iclo.and.iclo.le.ihi(3)) then
+              do ishb = 1, nshell
+                if (.not. bas_cn2bfr(basis, ishb, iblo, ibhi))
+     &              call errquit(pname//' bas_cn2bfr', basis, BASIS_ERR)
+                if (ilo(2).le.iblo.and.iblo.le.ihi(2)) then
+                  do isha = 1, nshell
+                    if (.not. bas_cn2bfr(basis, isha, ialo, iahi))
+     &                  call errquit(pname//' bas_cn2bfr',
+     &                               basis, BASIS_ERR)
+                    if (ilo(1).le.ialo.and.ialo.le.ihi(1)) then
+                      call int_2e4c(basis,ishd,ishc,
+     &                              basis,ishb,isha,
+     &                              mem2,scr,max2e,eri)
+                      jlo(1) = ialo
+                      jlo(2) = iblo
+                      jlo(3) = iclo
+                      jlo(4) = idlo
+                      jhi(1) = iahi
+                      jhi(2) = ibhi
+                      jhi(3) = ichi
+                      jhi(4) = idhi
+                      jld(1) = jhi(1) - jlo(1) + 1
+                      jld(2) = jhi(2) - jlo(2) + 1
+                      jld(3) = jhi(3) - jlo(3) + 1
+                      jld(4) = jhi(4) - jlo(4) + 1
+                      call nga_put(noft_oper%el_2,jlo,jhi,eri,jld)
+                    endif
+                  enddo
+                endif
+              enddo
+            endif
+          enddo
+        endif
+      enddo
+!
+      deallocate(scr,eri)
+!
+      end subroutine noft_compute_2electron
+!-----------------------------------------------------------------------
