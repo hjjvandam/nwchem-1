@@ -10,6 +10,7 @@
 !
       call noft_compute_overlap(noft_instances,noft_oper)
       call noft_compute_1electron(noft_instances,noft_oper)
+      call noft_compute_2electron(noft_instances,noft_oper)
 !
       end subroutine noft_compute_operators
 !-----------------------------------------------------------------------
