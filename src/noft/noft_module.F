@@ -41,6 +41,8 @@ c-----------------------------------------------------------------------
 #include "noft_print_geometry.fi"
 #include "noft_print_header.fi"
 #include "noft_set_nao.fi"
+#include "noft_set_nuclear_energy.fi"
+#include "noft_set_num_electrons.fi"
 #include "noft_task_energy_doit.fi"
       end module noft
 !>

@@ -33,6 +33,8 @@ c-----------------------------------------------------------------------
       call noft_load_vectors(rtdb,noft_vectors)
       call noft_load_geometry_basis(rtdb,noft_instances)
       call noft_set_nao(noft_instances,noft_params)
+      call noft_set_nuclear_energy(noft_instances,noft_params)
+      call noft_set_num_electrons(noft_instances,noft_params)
       call noft_print_basis(noft_instances)
       call noft_print_geometry(noft_instances)
       call noft_create_operators(noft_params,noft_oper)

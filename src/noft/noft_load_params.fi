@@ -15,6 +15,13 @@
       !> The calculation parameters
       type(noft_parameter_tp), intent(out) :: noft_params
 !
+!     Load molecule total charge
+!
+      if (rtdb_get(rtdb,"charge",MT_DBL,1,noft_params%charge)) then
+      else
+        noft_params%charge = 0.0d0
+      endif
+!
 !     Load job parameters
 !
 !     Load the number of iterations (maxiter)
@@ -23,6 +30,14 @@
      &             noft_params%maxiter)) then
       else
          noft_params%maxiter = 50
+      endif
+!
+!     Load the number of open shell orbitals (nopen)
+!
+      if (rtdb_get(rtdb,"noft:nopen", MT_INT, 1,
+     &             noft_params%no_open)) then
+      else
+         noft_params%no_open = 0
       endif
 !
 !     Load the convergence threshold

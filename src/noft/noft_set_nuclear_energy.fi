@@ -1,0 +1,17 @@
+!-----------------------------------------------------------------------
+!> \brief Set the nuclear repulsion energy
+!>
+      subroutine noft_set_nuclear_energy(noft_instances,noft_params)
+      implicit none
+#include "errquit.fh"
+#include "geom.fh"
+      type(noft_instances_tp), intent(in)    :: noft_instances
+      type(noft_parameter_tp), intent(inout) :: noft_params
+      character(len=20), parameter :: pname = "noft_set_nuclear_energy"
+!
+      if (.not.geom_nuc_rep_energy(noft_instances%geom,
+     &                             noft_params%e_nuclear))
+     &  call errquit(pname//'Error in nuclear repulsion',1, GEOM_ERR)
+!
+      end subroutine noft_set_nuclear_energy
+!-----------------------------------------------------------------------

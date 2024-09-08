@@ -1,0 +1,32 @@
+!-----------------------------------------------------------------------
+!> \brief Set number of electrons
+!>
+!> This subroutine assumes that all relevant parameters have been
+!> set in noft_params, or can be computed from the instances in
+!> noft_instances.
+!>
+      subroutine noft_set_num_electrons(noft_instances,noft_params)
+      implicit none
+#include "geom.fh"
+#include "errquit.fh"
+      type(noft_instances_tp), intent(in)    :: noft_instances
+      type(noft_parameter_tp), intent(inout) :: noft_params
+      real(kind=dp) :: charge_nuclear
+      character(len=20), parameter :: pname = "noft_set_num_electrons:"
+      integer :: nelec 
+      integer :: nclosed
+!
+      if (.not.geom_nuc_charge(noft_instances%geom,charge_nuclear))
+     &  call errquit(pname//" geometry nuclear charge failed",
+     &               0,GEOM_ERR)
+      nelec = int(charge_nuclear - noft_params%charge)
+      if (nelec.lt.0) then
+        call errquit(pname//" negative number of electrons",
+     &               nelec,INPUT_ERR)
+      endif
+      nclosed = (nelec-noft_params%no_open)/2
+      noft_params%ne_a = nclosed + noft_params%no_open
+      noft_params%ne_b = nclosed
+!
+      end subroutine noft_set_num_electrons
+!-----------------------------------------------------------------------

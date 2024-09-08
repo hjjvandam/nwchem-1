@@ -8,6 +8,8 @@ c-----------------------------------------------------------------------
       type noft_parameter_tp
         !> The required convergence threshold
         real(kind=dp) :: threshold
+        !> The molecular charge
+        real(kind=dp) :: charge
         !> The nuclear repulsion energy
         real(kind=dp) :: e_nuclear
         !> The levelshifter for the molecular orbitals
@@ -22,6 +24,8 @@ c-----------------------------------------------------------------------
         real(kind=dp) :: p_aa
         !> The power for the opposite spin 2-electron off-diagonal
         real(kind=dp) :: p_ab
+        !> The number of open shell orbitals
+        integer :: no_open
         !> The number of alpha-electrons
         integer :: ne_a
         !> The number of beta-electrons
