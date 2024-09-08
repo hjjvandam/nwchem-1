@@ -15,7 +15,9 @@ c-----------------------------------------------------------------------
       module noft
       implicit none
 #include "noft_parameters.fh"
+#include "noft_energy_tp.fh"
 #include "noft_files_tp.fh"
+#include "noft_fock_tp.fh"
 #include "noft_instances_tp.fh"
 #include "noft_lindep_tp.fh"
 #include "noft_operators_tp.fh"

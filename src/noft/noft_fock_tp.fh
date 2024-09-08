@@ -1,0 +1,20 @@
+!-----------------------------------------------------------------------
+!> \brief Data type for Fock matrices
+!>
+!> In this model there are 4 Fock matrices:
+!> - For the alpha-molecular orbitals
+!> - For the beta-molecular orbitals
+!> - For the alpha-tilde orbitals
+!> - For the beta-tilde orbitals
+!>
+      type noft_fock_tp
+        !> The alpha-molecular orbital Fock
+        integer :: f_mo_a
+        !> The beta-molecular orbital Fock
+        integer :: f_mo_b
+        !> The alpha-tilde orbital Fock
+        integer :: f_to_a
+        !> The beta-tilde orbital Fock
+        integer :: f_to_b
+      end type noft_fock_tp
+!-----------------------------------------------------------------------

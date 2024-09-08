@@ -1,0 +1,23 @@
+!-----------------------------------------------------------------------
+!> \brief Data type for energy terms
+!>
+!> This data type stores all the relevant energy contributions:
+!> - The total energy
+!> - The 1-electron energy
+!> - The 2-electron meanfield energy
+!> - The correlation energy
+!> - The nuclear repulsion energy
+!>
+      type noft_energy
+        !> The total energy
+        real(kind=dp) :: e_total 
+        !> The 1-electron energy
+        real(kind=dp) :: e_1electron
+        !> The 2-electron meanfield energy
+        real(kind=dp) :: e_2electron
+        !> The correlation energy
+        real(kind=dp) :: e_correlation
+        !> The nuclear repulsion energy
+        real(kind=dp) :: e_nuclear
+      end type noft_energy
+!-----------------------------------------------------------------------
