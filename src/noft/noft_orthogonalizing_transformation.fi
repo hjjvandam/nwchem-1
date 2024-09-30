@@ -1,0 +1,22 @@
+!-----------------------------------------------------------------------
+!> \brief Find the orthogonalizing transformation
+!>
+!> Basically we calculate $S^{1/2}$ where S is the overlap matrix
+!>
+      subroutine noft_orthogonalizing_transformation(
+     &           noft_params,noft_operators,noft_wavefunction)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      type(noft_parameter_tp),    intent(inout) :: noft_params
+      type(noft_operators_tp),    intent(in)    :: noft_operators
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+      integer, parameter :: mxdim = 2
+      integer :: dims(mxdim)
+      integer :: chunk(mxdim)
+      call noft_lindep(noft_operators%s,noft_wavefunction%so,
+     &                 noft_params%nso,1.0d-6)
+      end subroutine noft_orthogonalizing_transformation
+!
+!-----------------------------------------------------------------------
