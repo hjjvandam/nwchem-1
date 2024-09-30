@@ -19,7 +19,7 @@
 !
       iperiod = index(filename,".",.TRUE.)
       newfile = filename(1:iperiod)//newextension
-      end
+      end function replace_extension
 !-----------------------------------------------------------------------
 !> \brief Load the setting for the vectors files from the RTDB
 !>
@@ -163,5 +163,5 @@
          call errquit("writing movecs to RTDB failed")
       endif
 !
-      end
+      end subroutine noft_load_vectors
 !-----------------------------------------------------------------------
