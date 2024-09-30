@@ -23,6 +23,7 @@
       integer :: itype
       integer :: ndim
       integer :: idims(ga_max_dim)
+      integer :: chunk(ga_max_dim)
       integer :: nao       ! the number of basis functions
       integer :: ii        ! counter
       integer :: jj        ! counter
@@ -35,6 +36,9 @@
       integer :: jslo,jshi ! column limits on the local block
       integer :: k_v       ! memory location for the local block of v
       integer :: ldv       ! leading dimension of the local block of v
+      integer :: g_vec
+      integer :: vlo(2), vhi(2)
+      integer :: slo(2), shi(2)
 !
       real(kind=dp)              :: dnrm
       real(kind=dp), allocatable :: eigval(:)
@@ -58,15 +62,17 @@
       endif
 !
       allocate(eigval(1:nao))
+      if (.not.ga_create(MT_DBL,1,nao,1,nao,"g_vec",-1,-1,g_vec))
+     &  call errquit(pname//"failed to allocate g_vec",0,GA_ERR)
 !
 #ifdef PARALLEL_DIAG
 #ifdef SCALAPACK
-      call ga_pdsyev(g_s, g_s12, eigval, 0)
+      call ga_pdsyev(g_s, g_vec, eigval, 0)
 #else
-      call ga_diag_std(g_s, g_s12, eigval)
+      call ga_diag_std(g_s, g_vec, eigval)
 #endif
 #else
-      call ga_diag_std_seq(g_s, g_s12, eigval)
+      call ga_diag_std_seq(g_s, g_vec, eigval)
 #endif
 !
       nindep = 0
@@ -83,10 +89,14 @@
 !
 !     scale eigenvectors to obtain S^{-1/2}
 !
-      call ga_distribution(g_s12,iproc,ilo,ihi,jlo,jhi)
-      call ga_access(g_s12,ilo,ihi,jlo,jhi,k_v,ldv)
+      call ga_distribution(g_vec,iproc,ilo,ihi,jlo,jhi)
+      call ga_access(g_vec,ilo,ihi,jlo,jhi,k_v,ldv)
       do jj = 0, jhi-jlo
-        dnrm = 1.0d0/sqrt(eigval(jlo+jj))
+        if (eigval(jlo+jj).ge.tol) then
+          dnrm = 1.0d0/sqrt(eigval(jlo+jj))
+        else
+          dnrm = 0.0d0
+        endif
         do ii = 0, ihi-ilo
           dbl_mb(k_v+jj*ldv+ii) = dbl_mb(k_v+jj*ldv+ii)*dnrm
         enddo
@@ -94,6 +104,27 @@
 !
       deallocate(eigval)
 !
+      if (nindep.eq.nao) then
+        call ga_copy(g_vec,g_s12)
+      else
+        if (.not.ga_destroy(g_s12))
+     &    call errquit(pname//"destroy failed")
+        idims(1) = nao
+        idims(2) = nindep
+        if (.not.nga_create(MT_DBL,2,idims,"svecs",chunk,g_s12))
+     &      call errquit(pname//"failed to allocate s12")
+        vlo(1) = 1
+        vlo(2) = nao-nindep+1
+        vhi(1) = nao
+        vhi(2) = nao
+        slo(1) = 1
+        slo(2) = 1
+        shi(1) = nao
+        shi(2) = nindep
+        call nga_copy_path("N",g_vec,vlo,vhi,g_s12,slo,shi)
+      endif
+      if (.not.ga_destroy(g_vec))
+     &  call errquit(pname//"failed to destroy g_vec",0,GA_ERR)
       end subroutine noft_lindep
 !
 !-----------------------------------------------------------------------
