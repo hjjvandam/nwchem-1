@@ -39,6 +39,7 @@ c-----------------------------------------------------------------------
 #include "noft_load_lindep.fi"
 #include "noft_load_params.fi"
 #include "noft_load_vectors.fi"
+#include "noft_orthogonalizing_transformation.fi"
 #include "noft_print_basis.fi"
 #include "noft_print_geometry.fi"
 #include "noft_print_header.fi"
