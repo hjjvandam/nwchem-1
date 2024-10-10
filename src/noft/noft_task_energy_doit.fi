@@ -16,11 +16,12 @@ c-----------------------------------------------------------------------
 !
 #include "stdio.fh"
 !
-      type(noft_instances_tp) :: noft_instances
-      type(noft_lindep_tp)    :: noft_lindep
-      type(noft_operators_tp) :: noft_oper
-      type(noft_parameter_tp) :: noft_params
-      type(noft_files_tp)     :: noft_vectors
+      type(noft_files_tp)        :: noft_vectors
+      type(noft_instances_tp)    :: noft_instances
+      type(noft_lindep_tp)       :: noft_lindep
+      type(noft_operators_tp)    :: noft_oper
+      type(noft_parameter_tp)    :: noft_params
+      type(noft_wavefunction_tp) :: noft_wavefunction
 !
 !     Code
 !
@@ -39,5 +40,10 @@ c-----------------------------------------------------------------------
       call noft_print_geometry(noft_instances)
       call noft_create_operators(noft_params,noft_oper)
       call noft_compute_operators(noft_instances,noft_oper)
+      call noft_create_wavefunction(noft_params,noft_wavefunction)
+      call noft_orthogonalizing_transformation(noft_params,noft_oper,
+     &                                         noft_wavefunction)
+      call noft_adjust_wavefunction(noft_params,noft_wavefunction)
+      call noft_destroy_wavefunction(noft_wavefunction)
       end function noft_task_energy_doit
 c-----------------------------------------------------------------------
