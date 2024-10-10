@@ -1,0 +1,75 @@
+!-----------------------------------------------------------------------
+!> \brief Adjust the data structures for the wavefunction
+!>
+!> After the orthogonalizing transformation has been calculated the
+!> dimension of the space might be smaller than the dimension of
+!> Atomic Orbital basis. If the new dimension is smaller then
+!> we need to replace the molecular orbitals and tilde functions.
+!> We need global arrays to store the following sets of vectors:
+!> - the orthogonalizing transformation
+!> - the alpha- and beta-molecular orbitals
+!> - the alpha- and beta-tilde orbitals
+!> In order to initialize these sets of vectors we need to know:
+!> - the number of basis functions
+!> - the number linearly independent vectors
+!> - the number of molecular orbitals
+!> - the number of tilde functions
+!>
+      subroutine noft_adjust_wavefunction(noft_params,noft_wavefunction)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      type(noft_parameter_tp),    intent(inout) :: noft_params
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+!
+!     Local
+!
+      character(len=22), parameter :: pname = "noft_adjust_wavefunction"
+      integer :: dims(2)
+      integer :: chunk(2)
+!
+      if (noft_params%nao.eq.noft_params%nso) then
+!       The number of linearly dependent vectors equals the size of the
+!       basis set. In this case the dimensions are correct already.
+        return
+      endif
+!
+!     Reset the dimensions
+!
+      noft_params%nmo = noft_params%nso
+      noft_params%nto = noft_params%nso
+!
+!     Eliminate the old wavefunction components
+!
+      if (.not.ga_destroy(noft_wavefunction%mo_a))
+     &  call errquit(pname//" failed to destroy alpha MOs",0,GA_ERR)
+      if (.not.ga_destroy(noft_wavefunction%mo_b))
+     &  call errquit(pname//" failed to destroy beta  MOs",0,GA_ERR)
+      if (.not.ga_destroy(noft_wavefunction%to_a))
+     &  call errquit(pname//" failed to destroy alpha TOs",0,GA_ERR)
+      if (.not.ga_destroy(noft_wavefunction%to_b))
+     &  call errquit(pname//" failed to destroy beta  TOs",0,GA_ERR)
+!
+!     Create the new wavefunction components
+!
+      chunk = 10
+      dims(1) = noft_params%nso
+      dims(2) = noft_params%nmo
+      if (.not.nga_create(mt_dbl,2,dims,"alpha mos",chunk,
+     &                    noft_wavefunction%mo_a))
+     &  call errquit(pname//" failed to create alpha MOs",0,GA_ERR)
+      if (.not.nga_create(mt_dbl,2,dims,"beta mos",chunk,
+     &                    noft_wavefunction%mo_b))
+     &  call errquit(pname//" failed to create beta MOs",0,GA_ERR)
+      dims(1) = noft_params%nmo
+      dims(2) = noft_params%nto
+      if (.not.nga_create(mt_dbl,2,dims,"alpha tos",chunk,
+     &                    noft_wavefunction%to_a))
+     &  call errquit(pname//" failed to create alpha TOs",0,GA_ERR)
+      if (.not.nga_create(mt_dbl,2,dims,"beta tos",chunk,
+     &                    noft_wavefunction%to_b))
+     &  call errquit(pname//" failed to create beta TOs",0,GA_ERR)
+!
+      end subroutine noft_adjust_wavefunction
+!-----------------------------------------------------------------------
