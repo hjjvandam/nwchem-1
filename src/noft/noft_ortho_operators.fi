@@ -1,0 +1,27 @@
+!-----------------------------------------------------------------------
+!
+!> \brief Transform all operators to orthogonal basis
+!>
+      subroutine noft_ortho_operators(noft_wavefunction,noft_oper)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+!
+      type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
+      type(noft_operators_tp), intent(inout) :: noft_oper
+!
+      character(len=22), parameter :: pname = "noft_ortho_operators"
+      integer :: g_out
+      integer :: g_el_1
+      integer :: g_vec
+!
+      g_el_1 = noft_oper%el_1
+      g_vec  = noft_wavefunction%so
+      call noft_2index(g_el_1,g_vec,g_out)
+      if (.not.ga_destroy(g_el_1))
+     &  call errquit(pname//" failed to destroy g_el_1")
+      noft_oper%el_1 = g_out
+!
+      end subroutine noft_ortho_operators
+!
+!-----------------------------------------------------------------------

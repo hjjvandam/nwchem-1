@@ -24,6 +24,7 @@ c-----------------------------------------------------------------------
 #include "noft_parameter_tp.fh"
 #include "noft_wavefunction_tp.fh"
       contains
+#include "noft_2index.fi"
 #include "noft_adjust_wavefunction.fi"
 #include "noft_compute_1electron.fi"
 #include "noft_compute_2electron.fi"
@@ -40,6 +41,7 @@ c-----------------------------------------------------------------------
 #include "noft_load_lindep.fi"
 #include "noft_load_params.fi"
 #include "noft_load_vectors.fi"
+#include "noft_ortho_operators.fi"
 #include "noft_orthogonalizing_transformation.fi"
 #include "noft_print_basis.fi"
 #include "noft_print_geometry.fi"
