@@ -36,8 +36,8 @@
       nproc = ga_nnodes()
       basis = noft_instances%basis
 !
-      call ga_zero(noft_oper%s)
-      call ga_distribution(noft_oper%s,iproc,klo,khi,llo,lhi)
+      call ga_zero(noft_oper%ao_s)
+      call ga_distribution(noft_oper%ao_s,iproc,klo,khi,llo,lhi)
 !
       if (.not.bas_numcont(basis,nshell)) call errquit
      &  (pname//" bas_numcont failed for basis",basis,
@@ -65,7 +65,7 @@
               call int_1eov(basis,jshell,basis,ishell,
      &                      mem1,dbl_mb(k_scr),
      &                      max1e,dbl_mb(k_buf))
-              call ga_acc(noft_oper%s,ilo,ihi,jlo,jhi,dbl_mb(k_buf),
+              call ga_acc(noft_oper%ao_s,ilo,ihi,jlo,jhi,dbl_mb(k_buf),
      &                    ihi-ilo+1,1.0d0)
             endif
           enddo

@@ -39,8 +39,8 @@
       nproc = ga_nnodes()
       basis = noft_instances%basis
 !
-      call ga_zero(noft_oper%el_1)
-      call ga_distribution(noft_oper%el_1,iproc,klo,khi,llo,lhi)
+      call ga_zero(noft_oper%ao_el_1)
+      call ga_distribution(noft_oper%ao_el_1,iproc,klo,khi,llo,lhi)
 !
       if (.not.bas_numcont(basis,nshell)) call errquit
      &  (pname//" bas_numcont failed for basis",basis,
@@ -68,16 +68,16 @@
               call int_1eke(basis,jshell,basis,ishell,
      &                      mem1,dbl_mb(k_scr),
      &                      max1e,dbl_mb(k_buf))
-              call ga_acc(noft_oper%el_1,ilo,ihi,jlo,jhi,dbl_mb(k_buf),
-     &                    ihi-ilo+1,1.0d0)
+              call ga_acc(noft_oper%ao_el_1,ilo,ihi,jlo,jhi,
+     &                    dbl_mb(k_buf),ihi-ilo+1,1.0d0)
 !
 !             Nuclear attraction integrals
 !
               call int_1epe(basis,jshell,basis,ishell,
      &                      mem1,dbl_mb(k_scr),
      &                      max1e,dbl_mb(k_buf))
-              call ga_acc(noft_oper%el_1,ilo,ihi,jlo,jhi,dbl_mb(k_buf),
-     &                    ihi-ilo+1,1.0d0)
+              call ga_acc(noft_oper%ao_el_1,ilo,ihi,jlo,jhi,
+     &                    dbl_mb(k_buf),ihi-ilo+1,1.0d0)
             endif
           enddo
         endif

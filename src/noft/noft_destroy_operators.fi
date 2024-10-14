@@ -16,12 +16,50 @@
 !
       character(len=23), parameter :: pname = "noft_destroy_operators"
 !
-      if (.not.nga_destroy(noft_oper%s))
-     &  call errquit(pname//" failed to destroy overlap",0,GA_ERR)
-      if (.not.nga_destroy(noft_oper%el_1))
-     &  call errquit(pname//" failed to destroy 1-electron",0,GA_ERR)
-      if (.not.nga_destroy(noft_oper%el_2))
-     &  call errquit(pname//" failed to destroy 2-electron",0,GA_ERR)
+      if (noft_oper%ao_s.ne.0) then
+        if (.not.nga_destroy(noft_oper%ao_s))
+     &    call errquit(pname//" failed to destroy overlap",0,GA_ERR)
+      endif
+      if (noft_oper%ao_el_1.ne.0) then
+        if (.not.nga_destroy(noft_oper%ao_el_1))
+     &    call errquit(pname//" failed to destroy 1-electron",0,GA_ERR)
+      endif
+      if (noft_oper%ao_el_2.ne.0) then
+        if (.not.nga_destroy(noft_oper%ao_el_2))
+     &    call errquit(pname//" failed to destroy 2-electron",0,GA_ERR)
+      endif
+      if (noft_oper%so_s.ne.0) then
+        if (.not.nga_destroy(noft_oper%so_s))
+     &    call errquit(pname//" failed to destroy overlap",0,GA_ERR)
+      endif
+      if (noft_oper%so_el_1.ne.0) then
+        if (.not.nga_destroy(noft_oper%so_el_1))
+     &    call errquit(pname//" failed to destroy 1-electron",0,GA_ERR)
+      endif
+      if (noft_oper%so_el_2.ne.0) then
+        if (.not.nga_destroy(noft_oper%so_el_2))
+     &    call errquit(pname//" failed to destroy 2-electron",0,GA_ERR)
+      endif
+      if (noft_oper%moa_el_1.ne.0) then
+        if (.not.nga_destroy(noft_oper%moa_el_1))
+     &    call errquit(pname//" failed to destroy 1-electron",0,GA_ERR)
+      endif
+      if (noft_oper%mob_el_1.ne.0) then
+        if (.not.nga_destroy(noft_oper%mob_el_1))
+     &    call errquit(pname//" failed to destroy 1-electron",0,GA_ERR)
+      endif
+      if (noft_oper%moaa_el_2.ne.0) then
+        if (.not.nga_destroy(noft_oper%moaa_el_2))
+     &    call errquit(pname//" failed to destroy 2-electron",0,GA_ERR)
+      endif
+      if (noft_oper%moab_el_2.ne.0) then
+        if (.not.nga_destroy(noft_oper%moab_el_2))
+     &    call errquit(pname//" failed to destroy 2-electron",0,GA_ERR)
+      endif
+      if (noft_oper%mobb_el_2.ne.0) then
+        if (.not.nga_destroy(noft_oper%mobb_el_2))
+     &    call errquit(pname//" failed to destroy 2-electron",0,GA_ERR)
+      endif
 !
       end subroutine noft_destroy_operators
 !-----------------------------------------------------------------------

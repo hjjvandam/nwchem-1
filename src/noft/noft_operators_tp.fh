@@ -9,11 +9,27 @@
 !> type holds all these operators together.
 !>
       type noft_operators_tp
-        !> The 1-electron operator (T+V)
-        integer :: el_1
-        !> The 2-electron operator
-        integer :: el_2
-        !> The overlap operator
-        integer :: s
+        !> The 1-electron operator (T+V) in AO basis
+        integer :: ao_el_1
+        !> The 2-electron operator in AO basis
+        integer :: ao_el_2
+        !> The overlap operator in AO basis
+        integer :: ao_s
+        !> The 1-electron operator (T+V) in orthogonal basis
+        integer :: so_el_1
+        !> The 2-electron operator in orthogonal basis
+        integer :: so_el_2
+        !> The overlap operator in orthogonal basis
+        integer :: so_s
+        !> The alpha 1-electron operator (T+V) in MO basis
+        integer :: moa_el_1
+        !> The beta  1-electron operator (T+V) in MO basis
+        integer :: mob_el_1
+        !> The alpha-alpha 2-electron operator in MO basis
+        integer :: moaa_el_2
+        !> The alpha-beta  2-electron operator in MO basis
+        integer :: moab_el_2
+        !> The beta-beta   2-electron operator in MO basis
+        integer :: mobb_el_2
       end type noft_operators_tp
 !-----------------------------------------------------------------------

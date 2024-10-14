@@ -53,7 +53,7 @@
       iproc = ga_nodeid()
       nproc = ga_nnodes()
       basis = noft_instances%basis
-      call nga_distribution(noft_oper%el_2,iproc,ilo,ihi)
+      call nga_distribution(noft_oper%ao_el_2,iproc,ilo,ihi)
 !
       if (.not. bas_numcont(basis, nshell))
      &    call errquit(pname//" bas_numcont failed for basis",
@@ -93,7 +93,7 @@
                       jld(2) = jhi(2) - jlo(2) + 1
                       jld(3) = jhi(3) - jlo(3) + 1
                       jld(4) = jhi(4) - jlo(4) + 1
-                      call nga_put(noft_oper%el_2,jlo,jhi,eri,jld)
+                      call nga_put(noft_oper%ao_el_2,jlo,jhi,eri,jld)
                     endif
                   enddo
                 endif

@@ -15,12 +15,15 @@
       integer :: g_el_1
       integer :: g_vec
 !
-      g_el_1 = noft_oper%el_1
+      g_el_1 = noft_oper%ao_el_1
       g_vec  = noft_wavefunction%so
       call noft_2index(g_el_1,g_vec,g_out)
-      if (.not.ga_destroy(g_el_1))
-     &  call errquit(pname//" failed to destroy g_el_1")
-      noft_oper%el_1 = g_out
+      if (.not.ga_destroy(g_el_1)) then
+        call errquit(pname//" failed to destroy g_el_1")
+      else
+        noft_oper%ao_el_1 = 0
+      endif
+      noft_oper%so_el_1 = g_out
 !
       end subroutine noft_ortho_operators
 !

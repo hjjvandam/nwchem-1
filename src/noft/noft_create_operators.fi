@@ -26,14 +26,22 @@
 !
       dims = noft_params%nao
       chunk = 10
-      if (.not.nga_create(mt_dbl,2,dims,"overlap",chunk,noft_oper%s))
+      if (.not.nga_create(mt_dbl,2,dims,"overlap",chunk,noft_oper%ao_s))
      &  call errquit(pname//" failed to create overlap",0,GA_ERR)
       if (.not.nga_create(mt_dbl,2,dims,"1-electron",chunk,
-     &                    noft_oper%el_1))
+     &                    noft_oper%ao_el_1))
      &  call errquit(pname//" failed to create 1-electron",0,GA_ERR)
       if (.not.nga_create(mt_dbl,4,dims,"2-electron",chunk,
-     &                    noft_oper%el_2))
+     &                    noft_oper%ao_el_2))
      &  call errquit(pname//" failed to create 2-electron",0,GA_ERR)
+      noft_oper%so_s      = 0
+      noft_oper%so_el_1   = 0
+      noft_oper%so_el_2   = 0
+      noft_oper%moa_el_1  = 0
+      noft_oper%mob_el_1  = 0
+      noft_oper%moaa_el_2 = 0
+      noft_oper%moab_el_2 = 0
+      noft_oper%mobb_el_2 = 0
 !
       end subroutine noft_create_operators
 !-----------------------------------------------------------------------

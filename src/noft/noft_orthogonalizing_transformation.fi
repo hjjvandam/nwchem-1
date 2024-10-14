@@ -15,7 +15,7 @@
       integer, parameter :: mxdim = 2
       integer :: dims(mxdim)
       integer :: chunk(mxdim)
-      call noft_lindep(noft_operators%s,noft_wavefunction%so,
+      call noft_lindep(noft_operators%ao_s,noft_wavefunction%so,
      &                 noft_params%nso,1.0d-6)
       end subroutine noft_orthogonalizing_transformation
 !
