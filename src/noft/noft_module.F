@@ -25,6 +25,7 @@ c-----------------------------------------------------------------------
 #include "noft_wavefunction_tp.fh"
       contains
 #include "noft_2index.fi"
+#include "noft_4index.fi"
 #include "noft_adjust_wavefunction.fi"
 #include "noft_compute_1electron.fi"
 #include "noft_compute_2electron.fi"

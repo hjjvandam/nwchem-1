@@ -1,0 +1,257 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Transform a 4D tensor
+!>
+!> We assume a 4D tensor where the first 2 dimensions correspond to
+!> electron 1, and the second 2 dimensions correspond to electron 2.
+!> The transformation to apply to the indeces of electron 1 might be
+!> different from the transformation for electron 2. Therefore we'll
+!> have two sets of transformations. The dimensions of the
+!> transformations will be the same, i.e. if g_vec1 is an NxM
+!> transformation then g_vec2 has to be an NxM transformation as well.
+!>
+!> A Global Array limitation is that the toolkit only implements 
+!> standard matrix-matrix multiplications. Therefore, to perform the
+!> transformation of two indeces in a 4-index transformation we need
+!> to do this through N**2 matrix transformations. Obviously this
+!> is a disaster in terms of scalability and raw performance. Therefore
+!> we'll have to reimplement this downstream to get good performance,
+!> but now we are more concerned with correctness than performance. So
+!> the simpler the algorithm the better.
+!>
+      subroutine noft_4index(g_opi,g_vec1,g_vec2,g_opo)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+!>    Input operator
+      integer, intent(in) :: g_opi
+!>    Transformation vectors for electron 1
+      integer, intent(in) :: g_vec1
+!>    Transformation vectors for electron 2
+      integer, intent(in) :: g_vec2
+!>    Output operator
+      integer, intent(out) :: g_opo
+!
+!     Local
+!
+      character(len=11), parameter :: pname = "noft_4index"
+      character(len=1), parameter  :: tn = "N"
+      character(len=1), parameter  :: ty = "Y"
+      integer :: g_i1i1i2i2
+      integer :: g_o1o1i2i2
+      integer :: g_o1o1o2o2
+      integer :: g_oi
+      integer :: n_in1,  n_in2
+      integer :: n_out1, n_out2
+      integer :: itp_opi
+      integer :: itp_vec1
+      integer :: itp_vec2
+      integer :: ii, jj, kk, ll
+      real(kind=dp) :: aa, bb
+      integer, parameter :: ndim = 4
+      integer :: n_opi(ndim)
+      integer :: nn(ndim)
+      integer :: chnk(ndim)
+      integer :: alo(ndim), ahi(ndim)
+      integer :: blo(ndim), bhi(ndim)
+      integer :: clo(ndim), chi(ndim)
+!
+      call nga_inquire(g_opi,itp_opi,n_opi,nn)
+      call ga_inquire(g_vec1,itp_vec1,n_in1,n_out1)
+      call ga_inquire(g_vec2,itp_vec2,n_in2,n_out2)
+!
+!     Check types
+!
+      if (itp_opi.ne.itp_vec1) 
+     &  call errquit(pname//" mismatch type opi and vec1",10,UERR)
+      if (itp_opi.ne.itp_vec2) 
+     &  call errquit(pname//" mismatch type opi and vec2",20,UERR)
+!
+!     Check dimensions
+!
+      if (n_in1.ne.n_in2)
+     &  call errquit(pname//" mismatch n_in1 and n_in2",30,UERR)
+      if (n_out1.ne.n_out2)
+     &  call errquit(pname//" mismatch n_out1 and n_out2",40,UERR)
+      do ii = 1, ndim
+        if (n_opi(ii).ne.n_in1)
+     &    call errquit(pname//" mismatch g_opi and n_in1",50,UERR)
+      enddo
+!
+      aa = 1.0_dp
+      bb = 0.0_dp
+      chnk = 10
+      g_i1i1i2i2 = g_opi
+      nn(3) = n_out1
+      nn(4) = n_out1
+      if (.not.nga_create(itp_opi,ndim,nn,"g_ooii",chnk,g_o1o1i2i2))
+     &  call errquit(pname//" nga_create failed for g_iioo",60,GA_ERR)
+      nn(1) = n_out1
+      if (.not.nga_create(itp_opi,2,nn,"g_oi",chnk,g_oi))
+     &  call errquit(pname//" nga_create failed for g_oi",70,GA_ERR)
+      nn(2) = n_out1
+      if (.not.nga_create(itp_opi,ndim,nn,"g_oooo",chnk,g_o1o1o2o2))
+     &  call errquit(pname//" nga_create failed for g_oooo",80,GA_ERR)
+!
+!     Transform the indeces of electron 1
+!
+      do ll = 1, n_in1
+        do kk = 1, n_in1
+!
+          alo(1) =  1
+          alo(2) =  1
+          alo(3) = -1
+          alo(4) = -1
+          ahi(1) = n_out1
+          ahi(2) = n_in1
+          ahi(3) = -2
+          ahi(4) = -2
+!
+          blo(1) =  1
+          blo(2) =  1
+          blo(3) = kk
+          blo(4) = ll
+          bhi(1) = n_in1
+          bhi(2) = n_in1
+          bhi(3) = kk
+          bhi(4) = ll
+!
+          clo(1) =  1
+          clo(2) =  1
+          clo(3) = -1
+          clo(4) = -1
+          chi(1) = n_out1
+          chi(2) = n_in1
+          chi(3) = -2
+          chi(4) = -2
+!
+!         Transform index 1
+!
+          call nga_matmul_patch('t','n',aa,bb,
+     &                          g_vec1,    alo,ahi,
+     &                          g_i1i1i2i2,blo,bhi,
+     &                          g_oi,      clo,chi)
+!
+          alo(1) =  1
+          alo(2) =  1
+          alo(3) = -1
+          alo(4) = -1
+          ahi(1) = n_out1
+          ahi(2) = n_in1
+          ahi(3) = -2
+          ahi(4) = -2
+!
+          blo(1) =  1
+          blo(2) =  1
+          blo(3) = -1
+          blo(4) = -1
+          bhi(1) = n_in1
+          bhi(2) = n_out1
+          bhi(3) = -2
+          bhi(4) = -2
+!
+          clo(1) = 1
+          clo(2) = 1
+          clo(3) = kk
+          clo(4) = ll
+          chi(1) = n_out1
+          chi(2) = n_out1
+          chi(3) = kk
+          chi(4) = ll
+!
+!         Transform index 2
+!
+          call nga_matmul_patch('n','n',aa,bb,
+     &                          g_oi,      alo,ahi,
+     &                          g_vec1,    blo,bhi,
+     &                          g_o1o1i2i2,clo,chi)
+!
+        enddo ! kk
+      enddo ! ll
+!
+!     Transform the indeces of electron 2
+!
+      do jj = 1, n_out1
+        do ii = 1, n_out1
+!
+          alo(1) =  1
+          alo(2) =  1
+          alo(3) = -1
+          alo(4) = -1
+          ahi(1) = n_out1
+          ahi(2) = n_in1
+          ahi(3) = -2
+          ahi(4) = -2
+!
+          blo(1) = ii
+          blo(2) = jj
+          blo(3) = 1
+          blo(4) = 1
+          bhi(1) = ii
+          bhi(2) = jj
+          bhi(3) = n_in1
+          bhi(4) = n_in1
+!
+          clo(1) =  1
+          clo(2) =  1
+          clo(3) = -1
+          clo(4) = -1
+          chi(1) = n_out1
+          chi(2) = n_in1
+          chi(3) = -2
+          chi(4) = -2
+!
+!         Transform index 3
+!
+          call nga_matmul_patch('t','n',aa,bb,
+     &                          g_vec2,    alo,ahi,
+     &                          g_o1o1i2i2,blo,bhi,
+     &                          g_oi,      clo,chi)
+!
+          alo(1) =  1
+          alo(2) =  1
+          alo(3) = -1
+          alo(4) = -1
+          ahi(1) = n_out1
+          ahi(2) = n_in1
+          ahi(3) = -2
+          ahi(4) = -2
+!
+          blo(1) =  1
+          blo(2) =  1
+          blo(3) = -1
+          blo(4) = -1
+          bhi(1) = n_in1
+          bhi(2) = n_out1
+          bhi(3) = -2
+          bhi(4) = -2
+!
+          clo(1) = ii
+          clo(2) = jj
+          clo(3) = 1
+          clo(4) = 1
+          chi(1) = ii
+          chi(2) = jj
+          chi(3) = n_out1
+          chi(4) = n_out1
+!
+!         Transform index 4
+!
+          call nga_matmul_patch('n','n',aa,bb,
+     &                          g_oi,      alo,ahi,
+     &                          g_vec2,    blo,bhi,
+     &                          g_o1o1o2o2,clo,chi)
+!
+        enddo ! ii
+      enddo ! jj
+!
+      g_opo = g_o1o1o2o2
+      if (.not.ga_destroy(g_oi))
+     &  call errquit(pname//" failed to destroy g_oi",90,GA_ERR)
+      if (.not.ga_destroy(g_o1o1i2i2))
+     &  call errquit(pname//" failed to destroy g_ooii",100,GA_ERR)
+!
+      end subroutine noft_4index
+!
+!-----------------------------------------------------------------------

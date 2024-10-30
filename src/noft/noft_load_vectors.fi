@@ -132,35 +132,35 @@
 !
       tag = "noft:input vectors"
       if (.not. rtdb_cput(rtdb, tag, 1, movecs_in)) then
-         call errquit("writing movecs to RTDB failed")
+         call errquit("writing movecs to RTDB failed",10,RTDB_ERR)
       endif
       tag = "noft:output vectors"
       if (.not. rtdb_cput(rtdb, tag, 1, movecs_out)) then
-         call errquit("writing movecs to RTDB failed")
+         call errquit("writing movecs to RTDB failed",20,RTDB_ERR)
       endif
       tag = "noft:input s-vectors"
       if (.not. rtdb_cput(rtdb, tag, 1, svecs_in)) then
-         call errquit("writing movecs to RTDB failed")
+         call errquit("writing movecs to RTDB failed",30,RTDB_ERR)
       endif
       tag = "noft:output s-vectors"
       if (.not. rtdb_cput(rtdb, tag, 1, svecs_out)) then
-         call errquit("writing movecs to RTDB failed")
+         call errquit("writing movecs to RTDB failed",40,RTDB_ERR)
       endif
       tag = "noft:input m-vectors"
       if (.not. rtdb_cput(rtdb, tag, 1, mvecs_in)) then
-         call errquit("writing movecs to RTDB failed")
+         call errquit("writing movecs to RTDB failed",50,RTDB_ERR)
       endif
       tag = "noft:output m-vectors"
       if (.not. rtdb_cput(rtdb, tag, 1, mvecs_out)) then
-         call errquit("writing movecs to RTDB failed")
+         call errquit("writing movecs to RTDB failed",60,RTDB_ERR)
       endif
       tag = "noft:input t-vectors"
       if (.not. rtdb_cput(rtdb, tag, 1, tvecs_in)) then
-         call errquit("writing movecs to RTDB failed")
+         call errquit("writing movecs to RTDB failed",70,RTDB_ERR)
       endif
       tag = "noft:output t-vectors"
       if (.not. rtdb_cput(rtdb, tag, 1, tvecs_out)) then
-         call errquit("writing movecs to RTDB failed")
+         call errquit("writing movecs to RTDB failed",80,RTDB_ERR)
       endif
 !
       end subroutine noft_load_vectors
