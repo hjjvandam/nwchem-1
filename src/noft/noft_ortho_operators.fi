@@ -13,6 +13,7 @@
       character(len=22), parameter :: pname = "noft_ortho_operators"
       integer :: g_out
       integer :: g_el_1
+      integer :: g_el_2
       integer :: g_vec
 !
       g_el_1 = noft_oper%ao_el_1
@@ -24,6 +25,15 @@
         noft_oper%ao_el_1 = 0
       endif
       noft_oper%so_el_1 = g_out
+!
+      g_el_2 = noft_oper%ao_el_2
+      call noft_4index(g_el_2,g_vec,g_vec,g_out)
+      if (.not.ga_destroy(g_el_2)) then
+        call errquit(pname//" failed to destroy g_el_2",20,GA_ERR)
+      else
+        noft_oper%ao_el_2 = 0
+      endif
+      noft_oper%so_el_2 = g_out
 !
       end subroutine noft_ortho_operators
 !
