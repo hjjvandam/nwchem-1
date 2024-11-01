@@ -24,6 +24,8 @@
         real(kind=dp) :: p_aa
         !> The power for the opposite spin 2-electron off-diagonal
         real(kind=dp) :: p_ab
+        !> "Temperature"
+        real(kind=dp) :: temperature
         !> The number of open shell orbitals
         integer :: no_open
         !> The number of alpha-electrons

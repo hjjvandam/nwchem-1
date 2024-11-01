@@ -30,6 +30,7 @@
       real(kind=dp) :: c_ab
       real(kind=dp) :: p_aa
       real(kind=dp) :: p_ab
+      real(kind=dp) :: temperature
       integer       :: nindep ! Number of linearly independ vectors
       real(kind=dp) :: cindep ! Cutoff to determine independ vectors
       do while (inp_read())
@@ -118,6 +119,18 @@
           if (.not. rtdb_put(rtdb, "noft:p_ab", mt_dbl, 1, p_ab))
      &      call errquit("noft_input: rtdb_put failed", 70, RTDB_ERR)
 !
+!       "Temperature"
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "temperature"))
+     &  then
+          if (.not. inp_f(temperature))
+     &      call errquit("noft_input: read temperature failed",
+     &                   0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:temperature", mt_dbl, 1,
+     &                       temperature))
+     &      call errquit("noft_input: rtdb_put failed", 80, RTDB_ERR)
+!
 !       Lindep [ off | nvec <integer num> | cutoff <real val> ]
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"lindep"))
@@ -158,11 +171,11 @@
           enddo
           if (nindep.gt.-2) then
             if (.not. rtdb_put(rtdb, "noft:nindep", mt_int, 1, nindep))
-     &        call errquit("noft_input: rtdb_put failed", 80, RTDB_ERR)
+     &        call errquit("noft_input: rtdb_put failed", 90, RTDB_ERR)
           endif
           if (cindep.gt.-2.0d0) then
             if (.not. rtdb_put(rtdb, "noft:cindep", mt_dbl, 1, cindep))
-     &        call errquit("noft_input: rtdb_put failed", 82, RTDB_ERR)
+     &        call errquit("noft_input: rtdb_put failed", 92, RTDB_ERR)
           endif
 !
 !       End
