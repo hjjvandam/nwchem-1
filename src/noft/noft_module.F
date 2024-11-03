@@ -36,6 +36,7 @@ c-----------------------------------------------------------------------
 #include "noft_destroy_operators.fi"
 #include "noft_destroy_wavefunction.fi"
 #include "noft_gemm.fi"
+#include "noft_guess_mos.fi"
 #include "noft_guess_tilde.fi"
 #include "noft_lindep.fi"
 #include "noft_load_basis.fi"
