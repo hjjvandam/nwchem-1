@@ -44,10 +44,10 @@
       aa = 1.0_dp
       bb = 0.0_dp
       chunk = 10
-      if (.not.ga_create(itp_opo,1,n_opi,1,n_opo,"g_tmp",
+      if (.not.ga_create(itp_opo,n_opi,n_opo,"g_tmp",
      &                   chunk,chunk,g_tmp))
      &  call errquit(pname//" failed to create g_tmp",30,GA_ERR)
-      if (.not.ga_create(itp_opo,1,n_opo,1,n_opo,"g_opo",
+      if (.not.ga_create(itp_opo,n_opo,n_opo,"g_opo",
      &                   chunk,chunk,g_opo))
      &  call errquit(pname//" failed to create g_opo",40,GA_ERR)
       call ga_dgemm(tn,tn,n_opi,n_opo,n_opi,aa,g_opi,g_vec,bb,g_tmp)

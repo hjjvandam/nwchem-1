@@ -62,7 +62,7 @@
       endif
 !
       allocate(eigval(1:nao))
-      if (.not.ga_create(MT_DBL,1,nao,1,nao,"g_vec",-1,-1,g_vec))
+      if (.not.ga_create(MT_DBL,nao,nao,"g_vec",-1,-1,g_vec))
      &  call errquit(pname//"failed to allocate g_vec",0,GA_ERR)
 !
 #ifdef PARALLEL_DIAG
