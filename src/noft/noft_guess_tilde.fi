@@ -1,16 +1,16 @@
 !-----------------------------------------------------------------------
 !
 !>
-!> \brief Guess the correlation functions 
+!> \brief Guess the tilde functions 
 !>
-!> Currently it is believed that it is important that the correlation
+!> Currently it is believed that it is important that the tilde
 !> function coefficients are non-zero everywhere so that all functions
 !> will mix if fractional occupation numbers are beneficial. At the
-!> same time it is important that the correlation functions 
+!> same time it is important that the tilde functions 
 !> coefficients decay as a function of energy so that the calculation
 !> starts reasonably close to the expected answer. 
 !>
-!> To guess the correlation function coefficients the eigenvalues of
+!> To guess the tilde function coefficients the eigenvalues of
 !> the natural orbitals are used. For each orbital it is assumed that
 !> the coefficients decay exponentially as a function of the energy
 !> difference with the current function. In the case guess functions
@@ -106,13 +106,13 @@
       call ga_brdcst(100,rndm,ma_sizeof(MT_DBL,nmo,MT_BYTE),0)
       call ga_sync()
 !
-!     Setup the alpha correlation functions
+!     Setup the alpha tilde functions
 !
       call noft_guess_tilde_spin(nmo,ncorea,nvirta,
      &                           noft_wavefunction%to_a,
      &                           eig,neig,rndm,Tinitial)
 !
-!     Setup the beta correlation functions
+!     Setup the beta tilde functions
 !
       call noft_guess_tilde_spin(nmo,ncoreb,nvirtb,
      &                           noft_wavefunction%to_b,
