@@ -1,0 +1,41 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Generate the initial wavefunction
+!>
+!> The initial wavefunction is guessed in two consecutive steps.
+!> First the molecular orbitals (MOs) are guessed. This also generates
+!> eigenvalues for those orbitals, which are used in the next step.
+!> Second the tilde functions are guessed (using the orbital eigen-
+!> values).
+!>
+      subroutine noft_guess_wavefunction(rtdb,noft_instances,
+     &                                   noft_params,noft_operators,
+     &                                   noft_wavefunction)
+      implicit none
+!>    The runtime database handle
+      integer, intent(in) :: rtdb
+!>    The calculation instances
+      type(noft_instances_tp), intent(in) :: noft_instances
+!>    The parameters of the calculation
+      type(noft_parameter_tp), intent(in) :: noft_params
+!>    The calculation operators
+      type(noft_operators_tp), intent(in) :: noft_operators
+!>    The wavefunction
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+!
+!     Local
+!
+      real(kind=dp), allocatable :: eigval(:)
+      integer :: nmo
+!
+      nmo = noft_params%nmo
+!
+      allocate(eigval(1:nmo))
+      call noft_guess_mos(rtdb,noft_instances,noft_params,
+     &                    noft_operators,noft_wavefunction,eigval)
+      call noft_guess_tilde(noft_params,noft_wavefunction,eigval,nmo)
+      deallocate(eigval)
+!
+      end subroutine noft_guess_wavefunction
+!
+!-----------------------------------------------------------------------

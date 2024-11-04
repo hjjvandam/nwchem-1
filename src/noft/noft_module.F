@@ -38,6 +38,7 @@ c-----------------------------------------------------------------------
 #include "noft_gemm.fi"
 #include "noft_guess_mos.fi"
 #include "noft_guess_tilde.fi"
+#include "noft_guess_wavefunction.fi"
 #include "noft_lindep.fi"
 #include "noft_load_basis.fi"
 #include "noft_load_geometry.fi"

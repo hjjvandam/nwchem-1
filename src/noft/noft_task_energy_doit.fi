@@ -14,6 +14,7 @@ c-----------------------------------------------------------------------
 !
 !     Local
 !
+#include "errquit.fh"
 #include "stdio.fh"
 !
       type(noft_files_tp)        :: noft_vectors
@@ -44,6 +45,12 @@ c-----------------------------------------------------------------------
       call noft_orthogonalizing_transformation(noft_params,noft_oper,
      &                                         noft_wavefunction)
       call noft_adjust_wavefunction(noft_params,noft_wavefunction)
+      if (noft_vectors%movecs_in.eq."atomic") then
+        call noft_guess_wavefunction(rtdb,noft_instances,noft_params,
+     &                               noft_oper,noft_wavefunction)
+      else
+        call errquit("invalid initial wavefunction",10,CAPMIS_ERR)
+      endif
       call noft_destroy_wavefunction(noft_wavefunction)
       end function noft_task_energy_doit
 c-----------------------------------------------------------------------
