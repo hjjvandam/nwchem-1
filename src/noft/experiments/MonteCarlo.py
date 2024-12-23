@@ -65,6 +65,14 @@ def update(p,s,a,b,c):
         pp[ii] = p[ii]*a + (b*(2.0*abs(s[ii])-p[ii])+c*p[ii])*(1.0-a)
         if pp[ii] < 1.0e-5:
             pp[ii] = 1.0e-5
+    zz = "# "
+    for ii in range(n):
+        if pp[ii] < p[ii]:
+            tt = " -"
+        else:
+            tt = " +"
+        zz += tt
+    #print(zz)
     return pp
 
 def scale(p,a):
@@ -79,18 +87,18 @@ n = 10
 p = np.ones(n)
 m = p
 x = 1000.0*np.ones(n)+rr(n,100.0)
+for ii in range(n):
+    x[ii] = x[ii]/(1.0*(ii+1)*(ii+1))
 e_x = E(x)
 it = 0
-print(str(os.get_terminal_size()))
-fp = open("montecarlo_out","w")
 text = f"{it:5d}   {e_x:18.8f}  "
 for aa in p:
     text += f" {aa:12.6f}"
 text += "  "
 for aa in x:
     text += f" {aa:10.4f}"
-text += "\n"
-fp.write(text)
+#text += "\n"
+print(text)
 while max(p) > 1.0e-4:
     it += 1
     s = rc(p)
@@ -121,13 +129,12 @@ while max(p) > 1.0e-4:
     text += "  "
     for aa in x:
         text += f" {aa:10.4f}"
-    text += "\n"
-    fp.write(text)
+    #text += "\n"
+    print(text)
 #print(f"{str(it)}   {str(m)}")
 #fp.write(str(it)+"   "+str(m)+"\n")
 text = f"{it:5d}   {e_x:18.8f}  "
 for aa in m:
     text += f" {aa:12.6f}"
-text += "\n"
-fp.write(text)
-fp.close()
+#text += "\n"
+print(text)
