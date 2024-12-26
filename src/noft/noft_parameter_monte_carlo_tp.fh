@@ -17,11 +17,11 @@
         !> rotation based
         real(kind=dp) :: step_maximum
         !> the \f$a\f$ parameter in the step size update
-        real(kind=dp) :: aa
+        real(kind=dp) :: scale_a
         !> the \f$b\f$ parameter in the step size update
-        real(kind=dp) :: bb
+        real(kind=dp) :: scale_b
         !> the \f$c\f$ parameter in the step size update
-        real(kind=dp) :: cc
+        real(kind=dp) :: scale_c
         !> the scale factor for globally shrinking the step size
         real(kind=dp) :: scale
         !> the maximum number of iterations (i.e. energy evaluations)

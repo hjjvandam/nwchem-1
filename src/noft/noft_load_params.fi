@@ -10,6 +10,7 @@
 #include "errquit.fh"
 #include "mafdecls.fh"
 #include "rtdb.fh"
+#include "noft_solver_options.fh"
       !> The runtime database handle
       integer, intent(in) :: rtdb
       !> The calculation parameters
@@ -94,6 +95,25 @@
       else
         noft_params%temperature = 0.5
       endif
-
+!
+!     Load the solver selection
+!
+      if (rtdb_get(rtdb,"noft:solver", MT_INT, 1,
+     &             noft_params%solver)) then
+      else
+        noft_params%solver = monte_carlo
+      endif
+!
+!     Load the solver parameters
+!
+      if      (noft_params%solver.eq.monte_carlo) then
+        call noft_load_monte_carlo_params(rtdb,noft_params%monte_carlo)
+      else if (noft_params%solver.eq.gradient_descent) then
+        call errquit("Gradient descent not implemented (yet)", 0,
+     &               CAPMIS_ERR)
+      else
+        call errquit("Invalid solver algorithm", 0, UERR)
+      endif
+!
       end subroutine noft_load_params
 !-----------------------------------------------------------------------

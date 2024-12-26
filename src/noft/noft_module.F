@@ -45,6 +45,7 @@ c-----------------------------------------------------------------------
 #include "noft_load_geometry.fi"
 #include "noft_load_geometry_basis.fi"
 #include "noft_load_lindep.fi"
+#include "noft_load_monte_carlo_params.fi"
 #include "noft_load_params.fi"
 #include "noft_load_vectors.fi"
 #include "noft_ortho_operators.fi"

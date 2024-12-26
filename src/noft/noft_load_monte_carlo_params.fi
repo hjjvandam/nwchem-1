@@ -1,0 +1,93 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Load the parameters for the Monte Carlo solver
+!>
+      subroutine noft_load_monte_carlo_params(rtdb,params)
+      implicit none
+#include "errquit.fh"
+#include "mafdecls.fh"
+#include "rtdb.fh"
+      !> The runtime database handle
+      integer, intent(in) :: rtdb
+      !> The Monte Carlo parameters
+      type(noft_parameter_monte_carlo_tp), intent(out) :: params
+!
+!     Local
+!
+      real(kind=dp), parameter :: pi = acos(-1.0_dp)
+!
+!     Load the convergence threshold
+!
+      if (rtdb_get(rtdb,"noft:mc:threshold",MT_DBL,1,
+     &             params%step_threshold))
+     &then
+      else
+        params%step_threshold = 1.0d-4
+      endif
+!
+!     Load the range maximum
+!
+      if (rtdb_get(rtdb,"noft:mc:stepmax",MT_DBL,1,
+     &             params%step_maximum))
+     &then
+      else
+        params%step_maximum = 0.5*pi
+      endif
+!
+!     Load the a-scale factor
+!
+      if (rtdb_get(rtdb,"noft:mc:scale_a",MT_DBL,1,
+     &             params%scale_a))
+     &then
+      else
+        params%scale_a = 0.9_dp
+      endif
+!
+!     Load the b-scale factor
+!
+      if (rtdb_get(rtdb,"noft:mc:scale_b",MT_DBL,1,
+     &             params%scale_b))
+     &then
+      else
+        params%scale_b = 2.0_dp
+      endif
+!
+!     Load the c-scale factor
+!
+      if (rtdb_get(rtdb,"noft:mc:scale_c",MT_DBL,1,
+     &             params%scale_c))
+     &then
+      else
+        params%scale_c = 1.5_dp
+      endif
+!
+!     Load the failure scale factor
+!
+      if (rtdb_get(rtdb,"noft:mc:scale",MT_DBL,1,
+     &             params%scale))
+     &then
+      else
+        params%scale = 0.5_dp
+      endif
+!
+!     Load the maximum number of iterations
+!
+      if (rtdb_get(rtdb,"noft:mc:maxiter",MT_INT,1,
+     &             params%maxiter))
+     &then
+      else
+        params%maxiter = 7500
+      endif
+!
+!     Load the consecutive_fails
+!
+      if (rtdb_get(rtdb,"noft:mc:fails",MT_INT,1,
+     &             params%consecutive_fails))
+     &then
+      else
+        params%consecutive_fails = 10
+      endif
+!
+      end subroutine noft_load_monte_carlo_params
+!
+!-----------------------------------------------------------------------
