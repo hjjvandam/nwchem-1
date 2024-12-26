@@ -57,7 +57,14 @@
 !> update of those states. So more realistically the ranges should be 
 !> limited to \f$\[-\pi/2,+\pi-2\]\f$.
 !>
-      subroutine noft_solve_monte_carlo()
+      subroutine noft_solve_monte_carlo(noft_params,noft_instances,
+     &           noft_operators,noft_wavefunction)
       implicit none
+#include "errquit.fh"
+#include "mafdecls.fh"
+      type(noft_parameter_tp),    intent(in)    :: noft_params
+      type(noft_instances_tp),    intent(in)    :: noft_instances
+      type(noft_operators_tp),    intent(inout) :: noft_operators
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
       end subroutine noft_solve_monte_carlo
 !-----------------------------------------------------------------------

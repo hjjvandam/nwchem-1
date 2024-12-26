@@ -1,0 +1,20 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Data type for rotations in Monte Carlo solver
+!>
+!> In the Monte Carlo solver we pick random angles of rotation. These
+!> angles are converted into actual rotation matrices. This data type
+!> is used to store these rotation matrices.
+!>
+      type noft_monte_carlo_rotation_tp
+        !> range for rotations among alpha MOs
+        integer :: mo_a
+        !> range for rotations among beta  MOs
+        integer :: mo_b
+        !> range for rotations among alpha TOs
+        integer :: to_a
+        !> range for rotations among beta  TOs
+        integer :: to_b
+      end type noft_monte_carlo_rotation_tp
+!
+!-----------------------------------------------------------------------

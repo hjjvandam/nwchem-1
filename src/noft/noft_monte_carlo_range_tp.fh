@@ -1,0 +1,28 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Data type for ranges in Monte Carlo solver
+!>
+!> In the Monte Carlo solver we pick random angles of rotation. This
+!> data type is used to store global arrays that hold the upper limts
+!> on the angle of rotation. For a given \f$p_{ij}\f$ the allowable
+!> angles of rotation are \f$\theta\in[-p_{ij},p_{ij}]\f$.
+!>
+!> Because the entire 2x2 rotation matrix coupling 2 states is defined
+!> by a single angle we only need to store one triangle of angles, and
+!> likewise corresponding ranges. Here we choose to use the upper
+!> triangle only (i.e. \f$p_{ij},\;i<j\f$). For simplicity we store
+!> \f$p\f$ as a square matrix, this can be replaced with, for example,
+!> a vector later.
+!>
+      type noft_monte_carlo_range_tp
+        !> range for rotations among alpha MOs
+        integer :: mo_a
+        !> range for rotations among beta  MOs
+        integer :: mo_b
+        !> range for rotations among alpha TOs
+        integer :: to_a
+        !> range for rotations among beta  TOs
+        integer :: to_b
+      end type noft_monte_carlo_range_tp
+!
+!-----------------------------------------------------------------------

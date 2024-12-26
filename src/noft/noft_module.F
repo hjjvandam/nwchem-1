@@ -20,6 +20,9 @@ c-----------------------------------------------------------------------
 #include "noft_fock_tp.fh"
 #include "noft_instances_tp.fh"
 #include "noft_lindep_tp.fh"
+#include "noft_monte_carlo_range_tp.fh"
+#include "noft_monte_carlo_rotation_tp.fh"
+#include "noft_monte_carlo_step_tp.fh"
 #include "noft_operators_tp.fh"
 #include "noft_parameter_monte_carlo_tp.fh"
 #include "noft_parameter_tp.fh"
@@ -57,6 +60,7 @@ c-----------------------------------------------------------------------
 #include "noft_set_nao.fi"
 #include "noft_set_nuclear_energy.fi"
 #include "noft_set_num_electrons.fi"
+#include "noft_solve_monte_carlo.fi"
 #include "noft_task_energy_doit.fi"
       end module noft
 !>

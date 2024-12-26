@@ -16,6 +16,7 @@ c-----------------------------------------------------------------------
 !
 #include "errquit.fh"
 #include "stdio.fh"
+#include "noft_solver_options.fh"
 !
       type(noft_files_tp)        :: noft_vectors
       type(noft_instances_tp)    :: noft_instances
@@ -50,6 +51,12 @@ c-----------------------------------------------------------------------
      &                               noft_oper,noft_wavefunction)
       else
         call errquit("invalid initial wavefunction",10,CAPMIS_ERR)
+      endif
+      if (noft_params%solver.eq.monte_carlo) then
+        call noft_solve_monte_carlo(noft_params,noft_instances,
+     &                              noft_oper,noft_wavefunction)
+      else
+        call errquit("invalid solver selection",20,CAPMIS_ERR)
       endif
       call noft_destroy_wavefunction(noft_wavefunction)
       end function noft_task_energy_doit

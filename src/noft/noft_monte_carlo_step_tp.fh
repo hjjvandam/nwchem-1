@@ -1,0 +1,27 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Data type for steps in Monte Carlo solver
+!>
+!> In the Monte Carlo solver we pick random angles of rotation. This
+!> data type is used to store global arrays that hold the step in terms
+!> of the angles of rotation that was chosen.
+!>
+!> Because the entire 2x2 rotation matrix coupling 2 states is defined
+!> by a single angle we only need to store one triangle of angles.
+!> Here we choose to use the upper
+!> triangle only (i.e. \f$s_{ij},\;i<j\f$). For simplicity we store
+!> \f$s\f$ as a square matrix, this can be replaced with, for example,
+!> a vector later.
+!>
+      type noft_monte_carlo_step_tp
+        !> step for rotations among alpha MOs
+        integer :: mo_a
+        !> step for rotations among beta  MOs
+        integer :: mo_b
+        !> step for rotations among alpha TOs
+        integer :: to_a
+        !> step for rotations among beta  TOs
+        integer :: to_b
+      end type noft_monte_carlo_step_tp
+!
+!-----------------------------------------------------------------------
