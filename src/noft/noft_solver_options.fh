@@ -1,0 +1,8 @@
+!-----------------------------------------------------------------------
+!>
+!> Enumerate solver algorithm options
+!>
+      integer, parameter :: monte_carlo = 1
+      integer, parameter :: gradient_descent = 2
+!
+!-----------------------------------------------------------------------

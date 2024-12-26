@@ -1,0 +1,34 @@
+#ifndef NOFT_PARAMETER_MONTE_CARLO_TP
+#define NOFT_PARAMETER_MONTE_CARLO_TP
+!-----------------------------------------------------------------------
+!>
+!> \brief Parameters for the Monte Carlo solver
+!>
+!> The Monte Carlo solver has a number of parameters of its own. These
+!> parameters are stored in this data type. Most of the parameters are
+!> explained in noft_solve_monte_carlo.fi and MonteCarlo.py.
+!>
+!>
+      type noft_parameter_monte_carlo_tp
+        !> the step size threshold below which the calculation is
+        !> converged
+        real(kind=dp) :: step_threshold
+        !> the maximum step size given that the optimization is 
+        !> rotation based
+        real(kind=dp) :: step_maximum
+        !> the \f$a\f$ parameter in the step size update
+        real(kind=dp) :: aa
+        !> the \f$b\f$ parameter in the step size update
+        real(kind=dp) :: bb
+        !> the \f$c\f$ parameter in the step size update
+        real(kind=dp) :: cc
+        !> the scale factor for globally shrinking the step size
+        real(kind=dp) :: scale
+        !> the maximum number of iterations (i.e. energy evaluations)
+        integer       :: maxiter
+        !> the number of consecutive failed guesses after which the
+        !> step size is scaled down
+        integer       :: consecutive_fails
+      end type noft_parameter_monte_carlo_tp
+!-----------------------------------------------------------------------
+#endif

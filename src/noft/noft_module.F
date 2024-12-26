@@ -21,6 +21,7 @@ c-----------------------------------------------------------------------
 #include "noft_instances_tp.fh"
 #include "noft_lindep_tp.fh"
 #include "noft_operators_tp.fh"
+#include "noft_parameter_monte_carlo_tp.fh"
 #include "noft_parameter_tp.fh"
 #include "noft_wavefunction_tp.fh"
       contains

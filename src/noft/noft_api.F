@@ -178,6 +178,13 @@
      &        call errquit("noft_input: rtdb_put failed", 92, RTDB_ERR)
           endif
 !
+!       MonteCarlo
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "montecarlo"))
+     &  then
+          call noft_input_monte_carlo(rtdb)
+!
 !       End
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"end"))
@@ -189,6 +196,129 @@
       enddo
       call errquit("noft_input: inp_read failed", 0, INPUT_ERR)
       end subroutine noft_input
+!>
+!>----------------------------------------------------------------------
+!>
+!> \brief Input the Monte Carlo parameters
+!>
+      subroutine noft_input_monte_carlo(rtdb)
+      implicit none
+#include "errquit.fh"
+#include "rtdb.fh"
+#include "inp.fh"
+#include "mafdecls.fh"
+#include "noft_solver_options.fh"
+      integer, intent(inout) :: rtdb !> [Input] The runtime database
+!
+      integer, parameter :: dp = selected_real_kind(15)
+      character(len=255) :: test
+      character(len=25), parameter :: pname = "noft_input_monte_carlo: "
+      integer :: maxiter
+      integer :: fails
+      real(kind=dp) :: threshold
+      real(kind=dp) :: stepmax
+      real(kind=dp) :: scale_a
+      real(kind=dp) :: scale_b
+      real(kind=dp) :: scale_c
+      real(kind=dp) :: scale
+!
+      do while (inp_read())
+        if (.not. inp_a(test))
+     &    call errquit("noft_input: keyword read failed", 10,
+     &                 INPUT_ERR)
+!
+!       (Step) Threshold
+!
+        if (inp_compare(.false.,test(1:inp_strlen(test)),"threshold"))
+     &  then
+          if (.not. inp_f(threshold))
+     &      call errquit(pname//"read threshold failed", 20, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:mc:threshold",MT_DBL,1,
+     &                       threshold))
+     &      call errquit(pname//"rtdb_put failed", 20, RTDB_ERR)
+!
+!       (Step) Maximum
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "stepmax"))
+     &  then
+          if (.not. inp_f(stepmax))
+     &      call errquit(pname//"read stepmax failed", 30, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:mc:stepmax",MT_DBL,1,stepmax))
+     &      call errquit(pname//"rtdb_put failed", 30, RTDB_ERR)
+!
+!       Scale_a
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "scale_a"))
+     &  then
+          if (.not. inp_f(scale_a))
+     &      call errquit(pname//"read scale_a failed", 40, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:mc:scale_a",MT_DBL,1,scale_a))
+     &      call errquit(pname//"rtdb_put failed", 40, RTDB_ERR)
+!
+!       Scale_b
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "scale_b"))
+     &  then
+          if (.not. inp_f(scale_b))
+     &      call errquit(pname//"read scale_b failed", 50, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:mc:scale_b",MT_DBL,1,scale_b))
+     &      call errquit(pname//"rtdb_put failed", 50, RTDB_ERR)
+!
+!       Scale_c
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "scale_c"))
+     &  then
+          if (.not. inp_f(scale_c))
+     &      call errquit(pname//"read scale_c failed", 60, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:mc:scale_c",MT_DBL,1,scale_c))
+     &      call errquit(pname//"rtdb_put failed", 60, RTDB_ERR)
+!
+!       Scale
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"scale"))
+     &  then
+          if (.not. inp_f(scale))
+     &      call errquit(pname//"read scale failed", 70, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:mc:scale",MT_DBL,1,scale))
+     &      call errquit(pname//"rtdb_put failed", 70, RTDB_ERR)
+!
+!       Maxiter
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "maxiter"))
+     &  then
+          if (.not. inp_i(maxiter))
+     &      call errquit(pname//"read maxiter failed", 80, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:mc:maxiter",MT_DBL,1,maxiter))
+     &      call errquit(pname//"rtdb_put failed", 80, RTDB_ERR)
+!
+!       Fails
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"fails"))
+     &  then
+          if (.not. inp_i(fails))
+     &      call errquit(pname//"read fails failed", 90, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:mc:fails",MT_DBL,1,fails))
+     &      call errquit(pname//"rtdb_put failed", 90, RTDB_ERR)
+!
+!       End
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"end"))
+     &  then
+          if (.not. rtdb_put(rtdb, "noft:solver", mt_int, 1,
+     &                       monte_carlo))
+     &      call errquit("noft_input: rtdb_put failed", 100, RTDB_ERR)
+          return
+        else
+          call errquit("noft_input: unknown directive", 110, INPUT_ERR)
+        endif
+      enddo
+!
+      end subroutine noft_input_monte_carlo
 !>
 !>----------------------------------------------------------------------
 !>

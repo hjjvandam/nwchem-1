@@ -5,6 +5,7 @@
 !> These parameters are entities that do not change throughout the
 !> calculation, but that are also simple quantities.
 !>
+#include "noft_parameter_monte_carlo_tp.fh"
       type noft_parameter_tp
         !> The required convergence threshold
         real(kind=dp) :: threshold
@@ -48,7 +49,11 @@
         integer :: nso
         !> The number of MOs
         integer :: nmo
-        !> Teh number of TOs
+        !> The number of TOs
         integer :: nto
+        !> The solver algorithm
+        integer :: solver
+        !> The Monte Carlo parameters
+        type(noft_parameter_monte_carlo_tp) :: monte_carlo
       end type noft_parameter_tp
 !-----------------------------------------------------------------------

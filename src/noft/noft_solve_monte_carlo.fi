@@ -1,0 +1,63 @@
+!-----------------------------------------------------------------------
+!> \brief Minimize the energy with Monte Carlo
+!>
+!> Minimize the energy with a Monte Carlo method. The steps are
+!> expressed in terms of rotation angles. The rotation is then given by
+!> \f{eqnarray*}{
+!>    R &=& \begin{pmatrix}
+!>          \cos\theta & -\sin\theta \\
+!>          \sin\theta &  \cos\theta
+!>          \end{pmatrix}
+!> \f}
+!> To construct a rotation matrix the \f$\theta\f$-s are randomly
+!> chosen. Therefore for every \f$\theta\f$ holds that in the extreme
+!> case \f$\theta\in\left[-\pi,\pi\right]\f$.
+!> In the algorithm we keep ranges
+!> \f$p_{ij}\in\left[0,\pi\right]\f$ and randomly choose
+!> \f$\theta_{ij}\in\left[-p_{ij},p_{ij}\right]\f$. The average step
+!> over many draws is 0, but the average absolute value of the step
+!> is \f$p_{ij}/2\f$.
+!>
+!> We need an algorithm that ensures we choose the largest step to 
+!> make progress quickly. But the algorithm also needs to shrink the
+!> step size if the goal is reached. When the goal is reached the step
+!> size for a successful step is 0. In that case the step range should
+!> shrink.
+!>
+!> If the state is far from the goal and therefore the average step
+!> \f$s\f$ is around \f$p_{ij}/2\f$ then the range should grow.
+!> If the state is close to the goal and therefore the average step
+!> size for successful steps is smaller than \f$p_{ij}/2\f$ then
+!> the range should shrink. 
+!> In MonteCarlo.py we have used this expression to update the range:
+!> \f{eqnarray*}{
+!>   p^{i+1} &=& p^i \cdot a + [ b (2 |s| - p^i) + c \cdot p^i ] (1-a)
+!> \f}
+!> with the parameters: a=0.9; b=2.0; c=1.5. 
+!> In addition we maintain a minimum value of the range. This value is
+!> smaller than the convergence criterion but larger than 0. 
+!>
+!> Yet, because Monte Carlo is a probablistic optimizer these
+!> considerations are not enough. In a real Monte Carlo simulation you
+!> can accidentally guess the right answer in a particular dimension.
+!> This leaves no option to find an improvement but the range is still
+!> large. Hence we need an additional criterion, one that says that
+!> if we have many failed attempts to find a step that improves the
+!> state then we must be closer to the answer than we thought, and 
+!> based on that shrink the range. In MonteCarlo.py this notion is 
+!> implemented scaling the range down every 10 consecutive attempts at
+!> guessing a successful step.
+!>
+!> The final consideration is that MonteCarlo.py minimizes a parabolic
+!> energy expression and therefore a valid range runs from \f$-\infty\f$
+!> to \f$+\infty\f$. As stated above the case that is considered here
+!> involves rotations, and therefore sensible ranges are limited to 
+!> the range from \f$-\pi\f$ to \f$+\pi\f$. In fact a rotation by
+!> \f$\pi\f$ corresponds to an interchange of two states rather than an
+!> update of those states. So more realistically the ranges should be 
+!> limited to \f$\[-\pi/2,+\pi-2\]\f$.
+!>
+      subroutine noft_solve_monte_carlo()
+      implicit none
+      end subroutine noft_solve_monte_carlo
+!-----------------------------------------------------------------------
