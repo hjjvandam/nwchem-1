@@ -1,0 +1,260 @@
+!-----------------------------------------------------------------------
+!> \brief Create Monte Carlo range
+!>
+!> This subroutine creates all the global arrays for a Monte Carlo
+!> range data type.
+!>
+      subroutine noft_monte_carlo_range_create(noft_parameters,
+     &                                         noft_range)
+      implicit none
+#include "global.fh"
+#include "mafdecls.fh"
+#include "errquit.fh"
+      type(noft_parameter_tp),         intent(in)  :: noft_parameters
+      type(noft_monte_carlo_range_tp), intent(out) :: noft_range
+!
+!     Local
+!
+      character(len=30), parameter :: pname
+     &     = "noft_monte_carlo_range_create: "
+      integer :: nmo
+      integer :: nto
+      integer :: mo_a, mo_b
+      integer :: to_a, to_b
+!
+      nmo = noft_parameters%nmo
+      nto = noft_parameters%nto
+!
+      if (.not.ga_create(MT_DBL,nmo,nmo,"range mo a",-1,-1,mo_a))
+     &  call errquit(pname//"failed to create MO_a",10,GA_ERR)
+      if (.not.ga_create(MT_DBL,nmo,nmo,"range mo b",-1,-1,mo_b))
+     &  call errquit(pname//"failed to create MO_b",20,GA_ERR)
+      if (.not.ga_create(MT_DBL,nto,nto,"range to a",-1,-1,to_a))
+     &  call errquit(pname//"failed to create TO_a",30,GA_ERR)
+      if (.not.ga_create(MT_DBL,nto,nto,"range mo b",-1,-1,to_b))
+     &  call errquit(pname//"failed to create TO_b",40,GA_ERR)
+!
+      noft_range%mo_a = mo_a
+      noft_range%mo_b = mo_b
+      noft_range%to_a = to_a
+      noft_range%to_b = to_b
+!
+      end subroutine noft_monte_carlo_range_create
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Destroy Monte Carlo range
+!>
+!> Simply clean up all the global arrays associated with a Monte Carlo
+!> range.
+!>
+      subroutine noft_monte_carlo_range_destroy(noft_range)
+      implicit none
+#include "global.fh"
+#include "errquit.fh"
+      type(noft_monte_carlo_range_tp), intent(inout) :: noft_range
+!
+      character(len=30), parameter :: pname
+     &    = "noft_monte_carlo_range_destroy: "
+!
+      if (.not.ga_destroy(noft_range%mo_a))
+     &  call errquit(pname//"failed to destroy mo_a",10,GA_ERR)
+      if (.not.ga_destroy(noft_range%mo_b))
+     &  call errquit(pname//"failed to destroy mo_b",20,GA_ERR)
+      if (.not.ga_destroy(noft_range%to_a))
+     &  call errquit(pname//"failed to destroy to_a",30,GA_ERR)
+      if (.not.ga_destroy(noft_range%to_b))
+     &  call errquit(pname//"failed to destroy to_b",40,GA_ERR)
+!
+      end subroutine noft_monte_carlo_range_destroy
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Initialize a single range GA
+!>
+!> This subroutine applies the range initialization to one of the
+!> global arrays in the range data type.
+!>
+      subroutine noft_monte_carlo_range_init_1(ga_x,value)
+      implicit none
+#include "global.fh"
+#include "errquit.fh"
+      integer,       intent(inout) :: ga_x
+      real(kind=dp), intent(in)    :: value
+!
+      character(len=30), parameter :: pname
+     &    = "noft_monte_carlo_range_init_1: "
+!
+!     Local
+!
+      integer, parameter     :: ndim = 2
+      real(kind=dp), pointer :: data(:,:)
+      integer                :: ilo(ndim)
+      integer                :: ihi(ndim)
+      integer ii, jj
+!
+      call noft_access(ga_x,data,ilo,ihi)
+      do jj = ilo(2), ihi(2)
+        do ii = ilo(1), ihi(1)
+          if (ii.lt.jj) then
+            data(ii,jj) = value
+          else
+            data(ii,jj) = 0.0d0
+          endif
+        enddo
+      enddo
+      call noft_release(ga_x,data,ilo,ihi)
+!
+      end subroutine noft_monte_carlo_range_init_1
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_monte_carlo_range_init(noft_range,value)
+      implicit none
+#include "global.fh"
+#include "errquit.fh"
+      type(noft_monte_carlo_range_tp), intent(inout) :: noft_range
+      real(kind=dp),                   intent(in)    :: value
+!
+      character(len=30), parameter :: pname
+     &    = "noft_monte_carlo_range_init: "
+!
+      call noft_monte_carlo_range_init_1(noft_range%mo_a,value)
+      call noft_monte_carlo_range_init_1(noft_range%mo_b,value)
+      call noft_monte_carlo_range_init_1(noft_range%to_a,value)
+      call noft_monte_carlo_range_init_1(noft_range%to_b,value)
+!
+      end subroutine noft_monte_carlo_range_init
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Apply update expression to a single range global array
+!>
+!> The update expression is given in MonteCarlo.py.
+!> We operate on local blocks of the range global array. We get the data
+!> from the step global array so that we do not imply that the GA
+!> distributions have to be the same.
+!>
+      subroutine noft_monte_carlo_range_update_1(noft_parameters,
+     &                                           ga_range,ga_step)
+      implicit none
+      !> Contains the expression parameters
+      type(noft_parameter_tp), intent(in)    :: noft_parameters
+      !> The range global array
+      integer,                 intent(inout) :: ga_range
+      !> The step global array
+      integer,                 intent(in)    :: ga_step
+!
+!     Local
+!
+      integer, parameter :: ndim = 2
+      real(kind=dp), pointer :: range(:,:)
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      integer :: ild(ndim)
+      real(kind=dp), allocatable :: step(:,:)
+      integer :: ii, jj
+      real(kind=dp) :: scale_a
+      real(kind=dp) :: scale_b
+      real(kind=dp) :: scale_c
+      real(kind=dp) :: thresh
+!
+      scale_a = noft_parameters%monte_carlo%scale_a
+      scale_b = noft_parameters%monte_carlo%scale_b
+      scale_c = noft_parameters%monte_carlo%scale_c
+      thresh  = noft_parameters%monte_carlo%step_threshold
+      call noft_access(ga_range,range,ilo,ihi)
+      allocate(step(ilo(1):ihi(1),ilo(2):ihi(2)))
+      call nga_get(ga_step,ilo,ihi,step,ild)
+      do jj = ilo(2), ihi(2)
+        do ii = ilo(1), ihi(1)
+          if (ii.lt.jj) then
+            step(ii,jj) = abs(step(ii,jj))
+            range(ii,jj) = scale_a*range(ii,jj)
+     &                   + (scale_b*(2.0d0*step(ii,jj)-range(ii,jj))
+     &                      + scale_c*range(ii,jj))*(1.0d0-scale_a)
+            range(ii,jj) = max(range(ii,jj),0.1d0*thresh)
+          endif
+        enddo
+      enddo
+      deallocate(step)
+      call noft_release(ga_range,range,ilo,ihi)
+!
+      end subroutine noft_monte_carlo_range_update_1
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_monte_carlo_range_update(noft_parameters,
+     &                                         noft_range,noft_step)
+      implicit none
+      type(noft_parameter_tp),         intent(in)    :: noft_parameters
+      type(noft_monte_carlo_range_tp), intent(inout) :: noft_range
+      type(noft_monte_carlo_step_tp),  intent(in)    :: noft_step
+!
+      call noft_monte_carlo_range_update_1(noft_parameters,
+     &     noft_range%mo_a,noft_step%mo_a)
+      call noft_monte_carlo_range_update_1(noft_parameters,
+     &     noft_range%mo_b,noft_step%mo_b)
+      call noft_monte_carlo_range_update_1(noft_parameters,
+     &     noft_range%to_a,noft_step%to_a)
+      call noft_monte_carlo_range_update_1(noft_parameters,
+     &     noft_range%to_b,noft_step%to_b)
+!
+      end subroutine noft_monte_carlo_range_update
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Scale the Monte Carlo range
+!>
+!> After too many failed attempts to find a step that improves the
+!> situation we need to scale the Monte Carlo range down. The scale
+!> factor is stored in the noft_parameters%monte_carlo data structure.
+!>
+!> The implementation is simply a sequence of ga_scale operations.
+!>
+      subroutine noft_monte_carlo_range_scale(noft_parameters,
+     &                                        noft_range)
+      implicit none
+      !> The calculation parameters (including the scale factor)
+      type(noft_parameter_tp), intent(in) :: noft_parameters
+      !> The range global arrays
+      type(noft_monte_carlo_range_tp), intent(inout) :: noft_range
+!
+      call ga_scale(noft_range%mo_a,noft_parameters%monte_carlo%scale)
+      call ga_scale(noft_range%mo_b,noft_parameters%monte_carlo%scale)
+      call ga_scale(noft_range%to_a,noft_parameters%monte_carlo%scale)
+      call ga_scale(noft_range%to_b,noft_parameters%monte_carlo%scale)
+!
+      end subroutine noft_monte_carlo_range_scale
+!-----------------------------------------------------------------------
+!
+!> \brief Find the maximum value in the range data type
+!>
+!> We simply find the maximum value in each of the global arrays,
+!> then we take the maximum of those values.
+!>
+!> We use the ga_maxelt subroutine from the utils directory. This 
+!> implements a collective operation that returns the maximum value
+!> of a global array to all processors. Based on this operation all
+!> processors will have the same maximum value if we simply take the
+!> maximum across all relevant arrays.
+!>
+      subroutine noft_monte_carlo_range_max(noft_range,value)
+      implicit none
+      !> The input Monte Carlo range data
+      type(noft_monte_carlo_range_tp), intent(in) :: noft_range
+      !> The output maximum value
+      real(kind=dp), intent(out) :: value
+!
+!     Local
+!
+      real(kind=dp) :: val1, val2, val3, val4
+!
+      call ga_maxelt(noft_range%mo_a,val1)
+      call ga_maxelt(noft_range%mo_b,val2)
+      call ga_maxelt(noft_range%to_a,val3)
+      call ga_maxelt(noft_range%to_b,val4)
+      value = max(val1,val2,val3,val4)
+!
+      end subroutine noft_monte_carlo_range_max
+!-----------------------------------------------------------------------
