@@ -1,0 +1,223 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief access local pieces of a global array
+!>
+!> This operation is implemented as a collective operation. Every
+!>  process in the current default group is expected to call this
+!> routine. All the processes synchronize so that accessing the local
+!> parts is save. Subsequently a pointer to the local part is set with
+!> an array descriptor. This descriptor is returned. The indices
+!> correspond to the indices in the whole global array.
+!>
+      subroutine noft_access_2d(ga,data,ilo,ihi)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      integer, parameter :: ndim = 2
+      !> The global array handle
+      integer,       intent(in)             :: ga
+      !> The array descriptor
+      real(kind=dp), intent(inout), pointer :: data(:,:)
+      !> The lower limits
+      integer, intent(out) :: ilo(ndim)
+      !> The upper limits
+      integer, intent(out) :: ihi(ndim)
+!
+!     Local
+!
+      target :: dbl_mb
+      integer :: idim
+      integer :: ild(ndim)
+      integer :: indx_lo, indx_hi
+      integer :: iproc
+      integer :: nelem
+!
+      iproc = ga_nodeid()
+      call nga_distribution(ga,iproc,ilo,ihi)
+      call nga_access(ga,ilo,ihi,indx_lo,ild)
+      nelem = 1
+      do idim = 1, ndim
+        nelem = nelem * (ihi(idim)-ilo(idim)+1)
+      enddo
+      indx_hi = indx_lo + nelem - 1
+      data(ilo(1):ihi(1),ilo(2):ihi(2)) => dbl_mb(indx_lo:indx_hi)
+      call ga_sync()
+!
+      end subroutine noft_access_2d
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_access_3d(ga,data,ilo,ihi)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      integer, parameter :: ndim = 3
+      !> The global array handle
+      integer,       intent(in)             :: ga
+      !> The array descriptor
+      real(kind=dp), intent(inout), pointer :: data(:,:,:)
+      !> The lower limits
+      integer, intent(out) :: ilo(ndim)
+      !> The upper limits
+      integer, intent(out) :: ihi(ndim)
+!
+!     Local
+!
+      target :: dbl_mb
+      integer :: idim
+      integer :: ild(ndim)
+      integer :: indx_lo, indx_hi
+      integer :: iproc
+      integer :: nelem
+!
+      iproc = ga_nodeid()
+      call nga_distribution(ga,iproc,ilo,ihi)
+      call nga_access(ga,ilo,ihi,indx_lo,ild)
+      nelem = 1
+      do idim = 1, ndim
+        nelem = nelem * (ihi(idim)-ilo(idim)+1)
+      enddo
+      indx_hi = indx_lo + nelem - 1
+      data(ilo(1):ihi(1),ilo(2):ihi(2),ilo(3):ihi(3))
+     &     => dbl_mb(indx_lo:indx_hi)
+      call ga_sync()
+!
+      end subroutine noft_access_3d
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_access_4d(ga,data,ilo,ihi)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      integer, parameter :: ndim = 4
+      !> The global array handle
+      integer,       intent(in)             :: ga
+      !> The array descriptor
+      real(kind=dp), intent(inout), pointer :: data(:,:,:,:)
+      !> The lower limits
+      integer, intent(out) :: ilo(ndim)
+      !> The upper limits
+      integer, intent(out) :: ihi(ndim)
+!
+!     Local
+!
+      target :: dbl_mb
+      integer :: idim
+      integer :: ild(ndim)
+      integer :: indx_lo, indx_hi
+      integer :: iproc
+      integer :: nelem
+!
+      iproc = ga_nodeid()
+      call nga_distribution(ga,iproc,ilo,ihi)
+      call nga_access(ga,ilo,ihi,indx_lo,ild)
+      nelem = 1
+      do idim = 1, ndim
+        nelem = nelem * (ihi(idim)-ilo(idim)+1)
+      enddo
+      indx_hi = indx_lo + nelem - 1
+      data(ilo(1):ihi(1),ilo(2):ihi(2),ilo(3):ihi(3),ilo(4):ihi(4))
+     &     => dbl_mb(indx_lo:indx_hi)
+      call ga_sync()
+!
+      end subroutine noft_access_4d
+!
+!-----------------------------------------------------------------------
+!
+!> \brief release a local piece of a global array
+!>
+!> We assume that a pointer has been associated with the local part of
+!> a global array with the corresponding noft_access routine.
+!> This subroutine is implemented as a collective operation.
+!>
+!> This subroutine disassociates the array descriptor from the local
+!> global array memory with the nullify statement. The indices ilo and
+!> ihi are reset such that ihi-ilo+1 results in 0. Also the values of
+!> ilo and ihi are such that they are outside the any valid global array
+!> index ranges.
+!>
+!> Synchronization across all processors ensures that all processors
+!> have completed their local access operations before the program
+!> continues.
+!>
+      subroutine noft_release_2d(ga,data,ilo,ihi)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      integer, parameter :: ndim = 2
+      !> The global array handle
+      integer,       intent(in)             :: ga
+      !> The array descriptor
+      real(kind=dp), intent(inout), pointer :: data(:,:)
+      !> The lower limits
+      integer, intent(inout) :: ilo(ndim)
+      !> The upper limits
+      integer, intent(inout) :: ihi(ndim)
+!
+!     Local
+!
+      ilo = -1
+      ihi = -2
+      nullify(data)
+      call ga_sync()
+!
+      end subroutine noft_release_2d
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_release_3d(ga,data,ilo,ihi)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      integer, parameter :: ndim = 3
+      !> The global array handle
+      integer,       intent(in)             :: ga
+      !> The array descriptor
+      real(kind=dp), intent(inout), pointer :: data(:,:,:)
+      !> The lower limits
+      integer, intent(inout) :: ilo(ndim)
+      !> The upper limits
+      integer, intent(inout) :: ihi(ndim)
+!
+!     Local
+!
+      ilo = -1
+      ihi = -2
+      nullify(data)
+      call ga_sync()
+!
+      end subroutine noft_release_3d
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_release_4d(ga,data,ilo,ihi)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      integer, parameter :: ndim = 4
+      !> The global array handle
+      integer,       intent(in)             :: ga
+      !> The array descriptor
+      real(kind=dp), intent(inout), pointer :: data(:,:,:,:)
+      !> The lower limits
+      integer, intent(inout) :: ilo(ndim)
+      !> The upper limits
+      integer, intent(inout) :: ihi(ndim)
+!
+!     Local
+!
+      ilo = -1
+      ihi = -2
+      nullify(data)
+      call ga_sync()
+!
+      end subroutine noft_release_4d
+!
+!-----------------------------------------------------------------------
