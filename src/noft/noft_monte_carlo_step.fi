@@ -1,0 +1,136 @@
+!-----------------------------------------------------------------------
+!
+!> \brief Create Monte Carlo step
+!>
+!> This subroutine creates all the global arrays for a Monte Carlo
+!> step data type.
+!>
+      subroutine noft_monte_carlo_step_create(noft_parameters,
+     &                                        noft_step)
+      implicit none
+#include "global.fh"
+#include "mafdecls.fh"
+#include "errquit.fh"
+      !> The calculation parameters
+      type(noft_parameter_tp),        intent(in)  :: noft_parameters
+      !> The Monte Carlo step
+      type(noft_monte_carlo_step_tp), intent(out) :: noft_step
+!
+!     Local
+!
+      character(len=30), parameter :: pname
+     &   = "noft_monte_carlo_step_create: "
+      integer :: nmo
+      integer :: nto
+      integer :: mo_a, mo_b
+      integer :: to_a, to_b
+!
+      nmo = noft_parameters%nmo
+      nto = noft_parameters%nto
+!
+      if (.not.ga_create(MT_DBL,nmo,nmo,"step mo a",-1,-1,mo_a))
+     &  call errquit(pname//"failed to create MO_a",10,GA_ERR)
+      if (.not.ga_create(MT_DBL,nmo,nmo,"step mo b",-1,-1,mo_b))
+     &  call errquit(pname//"failed to create MO_b",20,GA_ERR)
+      if (.not.ga_create(MT_DBL,nto,nto,"step to a",-1,-1,to_a))
+     &  call errquit(pname//"failed to create TO_a",30,GA_ERR)
+      if (.not.ga_create(MT_DBL,nto,nto,"step mo b",-1,-1,to_b))
+     &  call errquit(pname//"failed to create TO_b",40,GA_ERR)
+!
+      noft_step%mo_a = mo_a
+      noft_step%mo_b = mo_b
+      noft_step%to_a = to_a
+      noft_step%to_b = to_b
+!
+      end subroutine noft_monte_carlo_step_create
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Destroy Monte Carlo step
+!>
+!> Simply clean up all the global arrays associated with a Monte Carlo
+!> step.
+!>
+      subroutine noft_monte_carlo_step_destroy(noft_step)
+      implicit none
+#include "global.fh"
+#include "errquit.fh"
+      !> The Monte Carlo step
+      type(noft_monte_carlo_step_tp), intent(inout) :: noft_step
+      character(len=30), parameter :: pname
+     &   = "noft_monte_carlo_step_destroy: "
+!
+      if (.not.ga_destroy(noft_step%mo_a))
+     &  call errquit(pname//"failed to destroy mo_a",10,GA_ERR)
+      if (.not.ga_destroy(noft_step%mo_b))
+     &  call errquit(pname//"failed to destroy mo_b",20,GA_ERR)
+      if (.not.ga_destroy(noft_step%to_a))
+     &  call errquit(pname//"failed to destroy to_a",30,GA_ERR)
+      if (.not.ga_destroy(noft_step%to_b))
+     &  call errquit(pname//"failed to destroy to_b",40,GA_ERR)
+!
+      end subroutine noft_monte_carlo_step_destroy
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_monte_carlo_step_choose_1(ga_step,ga_range)
+      implicit none
+      !> The Monte Carlo step global array handle
+      integer,  intent(inout) :: ga_step
+      !> The Monte Carlo range global array handle
+      integer, intent(in)     :: ga_range
+!
+!     Local
+!
+      integer, parameter :: ndim = 2
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      integer :: ild(ndim)
+      integer :: ii, jj
+      real(kind=dp), pointer     :: step(:,:)
+      real(kind=dp), allocatable :: range(:,:)
+!
+      call noft_access(ga_step,step,ilo,ihi)
+      allocate(range(ilo(1):ihi(1),ilo(2):ihi(2)))
+      do ii = 1, ndim
+        ild(ii) = ihi(ii) - ilo(ii) + 1
+      enddo
+      call nga_get(ga_range,ilo,ihi,range,ild)
+      call random_number(step)
+      do jj = ilo(2), ihi(2)
+        do ii = ilo(1), ihi(1)
+          step(ii,jj) = 2.0d0*step(ii,jj)*range(ii,jj) - range(ii,jj)
+        enddo
+      enddo
+      deallocate(range)
+      call noft_release(ga_step,step,ilo,ihi)
+!
+      end subroutine noft_monte_carlo_step_choose_1
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Choose the Monte Carlo step
+!>
+!> The Monte Carlo step is randomly chosen. For every step element
+!> \f$s\f$ we randomly pick a value between \f$-r\f$ and \f$r\$, where
+!> \f$r\f$ is the corresponding element from the range argument.
+!>
+      subroutine noft_monte_carlo_step_choose(noft_step,noft_range)
+      implicit none
+      !> The Monte Carlo step
+      type(noft_monte_carlo_step_tp),  intent(inout) :: noft_step
+      !> The Monte Carlo range
+      type(noft_monte_carlo_range_tp), intent(in)    :: noft_range
+!
+      call noft_monte_carlo_step_choose_1(noft_step%mo_a,
+     &                                    noft_range%mo_a)
+      call noft_monte_carlo_step_choose_1(noft_step%mo_b,
+     &                                    noft_range%mo_b)
+      call noft_monte_carlo_step_choose_1(noft_step%to_a,
+     &                                    noft_range%to_a)
+      call noft_monte_carlo_step_choose_1(noft_step%to_b,
+     &                                    noft_range%to_b)
+!
+      end subroutine noft_monte_carlo_step_choose
+!
+!-----------------------------------------------------------------------
