@@ -54,6 +54,7 @@ c-----------------------------------------------------------------------
 #include "noft_load_vectors.fi"
 #include "noft_local.fi"
 #include "noft_monte_carlo_range.fi"
+#include "noft_monte_carlo_rotation.fi"
 #include "noft_monte_carlo_step.fi"
 #include "noft_ortho_operators.fi"
 #include "noft_orthogonalize_vecs.fi"

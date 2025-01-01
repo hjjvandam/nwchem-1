@@ -1,0 +1,167 @@
+!-----------------------------------------------------------------------
+!
+!> \brief Create Monte Carlo rotation matrices
+!>
+!> This subroutine creates all the global arrays for a rotation data
+!> type.
+!>
+      subroutine noft_monte_carlo_rotation_create(noft_parameters,
+     &                                            noft_rotation)
+      implicit none
+#include "global.fh"
+#include "mafdecls.fh"
+#include "errquit.fh"
+      !> The calculation parameters
+      type(noft_parameter_tp),            intent(in)  :: noft_parameters
+      !> The rotation
+      type(noft_monte_carlo_rotation_tp), intent(out) :: noft_rotation
+!
+!     Local
+!
+      character(len=30), parameter :: pname
+     &   = "noft_monte_carlo_rotation_create: "
+      integer :: nmo
+      integer :: nto
+      integer :: mo_a, mo_b
+      integer :: to_a, to_b
+!
+      nmo = noft_parameters%nmo
+      nto = noft_parameters%nto
+!
+      if (.not.ga_create(MT_DBL,nmo,nmo,"rotation mo a",-1,-1,mo_a))
+     &  call errquit(pname//"failed to create MO_a",10,GA_ERR)
+      if (.not.ga_create(MT_DBL,nmo,nmo,"rotation mo b",-1,-1,mo_b))
+     &  call errquit(pname//"failed to create MO_b",20,GA_ERR)
+      if (.not.ga_create(MT_DBL,nto,nto,"rotation to a",-1,-1,to_a))
+     &  call errquit(pname//"failed to create TO_a",30,GA_ERR)
+      if (.not.ga_create(MT_DBL,nto,nto,"rotation mo b",-1,-1,to_b))
+     &  call errquit(pname//"failed to create TO_b",40,GA_ERR)
+!
+      noft_rotation%mo_a = mo_a
+      noft_rotation%mo_b = mo_b
+      noft_rotation%to_a = to_a
+      noft_rotation%to_b = to_b
+!
+      end subroutine noft_monte_carlo_rotation_create
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Destroy Monte Carlo rotation matrices
+!>
+!> Simply clean up all the global arrays associated with a Monte Carlo
+!> rotation data type.
+!>
+      subroutine noft_monte_carlo_rotation_destroy(noft_rotation)
+      implicit none
+#include "global.fh"
+#include "errquit.fh"
+      !> The Monte Carlo rotation
+      type(noft_monte_carlo_rotation_tp), intent(inout) :: noft_rotation
+      character(len=30), parameter :: pname
+     &   = "noft_monte_carlo_rotation_destroy: "
+!
+      if (.not.ga_destroy(noft_rotation%mo_a))
+     &  call errquit(pname//"failed to destroy mo_a",10,GA_ERR)
+      if (.not.ga_destroy(noft_rotation%mo_b))
+     &  call errquit(pname//"failed to destroy mo_b",20,GA_ERR)
+      if (.not.ga_destroy(noft_rotation%to_a))
+     &  call errquit(pname//"failed to destroy to_a",30,GA_ERR)
+      if (.not.ga_destroy(noft_rotation%to_b))
+     &  call errquit(pname//"failed to destroy to_b",40,GA_ERR)
+!
+      end subroutine noft_monte_carlo_rotation_destroy
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Compute Monte Carlo rotation matrix
+!>
+!> Given a skew symmetric step matrix in terms of angles compute
+!> the corresponding rotation matrix.
+!>
+      subroutine noft_monte_carlo_compute_rotation_1(ga_rotation,
+     &                                               ga_step)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+      !> The rotation matrix
+      integer, intent(inout) :: ga_rotation
+      !> The skew symmetric step
+      integer, intent(in)    :: ga_step
+!
+!     Local
+!
+      character(len=30), parameter :: pname
+     &  = "noft_monte_carlo_compute_rotation_1: "
+      integer, parameter :: mdim = 2
+      integer :: idim(mdim)
+      integer :: ilo(mdim)
+      integer :: ihi(mdim)
+      integer :: ild(mdim)
+      integer :: ndim
+      integer :: iproc
+      integer :: nproc
+      integer :: itype
+      integer :: ncol ! the number of columns for this processor
+      integer :: i1, i2
+      !real(kind=dp) :: cc
+      real(kind=dp) :: cd
+      !real(kind=dp) :: cs
+      real(kind=dp), allocatable :: buf(:,:)
+!
+      nproc = ga_nnodes()
+      iproc = ga_nodeid()
+      call nga_inquire(ga_step,itype,ndim,idim)
+      if (ndim.eq.2) then
+        ilo(1) = 1
+        ihi(1) = idim(1)
+        ncol = (idim(2)+nproc-1)/nproc
+        ilo(2) = iproc*ncol+1
+        ihi(2) = min((iproc+1)*ncol,idim(2))
+        ild(1) = ihi(1)-ilo(1)+1
+        ild(2) = ihi(2)-ilo(2)+1
+        if (ilo(2).le.ihi(2)) then
+          allocate(buf(ilo(1):ihi(1),ilo(2):ihi(2)))
+          call nga_get(ga_step,ilo,ihi,buf,ild)
+          do i2 = ilo(2), ihi(2)
+            cd = 1.0_dp
+            do i1 = ilo(1), ihi(1)
+              cd = cd * cos(buf(i1,i2))
+              buf(i1,i2) = sin(buf(i1,i2))
+            enddo
+            buf(i2,i2) = cd
+          enddo
+          call nga_put(ga_rotation,ilo,ihi,buf,ild)
+          deallocate(buf)
+        endif
+      else
+        call errquit(pname//"invalid number of dimensions",
+     &               10, CAPMIS_ERR)
+      endif
+!
+      end subroutine noft_monte_carlo_compute_rotation_1
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_monte_carlo_compute_rotation(noft_rotation,
+     &                                             noft_step)
+      implicit none
+      !> The rotation
+      type(noft_monte_carlo_rotation_tp), intent(inout) :: noft_rotation
+      !> The step
+      type(noft_monte_carlo_step_tp),     intent(in)    :: noft_step
+
+!
+      call ga_sync()
+      call noft_monte_carlo_compute_rotation_1(
+     &         noft_rotation%mo_a,noft_step%mo_a)
+      call noft_monte_carlo_compute_rotation_1(
+     &         noft_rotation%mo_b,noft_step%mo_b)
+      call noft_monte_carlo_compute_rotation_1(
+     &         noft_rotation%to_a,noft_step%to_a)
+      call noft_monte_carlo_compute_rotation_1(
+     &         noft_rotation%to_b,noft_step%to_b)
+      call ga_sync()
+!
+      end subroutine noft_monte_carlo_compute_rotation
+!
+!-----------------------------------------------------------------------

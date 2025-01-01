@@ -158,13 +158,18 @@
       real(kind=dp) :: scale_b
       real(kind=dp) :: scale_c
       real(kind=dp) :: thresh
+      real(kind=dp) :: rangemx
 !
       scale_a = noft_parameters%monte_carlo%scale_a
       scale_b = noft_parameters%monte_carlo%scale_b
       scale_c = noft_parameters%monte_carlo%scale_c
       thresh  = noft_parameters%monte_carlo%step_threshold
+      rangemx = noft_parameters%monte_carlo%step_maximum
       call noft_access(ga_range,range,ilo,ihi)
       allocate(step(ilo(1):ihi(1),ilo(2):ihi(2)))
+      do ii = 1, ndim
+        ild(ii) = ihi(ii) - ilo(ii) + 1
+      enddo
       call nga_get(ga_step,ilo,ihi,step,ild)
       do jj = ilo(2), ihi(2)
         do ii = ilo(1), ihi(1)
@@ -174,6 +179,7 @@
      &                   + (scale_b*(2.0d0*step(ii,jj)-range(ii,jj))
      &                      + scale_c*range(ii,jj))*(1.0d0-scale_a)
             range(ii,jj) = max(range(ii,jj),0.1d0*thresh)
+            range(ii,jj) = min(range(ii,jj),rangemx)
           endif
         enddo
       enddo

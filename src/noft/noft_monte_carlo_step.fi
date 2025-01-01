@@ -73,6 +73,24 @@
 !
 !-----------------------------------------------------------------------
 !
+!> \brief Choose a random step for one set of coordinates
+!>
+!> The step is given in terms of angles. The rotation that we will
+!> construct from this is given by
+!>
+!>      (R_ii R_ij)   ( c  -s )
+!>  R = (         ) = (       )
+!>      (R_ji R_jj)   ( s   c )
+!>
+!> where R_ij = -R_ji (see e.g.
+!> https://en.wikipedia.org/wiki/Jacobi_rotation).
+!> If the step is given in terms of angles then \f$c = \cos(\theta)\f$
+!> and \f$s = \sin(\theta)\f$. Note that \f$\cos\f$ is symmetric around
+!> \f$0\f$ whereas \f$\sin\f$ is anti-symmetric. That means that if 
+!> we ensure that the step matrix is skew symmetric then the skew
+!> symmetry of the rotation matrix is automatically obtained.
+!> Therefore we choose the step matrix so that it is skew symmtric.
+!>
       subroutine noft_monte_carlo_step_choose_1(ga_step,ga_range)
       implicit none
       !> The Monte Carlo step global array handle
@@ -88,9 +106,14 @@
       integer :: ild(ndim)
       integer :: ii, jj
       real(kind=dp), pointer     :: step(:,:)
+      real(kind=dp), allocatable :: stept(:,:)
       real(kind=dp), allocatable :: range(:,:)
+      real(kind=dp) :: onem
 !
+      onem = -1.0d0
+      call ga_zero(ga_step)
       call noft_access(ga_step,step,ilo,ihi)
+      allocate(stept(ilo(2):ihi(2),ilo(1):ihi(1)))
       allocate(range(ilo(1):ihi(1),ilo(2):ihi(2)))
       do ii = 1, ndim
         ild(ii) = ihi(ii) - ilo(ii) + 1
@@ -99,11 +122,15 @@
       call random_number(step)
       do jj = ilo(2), ihi(2)
         do ii = ilo(1), ihi(1)
-          step(ii,jj) = 2.0d0*step(ii,jj)*range(ii,jj) - range(ii,jj)
+          step(ii,jj)  = 2.0d0*step(ii,jj)*range(ii,jj) - range(ii,jj)
+          stept(jj,ii) = step(ii,jj)
         enddo
       enddo
       deallocate(range)
       call noft_release(ga_step,step,ilo,ihi)
+      call ga_acc(ga_step,ilo(2),ihi(2),ilo(1),ihi(1),stept,ild(2),onem)
+      call ga_sync()
+      deallocate(stept)
 !
       end subroutine noft_monte_carlo_step_choose_1
 !
