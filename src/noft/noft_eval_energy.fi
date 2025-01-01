@@ -1,0 +1,16 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Evaluate the energy
+!>
+!> A subroutine to evaluate the energy for a given wave function,
+!>
+      subroutine noft_eval_energy(noft_parameters,noft_operators,
+     &                            noft_wavefunction,noft_energy)
+      implicit none
+      type(noft_parameter_tp),    intent(in)  :: noft_parameters
+      type(noft_operators_tp),    intent(in)  :: noft_operators
+      type(noft_wavefunction_tp), intent(in)  :: noft_wavefunction
+      type(noft_energy_tp),       intent(out) :: noft_energy
+      end subroutine noft_eval_energy
+!
+!-----------------------------------------------------------------------

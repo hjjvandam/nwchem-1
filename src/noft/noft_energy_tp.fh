@@ -8,7 +8,7 @@
 !> - The correlation energy
 !> - The nuclear repulsion energy
 !>
-      type noft_energy
+      type noft_energy_tp
         !> The total energy
         real(kind=dp) :: e_total 
         !> The 1-electron energy
@@ -19,5 +19,5 @@
         real(kind=dp) :: e_correlation
         !> The nuclear repulsion energy
         real(kind=dp) :: e_nuclear
-      end type noft_energy
+      end type noft_energy_tp
 !-----------------------------------------------------------------------
