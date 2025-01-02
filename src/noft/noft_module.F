@@ -67,6 +67,7 @@ c-----------------------------------------------------------------------
 #include "noft_set_nuclear_energy.fi"
 #include "noft_set_num_electrons.fi"
 #include "noft_solve_monte_carlo.fi"
+#include "noft_swap_wavefunctions.fi"
 #include "noft_task_energy_doit.fi"
       end module noft
 !>

@@ -112,8 +112,8 @@
           call noft_monte_carlo_range_update(noft_params,noft_range,
      &                                       noft_step)
           call noft_monte_carlo_range_max(noft_range,range_max)
-          call noft_swap_wavefunction(noft_wavefunction,
-     &                                noft_wavefunction_step)
+          call noft_swap_wavefunctions(noft_wavefunction,
+     &                                 noft_wavefunction_step)
           noft_energy = noft_energy_step
         else if (mod(attempt_count,consecutive_fails).eq.0) then
           !

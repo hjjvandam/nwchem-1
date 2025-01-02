@@ -1,0 +1,40 @@
+!-----------------------------------------------------------------------
+!
+!> \brief Interchange the global arrays of two wavefunctions
+!>
+!> Instead of copying the global array in a wavefunction we can replace
+!> the current wavefunction with the value of a temporary one by
+!> simply interchanging the global array handles. Which is what this
+!> routine does. This "trick" is used in the Monte Carlo solver,
+!> for example.
+!>
+!> Note that the orthogonalizing transformation does not change 
+!> throughout the wavefunction optimization. So the corresponding
+!> global array is not exchanged.
+!>
+      subroutine noft_swap_wavefunctions(noft_wavefunction1,
+     &                                   noft_wavefunction2)
+      implicit none
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction1
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction2
+      integer :: ga_tmp
+!
+      ga_tmp = noft_wavefunction1%mo_a
+      noft_wavefunction1%mo_a = noft_wavefunction2%mo_a
+      noft_wavefunction2%mo_a = ga_tmp
+!
+      ga_tmp = noft_wavefunction1%mo_b
+      noft_wavefunction1%mo_b = noft_wavefunction2%mo_b
+      noft_wavefunction2%mo_b = ga_tmp
+!
+      ga_tmp = noft_wavefunction1%to_a
+      noft_wavefunction1%to_a = noft_wavefunction2%to_a
+      noft_wavefunction2%to_a = ga_tmp
+!
+      ga_tmp = noft_wavefunction1%to_b
+      noft_wavefunction1%to_b = noft_wavefunction2%to_b
+      noft_wavefunction2%to_b = ga_tmp
+!
+      end subroutine noft_swap_wavefunctions
+!
+!-----------------------------------------------------------------------
