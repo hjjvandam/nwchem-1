@@ -1,0 +1,52 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Apply the step rotation to generate a new wavefunction
+!>
+!> We have the rotation matrices. Now we just apply the rotations to
+!> current wavefunction to generate the new wavefunction.
+!>
+      subroutine noft_monte_carlo_rotate_wavefunction(
+     &           noft_wavefunction_step,noft_rotation,noft_wavefunction)
+      implicit none
+      !> The wavefunction after applying step rotation
+      type(noft_wavefunction_tp), intent(inout) ::
+     &     noft_wavefunction_step
+      !> The rotations
+      type(noft_monte_carlo_rotation_tp), intent(in) :: noft_rotation
+      !> The current wavefunction
+      type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
+!
+!     Local
+!
+      integer :: mm, nn, kk
+      integer :: itype
+      real(kind=dp),    parameter :: alpha = 1.0_dp
+      real(kind=dp),    parameter :: beta  = 0.0_dp
+      character(len=1), parameter :: tn = "N"
+      integer :: in, iout, irot
+!
+      call ga_inquire(noft_wavefunction%mo_a,itype,mm,nn)
+      kk = nn
+!
+      in   = noft_wavefunction%mo_a
+      iout = noft_wavefunction_step%mo_a
+      irot = noft_rotation%mo_a
+      call ga_dgemm(tn,tn,mm,nn,kk,alpha,in,irot,beta,iout)
+!
+      in   = noft_wavefunction%mo_b
+      iout = noft_wavefunction_step%mo_b
+      irot = noft_rotation%mo_b
+      call ga_dgemm(tn,tn,mm,nn,kk,alpha,in,irot,beta,iout)
+!
+      in   = noft_wavefunction%to_a
+      iout = noft_wavefunction_step%to_a
+      irot = noft_rotation%to_a
+      call ga_dgemm(tn,tn,mm,nn,kk,alpha,in,irot,beta,iout)
+!
+      in   = noft_wavefunction%to_b
+      iout = noft_wavefunction_step%to_b
+      irot = noft_rotation%to_b
+      call ga_dgemm(tn,tn,mm,nn,kk,alpha,in,irot,beta,iout)
+!
+      end subroutine noft_monte_carlo_rotate_wavefunction
+!-----------------------------------------------------------------------
