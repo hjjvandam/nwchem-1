@@ -1,0 +1,45 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief calculate the 1-electron occupation numbers
+!>
+!> Calculate the 1-electron occupation numbers for a particular spin
+!> channel, either \f$\alpah\f$ or \f$\beta\f$. The occupation numbers
+!> are returned in a 1-dimensional global array.
+!>
+       subroutine noft_1e_occupation(g_t,ne,g_v)
+       implicit none
+       !> The tilde vectors
+       integer, intent(in) :: g_t
+       !> The number of electrons in this spin channel
+       integer, intent(in) :: ne
+       !> The vector of occupation numbers
+       integer, intent(inout) :: g_v
+!
+!      Local
+!
+       real(kind=dp), pointer     :: tt(:,:)
+       real(kind=dp), allocatable :: vv(:)
+       integer, parameter :: ndim = 2
+       integer :: ilo(ndim), ihi(ndim), ild(ndim)
+       integer :: ii, jj
+!
+       call ga_zero(g_v)
+       call noft_access(g_t,tt,ilo,ihi)
+       do ii = 1, ndim
+         ild(ii) = ihi(ii) - ilo(ii) + 1
+       enddo
+       allocate(vv(ilo(1):ihi(1)))
+       vv = 0.0_dp
+       do jj = ilo(2), min(ihi(2),ne)
+         do ii = ilo(1), ihi(1)
+           vv(ii) = vv(ii) + tt(ii,jj)*tt(ii,jj)
+         enddo
+       enddo
+       if (ilo(2).le.ne) then
+         call nga_acc(g_v,ilo,ihi,vv,ild,1.0_dp)
+       endif
+       deallocate(vv)
+       call noft_release(g_t,tt,ilo,ihi)
+!
+       end subroutine noft_1e_occupation
+!-----------------------------------------------------------------------
