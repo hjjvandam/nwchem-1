@@ -29,6 +29,8 @@ c-----------------------------------------------------------------------
 #include "noft_parameter_tp.fh"
 #include "noft_wavefunction_tp.fh"
       contains
+#include "noft_1e_occupation.fi"
+#include "noft_2e_occupation.fi"
 #include "noft_2index.fi"
 #include "noft_4index.fi"
 #include "noft_adjust_wavefunction.fi"

@@ -1,0 +1,131 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Calculate the Coulomb like occupation numbers
+!>
+!> The Coulomb like occupation numbers are simply product of the
+!> 1-electron occupation numbers.
+!>
+      subroutine noft_2e_occupation_c(g_v,ne,g_o)
+      implicit none
+      !> The 1-electron occupation numbers
+      integer, intent(in)    :: g_v
+      !> The number of electrons
+      integer, intent(in)    :: ne
+      !> The Coulomb like pair occupation numbers
+      integer, intent(inout) :: g_o
+!
+!     Local
+!
+      integer, parameter :: ndim = 2
+      integer :: ilo(ndim), ihi(ndim), ild(ndim)
+      real(kind=dp), pointer :: oo(:,:)
+      real(kind=dp), allocatable :: v1(:)
+      real(kind=dp), allocatable :: v2(:)
+      integer :: ii, jj
+!
+      call noft_access(g_o,oo,ilo,ihi)
+      do ii = 1, ndim
+        ild(ii) = ihi(ii) - ilo(ii) + 1
+      enddo
+      allocate(v1(ilo(1):ihi(1)))
+      allocate(v2(ilo(2):ihi(2)))
+      call nga_get(g_v,ilo(1),ihi(1),v1,ild(1))
+      call nga_get(g_v,ilo(2),ihi(2),v2,ild(2))
+      do jj = ilo(2), ihi(2)
+        do ii = ilo(1), ihi(1)
+          oo(ii,jj) = oo(ii,jj) + v1(ii) * v2(jj)
+        enddo
+      enddo
+      deallocate(v2)
+      deallocate(v1)
+      call noft_release(g_o,oo,ilo,ihi)
+      end subroutine noft_2e_occupation_c
+!
+!-----------------------------------------------------------------------
+!>
+!> \brief Calculate the Exchange like occupation numbers
+!>
+!> The Exchange like occupation numbers are those terms that step from
+!> interchange of tilde functions.
+!>
+      subroutine noft_2e_occupation_x(g_t,ne,g_o)
+      implicit none
+      !> The tilde functions for this spin channel
+      integer, intent(in)    :: g_t
+      !> The number of electrons
+      integer, intent(in)    :: ne
+      !> The Exchange like pair occupation numbers
+      integer, intent(inout) :: g_o
+!
+!     Local
+!
+      integer, parameter :: ndim = 2
+      integer :: ilo(ndim),   ihi(ndim),   ild(ndim)
+      integer :: it1lo(ndim), it1hi(ndim), it1ld(ndim)
+      integer :: it2lo(ndim), it2hi(ndim), it2ld(ndim)
+      real(kind=dp), pointer :: oo(:,:)
+      real(kind=dp), allocatable :: t1(:,:)
+      real(kind=dp), allocatable :: t2(:,:)
+      integer :: is, it
+      integer :: i1, i2
+      integer :: ii
+!
+      call noft_access(g_o,oo,ilo,ihi)
+      it1lo(1) = ilo(1)
+      it1lo(2) = 1
+      it1hi(1) = ihi(1)
+      it1hi(2) = ne
+      it2lo(1) = ilo(2)
+      it2lo(2) = 1
+      it2hi(1) = ihi(2)
+      it2hi(2) = ne
+      do ii = 1, ndim
+        ild(ii)   = ihi(ii)   - ilo(ii)   + 1
+        it1ld(ii) = it1hi(ii) - it1lo(ii) + 1
+        it2ld(ii) = it2hi(ii) - it2lo(ii) + 1
+      enddo
+      allocate(t1(it1lo(1):it1hi(1),it1lo(2):it1hi(2)))
+      allocate(t2(it2lo(1):it2hi(1),it2lo(2):it2hi(2)))
+      call nga_get(g_t,it1lo,it1hi,t1,it1ld)
+      call nga_get(g_t,it2lo,it2hi,t2,it2ld)
+!
+      do it = it2lo(2), it2hi(2)
+        do is = it1lo(2), it1hi(2)
+          do i2 = it2lo(1), it2hi(1)
+            do i1 = it1lo(1), it1hi(1)
+              oo(i1,i2) = oo(i1,i2)
+     &        - t1(i1,is)*t1(i1,it)*t2(i2,it)*t2(i2,is)
+            enddo
+          enddo
+        enddo
+      enddo
+!
+      call noft_release(g_o,oo,ilo,ihi)
+!
+      end subroutine noft_2e_occupation_x
+!
+!-----------------------------------------------------------------------
+!>
+!> \brief Calculate the 2-electron occupation numbers
+!>
+!> The total 2-electron occupation numbers are simply the sum of the
+!> Coulomb and Exchange like contributions.
+!>
+      subroutine noft_2e_occupation(g_v,g_t,ne,g_o)
+      implicit none
+      !> The 1-electron occupation numbers
+      integer, intent(in)    :: g_v
+      !> The tilde functions
+      integer, intent(in)    :: g_t
+      !> The number of electrons in this spin channel
+      integer, intent(in)    :: ne
+      !> The total 2-electron occupation numbers
+      integer, intent(inout) :: g_o
+!
+      call ga_zero(g_o)
+      call noft_2e_occupation_c(g_v,ne,g_o)
+      call noft_2e_occupation_x(g_t,ne,g_o)
+!
+      end subroutine noft_2e_occupation
+!
+!-----------------------------------------------------------------------
