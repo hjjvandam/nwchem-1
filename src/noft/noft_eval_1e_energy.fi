@@ -1,0 +1,78 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Calculate the 1-electron energy for a single spin channel
+!>
+!> The 1-electron operators are assumed to have been transformed
+!> into the MO-basis. Then we can just take the diagonal and
+!> dot it with the 1-electron occupation numbers.
+!>
+      subroutine noft_eval_1e_energy_1(g_op,g_v,g_occ,en_1el)
+      implicit none
+#include "global.fh"
+      !> The 1-electron operator
+      integer, intent(in)    :: g_op
+      !> The diagonal of the operator
+      integer, intent(inout) :: g_v
+      !> The occupation numbers
+      integer, intent(in)    :: g_occ
+      !> The 1-electron energy contribution
+      real(kind=dp), intent(out) :: en_1el
+!
+      call ga_get_diag(g_op,g_v)
+      en_1el = ga_ddot(g_v,g_occ)
+!
+      end subroutine noft_eval_1e_energy_1
+!
+!-----------------------------------------------------------------------
+!>
+!> \brief Calculate the 1-electron energy contributions
+!>
+      subroutine noft_eval_1e_energy(noft_parameters,noft_operators,
+     &           noft_occupations,noft_energy)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      !> The calculation parameters
+      type(noft_parameter_tp),   intent(in)    :: noft_parameters
+      !> The operators
+      type(noft_operators_tp),   intent(in)    :: noft_operators
+      !> The occupation numbers
+      type(noft_occupations_tp), intent(in)    :: noft_occupations
+      !> The energy contributions
+      type(noft_energy_tp),      intent(inout) :: noft_energy
+!
+!     Local
+!
+      character(len=20), parameter :: pname
+     &   = "noft_eval_1e_energy: "
+      integer, parameter :: ndim = 1
+      integer :: nmo(ndim), chnk(ndim)
+      integer :: g_v
+      integer :: g_op
+      integer :: g_occ
+      real(kind=dp) :: en_1el
+!
+      noft_energy%e_1electron = 0.0_dp
+!
+      nmo = noft_parameters%nmo
+      chnk = -1
+      if (.not.nga_create(MT_DBL,ndim,nmo,"diagonal",chnk,g_v))
+     &  call errquit(pname//"failed to create diagonal", 10, GA_ERR)
+!
+      g_op = noft_operators%moa_el_1
+      g_occ = noft_occupations%occ_1e_a
+      call noft_eval_1e_energy_1(g_op,g_v,g_occ,en_1el)
+      noft_energy%e_1electron = noft_energy%e_1electron + en_1el
+!
+      g_op = noft_operators%mob_el_1
+      g_occ = noft_occupations%occ_1e_b
+      call noft_eval_1e_energy_1(g_op,g_v,g_occ,en_1el)
+      noft_energy%e_1electron = noft_energy%e_1electron + en_1el
+!
+      if (.not.ga_destroy(g_v))
+     &  call errquit(pname//"failed to destroy diagonal", 20, GA_ERR)
+!
+      end subroutine noft_eval_1e_energy
+!
+!-----------------------------------------------------------------------
