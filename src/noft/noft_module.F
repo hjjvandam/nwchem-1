@@ -61,6 +61,7 @@ c-----------------------------------------------------------------------
 #include "noft_monte_carlo_rotate_wavefunction.fi"
 #include "noft_monte_carlo_rotation.fi"
 #include "noft_monte_carlo_step.fi"
+#include "noft_occupations.fi"
 #include "noft_ortho_operators.fi"
 #include "noft_orthogonalize_vecs.fi"
 #include "noft_orthogonalizing_transformation.fi"

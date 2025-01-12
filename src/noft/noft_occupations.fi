@@ -1,0 +1,95 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Create an occupations data structure
+!>
+!> Basically this involves creating all the relevant global arrays to
+!> populate an occupations data type.
+!>
+      subroutine noft_occupations_create(noft_params,noft_occupations)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      !> The calculation parameters
+      type(noft_parameter_tp),   intent(in)  :: noft_params
+      !> The occupation numbers data structure
+      type(noft_occupations_tp), intent(out) :: noft_occupations
+!
+!     Local
+!
+      character(len=20), parameter :: pname 
+     &  = "noft_occupations_create: "
+      integer, parameter :: ndm1 = 1
+      integer, parameter :: ndm2 = 2
+      integer :: idims(ndm2)
+      integer :: ichnk(ndm2)
+      integer :: nmo
+      integer :: itmp
+!
+      ichnk = -1
+      nmo = noft_params%nmo
+      idims = nmo
+!
+      if (.not.nga_create(MT_DBL,ndm1,idims,"1e alpha occ",ichnk,itmp))
+     &  call errquit(pname//" failed to create 1e alpha occ", 10,
+     &               GA_ERR)
+      noft_occupations%occ_1e_a = itmp
+!
+      if (.not.nga_create(MT_DBL,ndm1,idims,"1e beta occ",ichnk,itmp))
+     &  call errquit(pname//" failed to create 1e beta occ", 20,
+     &               GA_ERR)
+      noft_occupations%occ_1e_b = itmp
+!
+      if (.not.nga_create(MT_DBL,ndm2,idims,"2e alpha-alpha occ",
+     &                    ichnk,itmp))
+     &  call errquit(pname//" failed to create 2e alpha-alpha occ", 30,
+     &               GA_ERR)
+      noft_occupations%occ_2e_aa = itmp
+!
+      if (.not.nga_create(MT_DBL,ndm2,idims,"2e beta-beta occ",
+     &                    ichnk,itmp))
+     &  call errquit(pname//" failed to create 2e beta-beta occ", 40,
+     &               GA_ERR)
+      noft_occupations%occ_2e_bb = itmp
+!
+      end subroutine noft_occupations_create
+!
+!-----------------------------------------------------------------------
+!>
+!> \brief Destroy an occupations data structure
+!>
+!> Basically destroy all the global arrays associated with an
+!> occupations data structure.
+!>
+      subroutine noft_occupations_destroy(noft_occupations)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+      !> The occupation numbers data structure
+      type(noft_occupations_tp), intent(out) :: noft_occupations
+!
+!     Local
+!
+      character(len=20), parameter :: pname
+     &  = "noft_occupations_destroy"
+!
+      if (.not.nga_destroy(noft_occupations%occ_1e_a))
+     &  call errquit(pname//" could not destroy 1e alpha occ", 10,
+     &               GA_ERR)
+      noft_occupations%occ_1e_a = 0
+      if (.not.nga_destroy(noft_occupations%occ_1e_b))
+     &  call errquit(pname//" could not destroy 1e beta occ", 20,
+     &               GA_ERR)
+      noft_occupations%occ_1e_b = 0
+      if (.not.nga_destroy(noft_occupations%occ_2e_aa))
+     &  call errquit(pname//" could not destroy 2e alpha-alpha occ", 30,
+     &               GA_ERR)
+      noft_occupations%occ_2e_aa = 0
+      if (.not.nga_destroy(noft_occupations%occ_2e_bb))
+     &  call errquit(pname//" could not destroy 2e beta-beta occ", 40,
+     &               GA_ERR)
+      noft_occupations%occ_2e_bb = 0
+!
+      end subroutine noft_occupations_destroy
+!
+!-----------------------------------------------------------------------
