@@ -93,3 +93,42 @@
       end subroutine noft_occupations_destroy
 !
 !-----------------------------------------------------------------------
+!>
+!> \brief Calculate the occupation numbers
+!>
+      subroutine noft_occupations_calculate(noft_parameters,
+     &           noft_wavefunction,noft_occupation)
+      implicit none
+      !> The calculation parameters
+      type(noft_parameter_tp),    intent(in)    :: noft_parameters
+      !> The wavefunction
+      type(noft_wavefunction_tp), intent(in)    :: noft_wavefunction
+      !> The occupation numbers
+      type(noft_occupations_tp),  intent(inout) :: noft_occupation
+!
+!     Local
+!
+      integer :: g_tilde_a
+      integer :: g_tilde_b
+      integer :: ne_a
+      integer :: ne_b
+      integer :: g_occ_a, g_occ_aa
+      integer :: g_occ_b, g_occ_bb
+!
+      g_tilde_a = noft_wavefunction%to_a
+      g_tilde_b = noft_wavefunction%to_b
+      ne_a      = noft_parameters%ne_a
+      ne_b      = noft_parameters%ne_b
+      g_occ_a   = noft_occupation%occ_1e_a
+      g_occ_aa  = noft_occupation%occ_2e_aa
+      g_occ_b   = noft_occupation%occ_1e_b
+      g_occ_bb  = noft_occupation%occ_2e_bb
+!
+      call noft_1e_occupation(g_tilde_a,ne_a,g_occ_a)
+      call noft_1e_occupation(g_tilde_b,ne_b,g_occ_b)
+      call noft_2e_occupation(g_occ_a,g_tilde_a,ne_a,g_occ_aa)
+      call noft_2e_occupation(g_occ_b,g_tilde_b,ne_b,g_occ_bb)
+!
+      end subroutine noft_occupations_calculate
+!
+!-----------------------------------------------------------------------

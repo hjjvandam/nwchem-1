@@ -19,8 +19,17 @@
       integer :: g_el_1
       integer :: g_el_2
       integer :: g_out
+      integer :: g_occ_a
+      integer :: g_occ_aa
+      integer :: g_occ_b
+      integer :: g_occ_bb
       integer :: g_vec_a
       integer :: g_vec_b
+      integer :: g_tilde_a
+      integer :: g_tilde_b
+      integer :: ne_a
+      integer :: ne_b
+      type(noft_occupations_tp) :: noft_occupations
 !
 !     Transform the 1-electron operator to MO basis
 !
@@ -44,7 +53,15 @@
 !
 !     Calculate occupation numbers
 !
-!     Calculate alpha 1-electron occupation numbers
+      call noft_occupations_create(noft_parameters,noft_occupations)
+      call noft_occupations_calculate(noft_parameters,noft_wavefunction,
+     &                                noft_occupations)
+!
+
+!
+!     Clean occupartion number up
+!
+      call noft_occupations_destroy(noft_occupations)
 !
       end subroutine noft_eval_energy
 !
