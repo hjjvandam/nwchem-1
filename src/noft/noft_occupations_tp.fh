@@ -1,0 +1,24 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Data type to hold occupation numbers
+!>
+!> The key occupation numbers in the model are:
+!> - The \f$\alpha\f$ 1-electron occupation numbers
+!> - The \f$\beta\f$  1-electron occupation numbers
+!> - The \f$\alpha\alpha\f$ 2-electron occupation numbers
+!> - The \f$\beta\beta\f$   2-electron occupation numbers
+!> Each of these quantities is stored in a global array. This data type
+!> just holds all these global arrays together.
+!>
+      type noft_occupations_tp
+        !> The \f$\alpha\f$ 1-electron occupation numbers
+        integer :: occ_1e_a
+        !> The \f$\beta\f$  1-electron occupation numbers
+        integer :: occ_1e_b
+        !> The \f$\alpha\alpha\f$ 2-electron occupation numbers
+        integer :: occ_2e_aa
+        !> The \f$\beta\beta\f$   2-electron occupation numbers
+        integer :: occ_2e_bb
+      end type noft_occupations_tp
+!
+!-----------------------------------------------------------------------

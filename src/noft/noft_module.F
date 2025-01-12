@@ -24,6 +24,7 @@ c-----------------------------------------------------------------------
 #include "noft_monte_carlo_range_tp.fh"
 #include "noft_monte_carlo_rotation_tp.fh"
 #include "noft_monte_carlo_step_tp.fh"
+#include "noft_occupations_tp.fh"
 #include "noft_operators_tp.fh"
 #include "noft_parameter_monte_carlo_tp.fh"
 #include "noft_parameter_tp.fh"
