@@ -1,0 +1,83 @@
+!-----------------------------------------------------------------------
+!
+!> \brief Correlation weight of a single occupation number
+!>
+!> The correlation weight corresponding to the occupation number of
+!> a single orbital or orbital pair.
+!>
+      function noft_2el_weight_occ(occ) result(wght)
+      implicit none
+      !> The resulting weight
+      real(kind=dp) :: wght
+      !> The occupation number of a single orbital
+      real(kind=dp), intent(in) :: occ
+!
+      wght = occ*(1.0_dp-occ)
+!
+      end function noft_2el_weight_occ
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Correlation weight of 2-alpha and 2-beta orbitals
+!>
+!> This correlation weight is applied to the alpha-beta correlation 
+!> effects.
+!>
+      function noft_2el_weight_ab(c_ab,p_ab,o1a,o2a,o1b,o2b)
+     &    result(wght)
+      implicit none
+      !> The resulting weight
+      real(kind=dp) :: wght
+      !> The opposite spin correlation coefficient
+      real(kind=dp), intent(in) :: c_ab
+      !> The opposite spin correlation power
+      real(kind=dp), intent(in) :: p_ab
+      !> The occupation number of orbital 1 of the alpha electron
+      real(kind=dp), intent(in) :: o1a
+      !> The occupation number of orbital 2 of the alpha electron
+      real(kind=dp), intent(in) :: o2a
+      !> The occupation number of orbital 1 of the beta electron
+      real(kind=dp), intent(in) :: o1b
+      !> The occupation number of orbital 2 of the beta electron
+      real(kind=dp), intent(in) :: o2b
+!
+      real(kind=dp), parameter :: quarter = 1.0_dp/4.0_dp
+!
+      wght = c_ab*
+     &       (noft_2el_weight_occ(o1a)*
+     &        noft_2el_weight_occ(o1a)*
+     &        noft_2el_weight_occ(o1a)*
+     &        noft_2el_weight_occ(o1a))**(quarter*p_ab)
+!
+      end function noft_2el_weight_ab
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Correlation weight of two same spin orbital pairs
+!>
+!> This correlation weight is applied to the same spin correlation 
+!> effects.
+!>
+      function noft_2el_weight_aa(c_aa,p_aa,o12,o34)
+     &    result(wght)
+      implicit none
+      !> The resulting weight
+      real(kind=dp) :: wght
+      !> The opposite spin correlation coefficient
+      real(kind=dp), intent(in) :: c_aa
+      !> The opposite spin correlation power
+      real(kind=dp), intent(in) :: p_aa
+      !> The occupation number of the first electron pair
+      real(kind=dp), intent(in) :: o12
+      !> The occupation number of the second electron pair
+      real(kind=dp), intent(in) :: o34
+!
+      real(kind=dp), parameter :: half = 1.0_dp/2.0_dp
+!
+      wght = c_aa*
+     &       (noft_2el_weight_occ(o12)*
+     &        noft_2el_weight_occ(o34))**(half*p_aa)
+!
+      end function noft_2el_weight_aa
+!
+!-----------------------------------------------------------------------
