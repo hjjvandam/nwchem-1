@@ -1,0 +1,87 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Sign for 4 1-electron occupation numbers
+!>
+!> This sign function is based on the weak correlation limit. It is
+!> applied to the \f$\alpha\f$-\f$\beta\f$ electron correlation case.
+!> In that case the sign function is
+!> \f{eqnarray}{
+!> s(o_i,o_j,o_k,o_l)
+!>    = \left{\begin{array}{c}
+!>      + \;\iff o_i, o_j, o_k, o_l \gt 1/2 \\
+!>      + \;\iff o_i, o_j, o_k, o_l \le 1/2 \\
+!>      - \;\text{otherwise}
+!>      \end{array}\right.
+!> \f}
+!> This function will need to be modified if we want to also take the
+!> strong correlation limit into account.
+!>
+      function noft_2el_sign_1el_occ(o1a,o2a,o1b,o2b) result(sw)
+      implicit none
+      !> The resulting sign
+      real(kind=dp) :: sw
+      !> The occupation number of orbital 1 of the alpha electron
+      real(kind=dp), intent(in) :: o1a
+      !> The occupation number of orbital 2 of the alpha electron
+      real(kind=dp), intent(in) :: o2a
+      !> The occupation number of orbital 1 of the beta electron
+      real(kind=dp), intent(in) :: o1b
+      !> The occupation number of orbital 2 of the beta electron
+      real(kind=dp), intent(in) :: o2b
+!
+      real(kind=dp), parameter :: half = 0.5_dp
+!
+      sw = -1.0_dp
+      if (o1a.le.half.and.o2a.le.half.and.o1b.le.half.and.o2b.le.half)
+     &then
+        sw = 1.0_dp
+      endif
+      if (o1a.gt.half.and.o2a.gt.half.and.o1b.gt.half.and.o2b.gt.half)
+     &then
+        sw = 1.0_dp
+      endif
+!
+      end function noft_2el_sign_1el_occ
+!
+!-----------------------------------------------------------------------
+!>
+!> \brief Sign for 2 2-electron occupation numbers
+!>
+!> This sign function is based on the weak correlation limit. It is
+!> applied to the same spin electron correlation case. In that case
+!> we stricly have electron pair occupation numbers. Otherwise the
+!> the same spin correlation is very similar to the opposite spin
+!> correlation. I.e.
+!> \f{eqnarray}{
+!> s(o_i,o_k)
+!>    = \left{\begin{array}{c}
+!>      + \;\iff o_i, o_k \gt 1/2 \\
+!>      + \;\iff o_i, o_k \le 1/2 \\
+!>      - \;\text{otherwise}
+!>      \end{array}\right.
+!> \f}
+!> This function will need to be modified if we want to also take the
+!> strong correlation limit into account.
+!>
+      function noft_2el_sign_2el_occ(o12,o34) result(sw)
+      implicit none
+      !> The resulting sign
+      real(kind=dp) :: sw
+      !> The occupation number of the 1-2 orbital pair
+      real(kind=dp), intent(in) :: o12
+      !> The occupation number of the 3-4 orbital pair
+      real(kind=dp), intent(in) :: o34
+!
+      real(kind=dp), parameter :: half = 0.5_dp
+!
+      sw = -1.0_dp
+      if (o12.le.half.and.o34.le.half) then
+        sw = 1.0_dp
+      endif
+      if (o12.gt.half.and.o34.gt.half) then
+        sw = 1.0_dp
+      endif
+!
+      end function noft_2el_sign_2el_occ
+!
+!-----------------------------------------------------------------------

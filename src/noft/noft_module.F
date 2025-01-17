@@ -32,6 +32,7 @@ c-----------------------------------------------------------------------
       contains
 #include "noft_1e_occupation.fi"
 #include "noft_2e_occupation.fi"
+#include "noft_2e_sign.fi"
 #include "noft_2index.fi"
 #include "noft_4index.fi"
 #include "noft_adjust_wavefunction.fi"
