@@ -1,0 +1,116 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Calculate the 2-electron energy for opposite spin electrons
+!>
+!> For opposite spin electrons we don't need to worry about exchange
+!> as those terms integrate to zero because the spin functions are
+!> orthogonal. 
+!> 
+!> We do need to to consider the correlation terms.
+!>
+!> Note also that the electron repulsion operator is already transformed
+!> into the molecular orbital basis. 
+!>
+!> The Hartree-Fock like energy is then
+!> \f{eqnarray}{
+!> E_{hf} = \sum_{ik} (ii|kk)o_i o_k
+!> \f}
+!> where \f$i\f$ loops over \f$\alpha\$-orbitals and \f$k\f$ loops over
+!> \f$\beta\f$-orbitals.
+!>
+!> The correlation contributions are given by
+!> \f{eqnarray}{
+!> E_{corr} = \sum_{ijkl} (ij|kl)w(o_i)w(o_j)w(o_k)w(o_l)
+!>                        s(o_i,o_j,o_k,o_l)
+!> \f}
+!> where \f$w\f$ is a function of the occupation number that is 0 at
+!> both 0 and 1 occupation, and \f$s\f$ is a function that determines
+!> the sign of the contributions. Currently we choose \f$s\f$ to 
+!> correspond to the weak correlation limit. In that case 
+!> \f{eqnarray}{
+!>  s = \left{\begin{array}{c}
+!>      + \;\iff o_i, o_j, o_k, o_l \gt 1/2 \\
+!>      + \;\iff o_i, o_j, o_k, o_l \le 1/2 \\
+!>      - \;\text{otherwise}
+!>      \end{array}\right.
+!> \f}
+!>
+      subroutine noft_eval_2e_energy_ab(c_ab,p_ab,occ_1e_a,occ_1e_b,
+     &           moab_el_2,e_2e_ab,e_2e_ab_corr)
+      implicit none
+      !> The opposite spin correlation coefficient
+      real(kind=dp), intent(in) :: c_ab
+      !> The opposite spin correlation power
+      real(kind=dp), intent(in) :: p_ab
+      !> The alpha orbital occupation numbers
+      integer, intent(in) :: occ_1e_a
+      !> The beta orbital occupation numbers
+      integer, intent(in) :: occ_1e_b
+      !> The alpha-beta 2-electron integrals in MO basis
+      integer, intent(in) :: moab_el_2
+      !> The opposite spin Coulomb energy
+      real(kind=dp), intent(out) :: e_2e_ab
+      !> The opposite spin correlation energy
+      real(kind=dp), intent(out) :: e_2e_ab_corr
+!
+      real(kind=dp), allocatable :: occ_i_a(:)
+      real(kind=dp), allocatable :: occ_j_a(:)
+      real(kind=dp), allocatable :: occ_i_b(:)
+      real(kind=dp), allocatable :: occ_j_b(:)
+      real(kind=dp), pointer :: moab(:,:,:,:)
+      real(kind=dp) :: o1a, o2a
+      real(kind=dp) :: o1b, o2b
+      integer, parameter :: ndim = 4
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      integer :: ild(ndim)
+      integer :: i1, i2, i3, i4
+!
+      e_2e_ab = 0.0_dp
+      e_2e_ab_corr = 0.0_dp
+      do i1 = 1, ndim
+        ild(i1) = ihi(i1) - ilo(i1) + 1
+      enddo
+!
+      call noft_access(moab_el_2,moab,ilo,ihi)
+      allocate(occ_i_a(ilo(1):ihi(1)))
+      allocate(occ_j_a(ilo(2):ihi(2)))
+      allocate(occ_i_b(ilo(3):ihi(3)))
+      allocate(occ_j_b(ilo(4):ihi(4)))
+!
+      call nga_get(occ_1e_a,ilo(1),ihi(1),occ_i_a,ild(1))
+      call nga_get(occ_1e_a,ilo(2),ihi(2),occ_j_a,ild(2))
+      call nga_get(occ_1e_b,ilo(3),ihi(3),occ_i_b,ild(3))
+      call nga_get(occ_1e_b,ilo(4),ihi(4),occ_j_b,ild(4))
+!
+      do i4 = ilo(4), ihi(4)
+        do i3 = ilo(3), ihi(3)
+          do i2 = ilo(2), ihi(2)
+            do i1 = ilo(1), ihi(1)
+              if (i1.eq.i2.and.i3.eq.i4) then
+                e_2e_ab = e_2e_ab
+     &                  + occ_i_a(i1)*occ_i_b(i3)*moab(i1,i2,i3,i4)
+              else if (i1.ne.i2.and.i3.ne.i4) then
+                o1a = occ_i_a(i1)
+                o2a = occ_j_a(i2)
+                o1b = occ_i_b(i3)
+                o2b = occ_j_b(i4)
+                e_2e_ab_corr = e_2e_ab_corr
+     &            + moab(i1,i2,i3,i4)*
+     &              noft_2el_weight_ab(c_ab,p_ab,o1a,o2a,o1b,o2b)*
+     &              noft_2el_sign_1el_occ(o1a,o2a,o1b,o2b)
+              endif
+            enddo
+          enddo
+        enddo
+      enddo
+!
+      deallocate(occ_j_b)
+      deallocate(occ_i_b)
+      deallocate(occ_j_a)
+      deallocate(occ_i_a)
+      call noft_release(moab_el_2,moab,ilo,ihi)
+!
+      end subroutine noft_eval_2e_energy_ab
+!
+!-----------------------------------------------------------------------

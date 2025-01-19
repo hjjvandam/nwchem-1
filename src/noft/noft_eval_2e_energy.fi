@@ -1,0 +1,52 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Evaluate the 2-electron energy contributions
+!>
+      subroutine noft_eval_2e_energy(noft_parameters,noft_operators,
+     &                               noft_occupations,noft_energy)
+      implicit none
+      !> The calculation parameters
+      type(noft_parameter_tp),   intent(in)    :: noft_parameters
+      !> The operators
+      type(noft_operators_tp),   intent(in)    :: noft_operators
+      !> The occupation numbers
+      type(noft_occupations_tp), intent(in)    :: noft_occupations
+      !> The energy contributions
+      type(noft_energy_tp),      intent(inout) :: noft_energy
+!
+!     Local
+!
+      real(kind=dp) :: en_2el
+      real(kind=dp) :: en_2el_corr
+      real(kind=dp) :: c_aa, c_ab
+      real(kind=dp) :: p_aa, p_ab
+      integer :: moaa_el_2, moab_el_2, mobb_el_2
+      integer :: occ_1e_a,  occ_1e_b
+      integer :: occ_2e_aa, occ_2e_bb
+!
+      c_aa = noft_parameters%c_aa
+      c_ab = noft_parameters%c_ab
+      p_aa = noft_parameters%p_aa
+      p_ab = noft_parameters%p_ab
+!
+      moaa_el_2 = noft_operators%moaa_el_2
+      moab_el_2 = noft_operators%moab_el_2
+      mobb_el_2 = noft_operators%mobb_el_2
+!
+      occ_1e_a  = noft_occupations%occ_1e_a
+      occ_1e_b  = noft_occupations%occ_1e_b
+      occ_2e_aa = noft_occupations%occ_2e_aa
+      occ_2e_bb = noft_occupations%occ_2e_bb
+!
+      noft_energy%e_2electron = 0.0_dp
+      noft_energy%e_correlation = 0.0_dp
+!
+      call noft_eval_2e_energy_ab(c_ab,p_ab,occ_1e_a,occ_1e_b,
+     &                            moab_el_2,en_2el,en_2el_corr)
+      noft_energy%e_2electron = noft_energy%e_2electron + en_2el
+      noft_energy%e_correlation = noft_energy%e_correlation
+     &                          + en_2el_corr
+!
+      end subroutine noft_eval_2e_energy
+!
+!-----------------------------------------------------------------------
