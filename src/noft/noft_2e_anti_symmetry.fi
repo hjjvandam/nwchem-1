@@ -1,0 +1,98 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Anti symmetrize same spin 2-electron integrals
+!>
+!> Starting from a global array with the 2-electron integrals in the
+!> MO basis, we produce fill another global array with anti-symmetrized
+!> 2-electron integrals. The approach is:
+!> - First copy the 2-electron integrals from source to target
+!> - Access the local part of the target, get the corresponding permuted
+!>   part, indeces 1 and 3, of the source, and subtract those
+!> - Access the local part of the target, get the corresponding permuted
+!>   part, indeces 2 and 4, of the source, and subtract those
+!>
+      subroutine noft_2e_anti_symmetry(moaa,moaa_as)
+      implicit none
+      !> The same spin 2-electron integrals in MO basis
+      integer, intent(in) :: moaa
+      !> The anti-symmetrized integrals
+      integer, intent(inout) :: moaa_as
+!
+      integer, parameter :: ndim = 4
+      integer :: itlo(ndim)
+      integer :: ithi(ndim)
+      integer :: itld(ndim)
+      integer :: islo(ndim)
+      integer :: ishi(ndim)
+      integer :: isld(ndim)
+      integer :: ii
+      integer :: i1, i2, i3, i4
+      real(kind=dp), pointer     :: data(:,:,:,:)
+      real(kind=dp), allocatable :: buf(:,:,:,:)
+      real(kind=dp), parameter   :: half = -0.5_dp
+!
+      call nga_copy(moaa,moaa_as)
+      call noft_access(moaa_as,data,itlo,ithi)
+      do ii = 1, ndim
+        itld(ii) = ithi(ii) - itlo(ii) + 1
+      enddo
+!
+      islo(1) = itlo(3)
+      islo(2) = itlo(2)
+      islo(3) = itlo(1)
+      islo(4) = itlo(4)
+      ishi(1) = ithi(3)
+      ishi(2) = ithi(2)
+      ishi(3) = ithi(1)
+      ishi(4) = ithi(4)
+      isld(1) = itld(3)
+      isld(2) = itld(2)
+      isld(3) = itld(1)
+      isld(4) = itld(4)
+      allocate(buf(islo(1):ishi(1),islo(2):ishi(2),
+     &             islo(3):ishi(3),islo(4):ishi(4)))
+      call nga_get(moaa,islo,ishi,buf,isld)
+      do i4 = itlo(4), ithi(4)
+        do i3 = itlo(3), ithi(3)
+          do i2 = itlo(2), ithi(2)
+            do i1 = itlo(1), ithi(1)
+              data(i1,i2,i3,i4) = data(i1,i2,i3,i4)
+     &          + half*buf(i3,i2,i1,i4)
+            enddo
+          enddo
+        enddo
+      enddo
+      deallocate(buf)
+!
+      islo(1) = itlo(1)
+      islo(2) = itlo(4)
+      islo(3) = itlo(3)
+      islo(4) = itlo(2)
+      ishi(1) = ithi(1)
+      ishi(2) = ithi(4)
+      ishi(3) = ithi(3)
+      ishi(4) = ithi(2)
+      isld(1) = itld(1)
+      isld(2) = itld(4)
+      isld(3) = itld(3)
+      isld(4) = itld(2)
+      allocate(buf(islo(1):ishi(1),islo(2):ishi(2),
+     &             islo(3):ishi(3),islo(4):ishi(4)))
+      call nga_get(moaa,islo,ishi,buf,isld)
+      do i4 = itlo(4), ithi(4)
+        do i3 = itlo(3), ithi(3)
+          do i2 = itlo(2), ithi(2)
+            do i1 = itlo(1), ithi(1)
+              data(i1,i2,i3,i4) = data(i1,i2,i3,i4)
+     &          + half*buf(i1,i4,i3,i2)
+            enddo
+          enddo
+        enddo
+      enddo
+      deallocate(buf)
+!
+      call noft_release(moaa_as,data,itlo,ithi)
+!
+      end subroutine noft_2e_anti_symmetry
+!
+!-----------------------------------------------------------------------

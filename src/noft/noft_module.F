@@ -32,6 +32,7 @@ c-----------------------------------------------------------------------
       contains
 #include "noft_1e_occupation.fi"
 #include "noft_2e_occupation.fi"
+#include "noft_2e_anti_symmetry.fi"
 #include "noft_2e_sign.fi"
 #include "noft_2e_weight.fi"
 #include "noft_2index.fi"
