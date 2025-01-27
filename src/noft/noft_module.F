@@ -48,6 +48,7 @@ c-----------------------------------------------------------------------
 #include "noft_destroy_wavefunction.fi"
 #include "noft_eval_1e_energy.fi"
 #include "noft_eval_2e_energy.fi"
+#include "noft_eval_2e_energy_aa.fi"
 #include "noft_eval_2e_energy_ab.fi"
 #include "noft_eval_energy.fi"
 #include "noft_gemm.fi"

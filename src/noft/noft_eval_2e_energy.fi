@@ -47,6 +47,18 @@
       noft_energy%e_correlation = noft_energy%e_correlation
      &                          + en_2el_corr
 !
+      call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_2e_aa,
+     &                              moaa_el_2,en_2el,en_2el_corr)
+      noft_energy%e_2electron = noft_energy%e_2electron + en_2el
+      noft_energy%e_correlation = noft_energy%e_correlation
+     &                          + en_2el_corr
+!
+      call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_2e_bb,
+     &                              mobb_el_2,en_2el,en_2el_corr)
+      noft_energy%e_2electron = noft_energy%e_2electron + en_2el
+      noft_energy%e_correlation = noft_energy%e_correlation
+     &                          + en_2el_corr
+!
       end subroutine noft_eval_2e_energy
 !
 !-----------------------------------------------------------------------

@@ -1,0 +1,175 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Calculate the 2-electron energy for same spin electrons
+!>
+!> For same spin electrons we do need to consider both the Coulomb
+!> and exchange terms. Also the \f$\alpha\f$-\f$\alpha\f$ and 
+!> \f$\beta\f$-\f$\beta\f$ interaction expressions are the same
+!> (just different input variables).
+!>
+!> Note that the electron repulsion operator is already transformed
+!> into the molecular orbital basis.
+!>
+!> The Hartree-Fock like energy contributions is then
+!> \f{eqnarray}{
+!> E_{hf} = \sum_{ik}\frac{1}{2}[(ii|kk)-(ik|ki)/2-(ki|ik)/2]o_{ik}
+!> \f}
+!>
+!> The correlation contributions are given by
+!> \f{eqnarray}{
+!> E_{corr} = \sum_{ijkl}\frac{1}{2}[(ij|kl)-(kj|il)/2-(il|kj)/2]
+!>                        w(o_{ik})w(o_{jl})s(o_{ik},o_{jl})
+!> \f}
+!> Note that \f$o_{ik} = o_{ki}\f$ and because we sum over all 
+!> orbitals we can do the following:
+!> \f{eqnarray}{
+!> \sum_{ijkl}(ij|kl)w(o_{ik})w(o_{jl})s(o_{ik},o_{jl}) && \\
+!> -\sum_{ijkl}(kj|il)/2w(o_{ik})w(o_{jl})s(o_{ik},o_{jl})
+!> &=& -\sum_{ijkl}(ij|kl)/2w(o_{ki})w(o_{jl})s(o_{ki},o_{jl}) \\
+!> &=& -\sum_{ijkl}(ij|kl)/2w(o_{ik})w(o_{jl})s(o_{ik},o_{jl}) \\
+!> -\sum_{ijkl}(il|kj)/2w(o_{ik})w(o_{jl})s(o_{ik},o_{jl})
+!> &=& -\sum_{ijkl}(ij|kl)/2w(o_{ik})w(o_{lj})s(o_{ik},o_{lj}) \\
+!> &=& -\sum_{ijkl}(ij|kl)/2w(o_{ik})w(o_{jl})s(o_{ik},o_{jl})
+!> \f}
+!> Hence we have \f$E_{corr} = 0\f$.
+!>
+!> Alternatively we could define the correlation energy as
+!> \f{eqnarray}{
+!> E_{corr} = \sum_{ijkl}\frac{1}{2}[(ij|kl)-(kj|il)/2-(il|kj)/2]
+!>                        w(o_{il})w(o_{jk})s(o_{il},o_{jk})
+!> \f}
+!> Then analyzing the terms would get
+!> \f{eqnarray}{
+!> \sum_{ijkl}(ij|kl)w(o_{il})w(o_{jk})s(o_{il},o_{jk}) && \\
+!> -\sum_{ijkl}(kj|il)/2w(o_{il})w(o_{jk})s(o_{il},o_{jk})
+!> &=& -\sum_{ijkl}(ij|kl)/2w(o_{kl})w(o_{ji})s(o_{kl},o_{ji}) \\
+!> &=& -\sum_{ijkl}(ij|kl)/2w(o_{kl})w(o_{ij})s(o_{kl},o_{ij}) \\
+!> -\sum_{ijkl}(il|kj)/2w(o_{il})w(o_{jk})s(o_{il},o_{jk})
+!> &=& -\sum_{ijkl}(ij|kl)/2w(o_{ij})w(o_{lk})s(o_{ij},o_{lk}) \\
+!> &=& -\sum_{ijkl}(ij|kl)/2w(o_{ij})w(o_{kl})s(o_{ij},o_{kl})
+!> \f}
+!> In this case we \f$E_{corr} \ne 0\f$.
+!>
+!> Note that in the expressions above we are considering different ways
+!> of introducing 2-electron occupation numbers. In the top expression
+!> we introduce occupations that connect the side of the energy
+!> expression, i.e. the bra orbital of electron 1 with the bra orbital
+!> of electron 2. and the ket orbital of electron 1 with the ket orbital
+!> of electron 2. 
+!>
+!> In the bottom expression we connect the bra orbital of electron 1
+!> with the ket orbital of electron 2, and vice versa the ket orbital
+!> of electron 1 with the bra orbital of electron 2.
+!>
+!> Either choice is arbitrary except that they produce different 
+!> results. Of course if we don't want to have to justify a particular
+!> approach we can just include everything
+!> \f{eqnarray}{
+!> E_{corr} = \sum_{ijkl}\frac{1}{2}[(ij|kl)-(kj|il)/2-(il|kj)/2]
+!>                        w(o_{ik})w(o_{il})w(o_{jk})w(o_{jl})
+!>                        s(o_{ik},o_{il},o_{jk},o_{jl})
+!> \f}
+!> This option does not give any preference to a particular choice of
+!> orbital pairs, yet it includes the particular choices that ensure
+!> a non-zero correlation effect. So now we have 3 options where the 
+!> first one does generate any correlation energy (beyond an
+!> N-representable independent particle model, which is different from
+!> Hartree-Fock), the second gives a non-zero correlation energy but
+!> depends on an arbitrary choice, the third one produces a non-zero
+!> correlation energy but considers all possible orbital pairings
+!> equally.
+!>
+      subroutine noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_2e_aa,moaa_el_2,
+     &           e_2e_aa,e_2e_aa_corr)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      !> The same spin correlation coefficient
+      real(kind=dp), intent(in)  :: c_aa
+      !> The same spin correlation power
+      real(kind=dp), intent(in)  :: p_aa
+      !> The alpha-alpha pair occupation numbers
+      integer, intent(in)        :: occ_2e_aa
+      !> The alpha-alpha 2-electron integrals in MO basis
+      integer, intent(in)        :: moaa_el_2
+      !> The same spin independent particle repulsion energy
+      real(kind=dp), intent(out) :: e_2e_aa
+      !> The same spin electron correlation energy
+      real(kind=dp), intent(out) :: e_2e_aa_corr
+!
+      real(kind=dp), pointer :: moaa_as(:,:,:,:)
+      real(kind=dp), allocatable :: oik(:,:)
+      real(kind=dp), allocatable :: ojl(:,:)
+      integer, parameter :: ndim = 4
+      integer, parameter :: mdim = 2
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      integer :: ild(ndim)
+      integer :: iklo(ndim)
+      integer :: ikhi(ndim)
+      integer :: ikld(ndim)
+      integer :: jllo(ndim)
+      integer :: jlhi(ndim)
+      integer :: jlld(ndim)
+      integer :: itype
+      integer :: ii, jj, kk, ll
+      integer :: moaa_el_2_as
+      real(kind=dp), parameter :: half = 0.5_dp
+      character(len=20), parameter :: pname
+     &  = "noft_eval_2e_energy_aa_1: "
+!
+      call nga_inquire(moaa_el_2,itype,ndim,ild)
+      ilo = -1
+      if (.not.nga_create(itype,ndim,ild,"moaa_as",ilo,moaa_el_2_as))
+     &  call errquit(pname//"failed to create moaa_as",10,GA_ERR)
+      call noft_2e_anti_symmetry(moaa_el_2,moaa_el_2_as)
+!
+      call noft_access(moaa_el_2_as,moaa_as,ilo,ihi)
+      do ii = 1, ndim
+        ild(ii) = ihi(ii) - ilo(ii) + 1
+      enddo
+      iklo(1) = ilo(1)
+      iklo(2) = ilo(3)
+      ikhi(1) = ihi(1)
+      ikhi(2) = ihi(3)
+      ikld(1) = ild(1)
+      ikld(2) = ild(3)
+      jllo(1) = ilo(2)
+      jllo(2) = ilo(4)
+      jlhi(1) = ihi(2)
+      jlhi(2) = ihi(4)
+      jlld(1) = ild(2)
+      jlld(2) = ild(4)
+      allocate(oik(iklo(1):ikhi(1),iklo(2):ikhi(2)))
+      allocate(ojl(jllo(1):jlhi(1),jllo(2):jlhi(2)))
+      call nga_get(occ_2e_aa,iklo,ikhi,oik,ikld)
+      call nga_get(occ_2e_aa,jllo,jlhi,ojl,jlld)
+      e_2e_aa = 0.0_dp
+      e_2e_aa_corr = 0.0_dp
+      do ll = ilo(4), ihi(4)
+        do kk = ilo(3), ihi(3)
+          do jj = ilo(2), ihi(2)
+            do ii = ilo(1), ihi(1)
+              if (ii.eq.jj.and.kk.eq.ll) then
+                e_2e_aa = e_2e_aa + half*moaa_as(ii,jj,kk,ll)*oik(ii,kk)
+              else if (ii.ne.jj.and.ii.ne.kk.and.ii.ne.ll.and.
+     &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll) then
+                e_2e_aa_corr = e_2e_aa_corr
+     &            + half*half*moaa_as(ii,jj,kk,ll)*
+     &              noft_2el_weight_aa(c_aa,p_aa,oik(ii,kk),ojl(jj,ll))*
+     &              noft_2el_sign_2el_occ(oik(ii,kk),ojl(jj,ll))
+              endif
+            enddo
+          enddo
+        enddo
+      enddo
+      deallocate(ojl)
+      deallocate(oik)
+      call noft_release(moaa_el_2_as,moaa_as,ilo,ihi)
+!
+      if (.not.nga_destroy(moaa_el_2_as))
+     &  call errquit(pname//"failed to create moaa_as",20,GA_ERR)
+!
+      end subroutine noft_eval_2e_energy_aa_1
+!-----------------------------------------------------------------------
