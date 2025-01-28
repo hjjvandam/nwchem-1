@@ -1,0 +1,15 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Initialize the integral libraries
+!>
+      subroutine noft_initialize_integrals(rtdb,noft_instances)
+      implicit none
+      integer,                 intent(in) :: rtdb
+      type(noft_instances_tp), intent(in) :: noft_instances
+!
+      call int_init(rtdb,1,noft_instances%basis)
+      call int_acc_high()
+!
+      end subroutine noft_initialize_integrals
+!
+!-----------------------------------------------------------------------

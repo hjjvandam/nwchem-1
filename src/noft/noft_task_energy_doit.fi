@@ -1,4 +1,4 @@
-c-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !> \brief The main driver for Natural Orbital Functional Theory
 !>
 !> This function is the main driver for Natural Orbital Functional
@@ -41,6 +41,7 @@ c-----------------------------------------------------------------------
       call noft_print_basis(noft_instances)
       call noft_print_geometry(noft_instances)
       call noft_create_operators(noft_params,noft_oper)
+      call noft_initialize_integrals(rtdb,noft_instances)
       call noft_compute_operators(noft_instances,noft_oper)
       call noft_create_wavefunction(noft_params,noft_wavefunction)
       call noft_orthogonalizing_transformation(noft_params,noft_oper,

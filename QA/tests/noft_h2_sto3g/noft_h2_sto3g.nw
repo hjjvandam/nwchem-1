@@ -1,0 +1,18 @@
+echo
+start h2_bnl
+
+geometry units angstrom
+H        0.0000000000      0.0000000000      0.38707500000
+H        0.0000000000      0.0000000000     -0.38707500000
+end
+
+basis spherical
+ * library "sto-3g"
+end
+
+noft
+  montecarlo
+  end
+end
+
+task noft energy
