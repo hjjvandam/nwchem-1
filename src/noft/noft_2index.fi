@@ -18,7 +18,7 @@
 !
       character(len=11), parameter :: pname = "noft_2index"
       character(len=1), parameter  :: tn = "N"
-      character(len=1), parameter  :: ty = "Y"
+      character(len=1), parameter  :: ty = "T"
       integer :: ii
       integer :: n_opi
       integer :: n_opo
@@ -37,8 +37,10 @@
       if (itp_opi.ne.itp_vec)
      &  call errquit(pname//" mismatch data types",10,UERR)
       itp_opo = itp_opi
+      if (n_opi.ne.ii)
+     &  call errquit(pname//" operator not square",20,UERR)
       if (n_opi.ne.n_in)
-     &  call errquit(pname//" mismatch dimensions",20,UERR)
+     &  call errquit(pname//" mismatch dimensions",30,UERR)
       n_opo = n_out
 !
       aa = 1.0_dp
@@ -46,14 +48,14 @@
       chunk = 10
       if (.not.ga_create(itp_opo,n_opi,n_opo,"g_tmp",
      &                   chunk,chunk,g_tmp))
-     &  call errquit(pname//" failed to create g_tmp",30,GA_ERR)
+     &  call errquit(pname//" failed to create g_tmp",40,GA_ERR)
       if (.not.ga_create(itp_opo,n_opo,n_opo,"g_opo",
      &                   chunk,chunk,g_opo))
-     &  call errquit(pname//" failed to create g_opo",40,GA_ERR)
+     &  call errquit(pname//" failed to create g_opo",50,GA_ERR)
       call ga_dgemm(tn,tn,n_opi,n_opo,n_opi,aa,g_opi,g_vec,bb,g_tmp)
       call ga_dgemm(ty,tn,n_opo,n_opo,n_opi,aa,g_vec,g_tmp,bb,g_opo)
       if (.not.ga_destroy(g_tmp))
-     &  call errquit(pname//" failed to destroy g_tmp",50,GA_ERR)
+     &  call errquit(pname//" failed to destroy g_tmp",60,GA_ERR)
 !
       end subroutine noft_2index
 !
