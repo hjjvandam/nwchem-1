@@ -62,6 +62,7 @@
       implicit none
 #include "errquit.fh"
 #include "mafdecls.fh"
+#include "stdio.fh"
       type(noft_parameter_tp),    intent(in)    :: noft_params
       type(noft_instances_tp),    intent(in)    :: noft_instances
       type(noft_operators_tp),    intent(inout) :: noft_operators
@@ -95,6 +96,7 @@
      &                      noft_wavefunction,noft_energy)
       attempt_count = 0
       iteration = 0
+      if (noft_ionode()) write(luout,*)1,noft_energy%e_total
       do while (range_max.gt.threshold)
         attempt_count = attempt_count + 1
         iteration = iteration + 1
@@ -115,6 +117,7 @@
           call noft_swap_wavefunctions(noft_wavefunction,
      &                                 noft_wavefunction_step)
           noft_energy = noft_energy_step
+          if (noft_ionode()) write(luout,*)1,noft_energy%e_total
         else if (mod(attempt_count,consecutive_fails).eq.0) then
           !
           ! Scale the range
