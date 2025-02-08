@@ -33,6 +33,23 @@
       real(kind=dp) :: temperature
       integer       :: nindep ! Number of linearly independ vectors
       real(kind=dp) :: cindep ! Cutoff to determine independ vectors
+      integer       :: itype
+!
+!     Fix the SCF type for the atomic guess
+!
+      if (.not. rtdb_get(rtdb, "bgj:scf_type", mt_int, 1, itype)) then
+!       bgj:scf_type is not set, so set it to something, i.e. hf
+        if (.not. rtdb_put(rtdb, "bgj:scf_type", mt_int, 1, 1))
+     &    call errquit("bgj:scf_type: error writing rtdb", 5, RTDB_ERR)
+      endif
+!
+!     Set the integrals to "direct" for the atomic guess
+!
+      if (.not. rtdb_put(rtdb,'int2e:filesize', mt_int, 1, -1))
+     &  call errquit('noft_input: failed to store filesize',0, RTDB_ERR)
+      if (.not. rtdb_put(rtdb,'int2e:memsize', mt_int, 1, -1))
+     &  call errquit('noft_input: failed to store memsize',0, RTDB_ERR)
+!
       do while (inp_read())
         if (.not. inp_a(test))
      &    call errquit("noft_input: keyword read failed", 0,

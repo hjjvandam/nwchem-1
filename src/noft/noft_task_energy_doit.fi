@@ -17,6 +17,7 @@
 #include "errquit.fh"
 #include "stdio.fh"
 #include "noft_solver_options.fh"
+#include "printlevels.fh"
 !
       type(noft_files_tp)        :: noft_vectors
       type(noft_instances_tp)    :: noft_instances
@@ -29,6 +30,7 @@
 !
       noft_task_energy_doit = .false.
       call util_print_push
+      call util_print_set_level(print_debug)
       call util_print_rtdb_load(rtdb,'noft')
       call noft_print_header(rtdb,luout)
       call noft_load_lindep(rtdb,noft_lindep)
@@ -60,5 +62,6 @@
         call errquit("invalid solver selection",20,CAPMIS_ERR)
       endif
       call noft_destroy_wavefunction(noft_wavefunction)
+      call util_print_pop
       end function noft_task_energy_doit
 c-----------------------------------------------------------------------

@@ -38,6 +38,7 @@
       integer :: geometry
       integer :: basis
       real(kind=dp) :: aa, bb
+      real(kind=dp) :: tol2e
 !
       basis    = noft_instances%basis
       geometry = noft_instances%geom
@@ -50,10 +51,13 @@
       nmo      = noft_params%nmo
       aa       = 1.0_dp
       bb       = 0.0_dp
+      tol2e    = 1.0d-12
 !
       if (.not.ga_create(MT_DBL,nao,nao,"g_ao_ao",-1,-1,g_ao_ao)) then
         call errquit(pname//" allocate g_ao_ao failed",10,GA_ERR)
       endif
+      call scf_get_fock_param(rtdb, tol2e)
+      call ga_copy(g_s12,mo_a)
       call ga_zero(g_ao_ao)
       call guess_dens(rtdb,geometry,basis,g_ao_ao)
       call rhf_dens_to_mo(rtdb,geometry,basis,nelec,nao,nmo,1.0d-7,
@@ -62,7 +66,7 @@
 !     Now we have the MOs in an non-orthogonal basis, but we need them
 !     in terms of the orthogonal basis. So we need the solution of
 !     \$S^{-1/2} X = M\$ where \$M\$ are the MOs we have now, and
-!     \$S^{-1/2}\$ is the orthogonalize transformation. We can also
+!     \$S^{-1/2}\$ is the orthogonalizing transformation. We can also
 !     write this as \$X = (S^{-1/2})^T S M\$ because then 
 !     \$S^{-1/2}X = S^{-1/2}(S^{-1/2})^T S M = S^{-1}S M = M\$
 !
