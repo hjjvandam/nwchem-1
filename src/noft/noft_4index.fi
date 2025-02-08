@@ -37,7 +37,7 @@
 !
       character(len=11), parameter :: pname = "noft_4index"
       character(len=1), parameter  :: tn = "N"
-      character(len=1), parameter  :: ty = "Y"
+      character(len=1), parameter  :: ty = "T"
       integer :: g_i1i1i2i2
       integer :: g_o1o1i2i2
       integer :: g_o1o1o2o2
@@ -75,22 +75,24 @@
       if (n_out1.ne.n_out2)
      &  call errquit(pname//" mismatch n_out1 and n_out2",40,UERR)
       do ii = 1, ndim
-        if (n_opi(ii).ne.n_in1)
+        write(*,*)"HVD: ",ii,nn(ii),n_in1
+        if (nn(ii).ne.n_in1)
      &    call errquit(pname//" mismatch g_opi and n_in1",50,UERR)
       enddo
+      n_opi = nn
 !
       aa = 1.0_dp
       bb = 0.0_dp
       chnk = 10
       g_i1i1i2i2 = g_opi
-      nn(3) = n_out1
-      nn(4) = n_out1
+      nn(1) = n_out1
+      nn(2) = n_out1
       if (.not.nga_create(itp_opi,ndim,nn,"g_ooii",chnk,g_o1o1i2i2))
      &  call errquit(pname//" nga_create failed for g_iioo",60,GA_ERR)
-      nn(1) = n_out1
-      if (.not.nga_create(itp_opi,2,nn,"g_oi",chnk,g_oi))
+      nn(3) = n_out1
+      if (.not.nga_create(itp_opi,2,nn(3:4),"g_oi",chnk,g_oi))
      &  call errquit(pname//" nga_create failed for g_oi",70,GA_ERR)
-      nn(2) = n_out1
+      nn(4) = n_out1
       if (.not.nga_create(itp_opi,ndim,nn,"g_oooo",chnk,g_o1o1o2o2))
      &  call errquit(pname//" nga_create failed for g_oooo",80,GA_ERR)
 !
@@ -128,7 +130,7 @@
 !
 !         Transform index 1
 !
-          call nga_matmul_patch('t','n',aa,bb,
+          call nga_matmul_patch(ty,tn,aa,bb,
      &                          g_vec1,    alo,ahi,
      &                          g_i1i1i2i2,blo,bhi,
      &                          g_oi,      clo,chi)
@@ -162,7 +164,7 @@
 !
 !         Transform index 2
 !
-          call nga_matmul_patch('n','n',aa,bb,
+          call nga_matmul_patch(tn,tn,aa,bb,
      &                          g_oi,      alo,ahi,
      &                          g_vec1,    blo,bhi,
      &                          g_o1o1i2i2,clo,chi)
@@ -204,7 +206,7 @@
 !
 !         Transform index 3
 !
-          call nga_matmul_patch('t','n',aa,bb,
+          call nga_matmul_patch(ty,tn,aa,bb,
      &                          g_vec2,    alo,ahi,
      &                          g_o1o1i2i2,blo,bhi,
      &                          g_oi,      clo,chi)
@@ -238,7 +240,7 @@
 !
 !         Transform index 4
 !
-          call nga_matmul_patch('n','n',aa,bb,
+          call nga_matmul_patch(tn,tn,aa,bb,
      &                          g_oi,      alo,ahi,
      &                          g_vec2,    blo,bhi,
      &                          g_o1o1o2o2,clo,chi)
