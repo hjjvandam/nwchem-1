@@ -56,6 +56,7 @@ c-----------------------------------------------------------------------
 #include "noft_guess_tilde.fi"
 #include "noft_guess_wavefunction.fi"
 #include "noft_initialize_integrals.fi"
+#include "noft_ionode.fi"
 #include "noft_lindep.fi"
 #include "noft_load_basis.fi"
 #include "noft_load_geometry.fi"

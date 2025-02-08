@@ -1,0 +1,17 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Is this node the io node?
+!>
+!> Node zero does all the I/O. This function returns .true. if this
+!> rank is the I/O node and .false. otherwise.
+!>
+      function noft_ionode() result(ionode)
+      implicit none
+#include "global.fh"
+      logical :: ionode
+!
+      ionode = ga_nodeid().eq.0
+!
+      end function noft_ionode
+!
+!-----------------------------------------------------------------------
