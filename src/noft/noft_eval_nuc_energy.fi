@@ -1,0 +1,21 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief "Evaluate" the nuclear energy term
+!>
+!> This subroutine is one of the energy term evaluation series of
+!> subroutines. This one adds the nuclear repulsion energy to the
+!> energy data structure. In fact it just copies the nuclear repulsion
+!> from noft_params.
+!>
+       subroutine noft_eval_nuc_energy(noft_params,noft_energy)
+       implicit none
+       !> The parameters of the calculation
+       type(noft_parameter_tp), intent(in)    :: noft_params
+       !> The energy terms
+       type(noft_energy_tp),    intent(inout) :: noft_energy
+!
+       noft_energy%e_nuclear = noft_params%e_nuclear
+!
+       end subroutine noft_eval_nuc_energy
+!
+!-----------------------------------------------------------------------

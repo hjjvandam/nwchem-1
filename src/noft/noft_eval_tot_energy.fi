@@ -1,0 +1,18 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Evaluate the total energy
+!>
+!> Add all contributions to evaluate the total energy.
+!>
+      subroutine noft_eval_tot_energy(noft_energy)
+      implicit none
+      type(noft_energy_tp), intent(inout) :: noft_energy
+!
+      noft_energy%e_total = noft_energy%e_1electron
+     &                    + noft_energy%e_2electron
+     &                    + noft_energy%e_correlation
+     &                    + noft_energy%e_nuclear
+!
+      end subroutine noft_eval_tot_energy
+!
+!-----------------------------------------------------------------------

@@ -115,11 +115,12 @@
       integer :: itype
       integer :: ii, jj, kk, ll
       integer :: moaa_el_2_as
+      integer :: ndm
       real(kind=dp), parameter :: half = 0.5_dp
       character(len=20), parameter :: pname
      &  = "noft_eval_2e_energy_aa_1: "
 !
-      call nga_inquire(moaa_el_2,itype,ndim,ild)
+      call nga_inquire(moaa_el_2,itype,ndm,ild)
       ilo = -1
       if (.not.nga_create(itype,ndim,ild,"moaa_as",ilo,moaa_el_2_as))
      &  call errquit(pname//"failed to create moaa_as",10,GA_ERR)
@@ -172,4 +173,5 @@
      &  call errquit(pname//"failed to create moaa_as",20,GA_ERR)
 !
       end subroutine noft_eval_2e_energy_aa_1
+!
 !-----------------------------------------------------------------------

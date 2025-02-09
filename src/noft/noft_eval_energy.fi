@@ -57,8 +57,12 @@
       call noft_occupations_calculate(noft_parameters,noft_wavefunction,
      &                                noft_occupations)
 !
+      call noft_eval_nuc_energy(noft_parameters,noft_energy)
       call noft_eval_1e_energy(noft_parameters,noft_operators,
      &                         noft_occupations,noft_energy)
+      call noft_eval_2e_energy(noft_parameters,noft_operators,
+     &                         noft_occupations,noft_energy)
+      call noft_eval_tot_energy(noft_energy)
 !
 !     Clean occupartion number up
 !
