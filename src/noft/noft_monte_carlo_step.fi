@@ -91,6 +91,10 @@
 !> symmetry of the rotation matrix is automatically obtained.
 !> Therefore we choose the step matrix so that it is skew symmtric.
 !>
+!> Note that only one triangle of the range array is non-zero. For
+!> that reason we don't need a test on the indeces while generating
+!> the step.
+!>
       subroutine noft_monte_carlo_step_choose_1(ga_step,ga_range)
       implicit none
       !> The Monte Carlo step global array handle
@@ -127,9 +131,9 @@
         enddo
       enddo
       deallocate(range)
-      call noft_release(ga_step,step,ilo,ihi)
-      call ga_acc(ga_step,ilo(2),ihi(2),ilo(1),ihi(1),stept,ild(2),onem)
       call ga_sync()
+      call ga_acc(ga_step,ilo(2),ihi(2),ilo(1),ihi(1),stept,ild(2),onem)
+      call noft_release(ga_step,step,ilo,ihi)
       deallocate(stept)
 !
       end subroutine noft_monte_carlo_step_choose_1
