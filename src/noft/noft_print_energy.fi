@@ -1,0 +1,25 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Print the energy contributions
+!>
+      subroutine noft_print_energy(noft_energy,luout,oall)
+      implicit none
+      !> The energy contributions
+      type(noft_energy_tp), intent(in) :: noft_energy
+      !> The output unit number
+      integer,              intent(in) :: luout
+      !> Print all contributions or not
+      logical,              intent(in) :: oall
+!
+      write(luout,"(' ',f12.4,$)")noft_energy%e_total
+      if (oall) then
+        write(luout,"(' ',f12.4,$)")noft_energy%e_nuclear
+        write(luout,"(' ',f12.4,$)")noft_energy%e_1electron
+        write(luout,"(' ',f12.4,$)")noft_energy%e_2electron
+        write(luout,"(' ',f12.4,$)")noft_energy%e_correlation
+      endif
+      write(luout,*)
+!
+      end subroutine noft_print_energy
+!
+!-----------------------------------------------------------------------

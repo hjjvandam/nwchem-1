@@ -58,7 +58,7 @@
 !> limited to \f$\[-\pi/2,+\pi/2\]\f$.
 !>
       subroutine noft_solve_monte_carlo(noft_params,noft_instances,
-     &           noft_operators,noft_wavefunction)
+     &           noft_operators,noft_wavefunction,oconv)
       implicit none
 #include "errquit.fh"
 #include "mafdecls.fh"
@@ -67,6 +67,7 @@
       type(noft_instances_tp),    intent(in)    :: noft_instances
       type(noft_operators_tp),    intent(inout) :: noft_operators
       type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+      logical,                    intent(out)   :: oconv
 !
 !     Local
 !
@@ -82,8 +83,11 @@
       integer :: attempt_count
       integer :: consecutive_fails
       integer :: iteration
+      integer :: max_iteration
 !
+      oconv = .false.
       consecutive_fails = noft_params%monte_carlo%consecutive_fails
+      max_iteration = noft_params%monte_carlo%maxiter
       range_init = noft_params%monte_carlo%step_maximum/10.0_dp
       threshold = noft_params%monte_carlo%step_threshold
       call noft_create_wavefunction(noft_params,noft_wavefunction_step)
@@ -96,8 +100,11 @@
      &                      noft_wavefunction,noft_energy)
       attempt_count = 0
       iteration = 0
-      if (noft_ionode()) write(luout,*)1,noft_energy%e_total
-      do while (range_max.gt.threshold)
+      if (noft_ionode()) then
+        write(luout,"('  ',i4,$)")1
+        call noft_print_energy(noft_energy,luout,.true.)
+      endif
+      do while (range_max.gt.threshold.and.iteration.le.max_iteration)
         attempt_count = attempt_count + 1
         iteration = iteration + 1
         call noft_monte_carlo_step_choose(noft_step,noft_range)
@@ -117,7 +124,10 @@
           call noft_swap_wavefunctions(noft_wavefunction,
      &                                 noft_wavefunction_step)
           noft_energy = noft_energy_step
-          if (noft_ionode()) write(luout,*)1,noft_energy%e_total
+          if (noft_ionode()) then
+            write(luout,"('  ',i4,$)")iteration
+            call noft_print_energy(noft_energy,luout,.true.)
+          endif
         else if (mod(attempt_count,consecutive_fails).eq.0) then
           !
           ! Scale the range
@@ -126,6 +136,23 @@
           call noft_monte_carlo_range_max(noft_range,range_max)
         endif
       enddo
+      if (noft_ionode()) then
+        write(luout,"('  ',i4,$)")iteration
+        call noft_print_energy(noft_energy,luout,.true.)
+      endif
+      if (range_max.gt.threshold) then
+        write(luout,*)"**************************************"
+        write(luout,*)"ERROR: calculation failed to converge!"
+        write(luout,*)"**************************************"
+        write(luout,*)"step size = ",range_max," threshold = ",threshold
+      else
+        oconv = .true.
+        write(luout,*)
+        write(luout,*)"======================"
+        write(luout,*)"Calculation converged!"
+        write(luout,*)"======================"
+        write(luout,*)
+      endif
       call noft_monte_carlo_step_destroy(noft_step)
       call noft_monte_carlo_rotation_destroy(noft_rotation)
       call noft_monte_carlo_range_destroy(noft_range)

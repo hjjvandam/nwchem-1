@@ -1,7 +1,10 @@
 echo
-start h2_bnl
+start h2_noft
 
-geometry units angstrom
+scratch_dir   .
+permanent_dir .
+
+geometry units angstrom noautosym
 H        0.0000000000      0.0000000000      0.38707500000
 H        0.0000000000      0.0000000000     -0.38707500000
 end
@@ -12,6 +15,7 @@ end
 
 noft
   montecarlo
+    maxiter 10000
   end
 end
 

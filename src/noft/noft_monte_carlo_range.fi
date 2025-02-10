@@ -75,6 +75,9 @@
 !> This subroutine applies the range initialization to one of the
 !> global arrays in the range data type.
 !>
+!> Only the upper triangle of range is non-zero, and all values
+!> are non-negative.
+!>
       subroutine noft_monte_carlo_range_init_1(ga_x,value)
       implicit none
 #include "global.fh"

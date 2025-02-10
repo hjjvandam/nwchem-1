@@ -25,6 +25,7 @@
       type(noft_operators_tp)    :: noft_oper
       type(noft_parameter_tp)    :: noft_params
       type(noft_wavefunction_tp) :: noft_wavefunction
+      logical                    :: oconv
 !
 !     Code
 !
@@ -58,7 +59,9 @@
       call noft_ortho_operators(noft_wavefunction,noft_oper)
       if (noft_params%solver.eq.monte_carlo) then
         call noft_solve_monte_carlo(noft_params,noft_instances,
-     &                              noft_oper,noft_wavefunction)
+     &                              noft_oper,noft_wavefunction,
+     &                              oconv)
+        noft_task_energy_doit = oconv
       else
         call errquit("invalid solver selection",20,CAPMIS_ERR)
       endif
