@@ -75,7 +75,6 @@
       if (n_out1.ne.n_out2)
      &  call errquit(pname//" mismatch n_out1 and n_out2",40,UERR)
       do ii = 1, ndim
-        write(*,*)"HVD: ",ii,nn(ii),n_in1
         if (nn(ii).ne.n_in1)
      &    call errquit(pname//" mismatch g_opi and n_in1",50,UERR)
       enddo
