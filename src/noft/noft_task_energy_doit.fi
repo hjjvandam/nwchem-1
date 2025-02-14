@@ -19,6 +19,7 @@
 #include "noft_solver_options.fh"
 #include "printlevels.fh"
 !
+      type(noft_energy_tp)       :: noft_energy
       type(noft_files_tp)        :: noft_vectors
       type(noft_instances_tp)    :: noft_instances
       type(noft_lindep_tp)       :: noft_lindep
@@ -60,11 +61,14 @@
       if (noft_params%solver.eq.monte_carlo) then
         call noft_solve_monte_carlo(noft_params,noft_instances,
      &                              noft_oper,noft_wavefunction,
-     &                              oconv)
+     &                              noft_energy,oconv)
         noft_task_energy_doit = oconv
       else
         call errquit("invalid solver selection",20,CAPMIS_ERR)
       endif
+      call noft_save_convergence(rtdb,oconv)
+      call noft_save_energy(rtdb,noft_energy)
+      call noft_destroy_operators(noft_oper)
       call noft_destroy_wavefunction(noft_wavefunction)
       call util_print_pop
       end function noft_task_energy_doit

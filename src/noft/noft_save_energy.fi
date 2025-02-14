@@ -1,0 +1,26 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Save the total energy in the runtime database
+!>
+      subroutine noft_save_energy(rtdb,noft_energy)
+      implicit none
+#include "errquit.fh"
+#include "mafdecls.fh"
+#include "rtdb.fh"
+!
+      !> The runtime database handle
+      integer,              intent(in) :: rtdb
+      !> The energy
+      type(noft_energy_tp), intent(in) :: noft_energy
+!
+      character(len=18), parameter :: pname =
+     &  "noft_save_energy: "
+!
+      if (.not.rtdb_put(rtdb,'noft:energy',MT_DBL,1,
+     &                  noft_energy%e_total))
+     &  call errquit(pname//'failed to store energy in rtdb',
+     &               10, RTDB_ERR)
+!
+      end subroutine noft_save_energy
+!
+!-----------------------------------------------------------------------

@@ -1,0 +1,25 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Save the convergence status in the runtime database
+!>
+      subroutine noft_save_convergence(rtdb,oconverged)
+      implicit none
+#include "errquit.fh"
+#include "mafdecls.fh"
+#include "rtdb.fh"
+!
+      !> The runtime database handle
+      integer, intent(in) :: rtdb
+      !> The energy
+      logical, intent(in) :: oconverged
+!
+      character(len=22), parameter :: pname =
+     &  "noft_save_convergence: "
+!
+      if (.not.rtdb_put(rtdb,'noft:converged',MT_LOG,1,oconverged))
+     &  call errquit(pname//'failed to store converged in rtdb',
+     &               10, RTDB_ERR)
+!
+      end subroutine noft_save_convergence
+!
+!-----------------------------------------------------------------------

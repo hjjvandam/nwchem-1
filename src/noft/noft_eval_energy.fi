@@ -36,20 +36,20 @@
       g_el_1  = noft_operators%so_el_1
       g_vec_a = noft_wavefunction%mo_a
       call noft_2index(g_el_1,g_vec_a,g_out)
-      noft_operators%moa_el_1 = g_out
+      call noft_replace_data(noft_operators%moa_el_1,g_out)
       g_vec_b = noft_wavefunction%mo_b
       call noft_2index(g_el_1,g_vec_b,g_out)
-      noft_operators%mob_el_1 = g_out
+      call noft_replace_data(noft_operators%mob_el_1,g_out)
 !
 !     Transform the 2-electron operator to MO basis
 !
       g_el_2 = noft_operators%so_el_2
       call noft_4index(g_el_2,g_vec_a,g_vec_a,g_out)
-      noft_operators%moaa_el_2 = g_out
+      call noft_replace_data(noft_operators%moaa_el_2,g_out)
       call noft_4index(g_el_2,g_vec_a,g_vec_b,g_out)
-      noft_operators%moab_el_2 = g_out
+      call noft_replace_data(noft_operators%moab_el_2,g_out)
       call noft_4index(g_el_2,g_vec_b,g_vec_b,g_out)
-      noft_operators%mobb_el_2 = g_out
+      call noft_replace_data(noft_operators%mobb_el_2,g_out)
 !
 !     Calculate occupation numbers
 !

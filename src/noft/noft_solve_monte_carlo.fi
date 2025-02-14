@@ -58,7 +58,7 @@
 !> limited to \f$\[-\pi/2,+\pi/2\]\f$.
 !>
       subroutine noft_solve_monte_carlo(noft_params,noft_instances,
-     &           noft_operators,noft_wavefunction,oconv)
+     &           noft_operators,noft_wavefunction,noft_energy,oconv)
       implicit none
 #include "errquit.fh"
 #include "mafdecls.fh"
@@ -67,6 +67,7 @@
       type(noft_instances_tp),    intent(in)    :: noft_instances
       type(noft_operators_tp),    intent(inout) :: noft_operators
       type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+      type(noft_energy_tp),       intent(out)   :: noft_energy
       logical,                    intent(out)   :: oconv
 !
 !     Local
@@ -74,7 +75,6 @@
       type(noft_monte_carlo_range_tp)    :: noft_range
       type(noft_monte_carlo_rotation_tp) :: noft_rotation
       type(noft_monte_carlo_step_tp)     :: noft_step
-      type(noft_energy_tp)               :: noft_energy
       type(noft_energy_tp)               :: noft_energy_step
       type(noft_wavefunction_tp)         :: noft_wavefunction_step
       real(kind=dp) :: range_init

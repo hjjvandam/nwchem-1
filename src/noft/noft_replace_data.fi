@@ -1,0 +1,30 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Replace a global array with another global array
+!>
+!> This routine replaces a given global array with another. The 
+!> original global array is destroyed to avoid memory leaks.
+!>
+      subroutine noft_replace_data(g_orig,g_new)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+      !> The original global array
+      integer, intent(inout) :: g_orig
+      !> The new global array
+      integer, intent(inout) :: g_new
+!
+      character(len=19), parameter :: pname =
+     &  "noft_replace_data: "
+!
+      if (g_orig.ne.0) then
+        if (.not.ga_destroy(g_orig))
+     &    call errquit(pname//"could not destroy global array", 10,
+     &                 GA_ERR)
+      endif
+      g_orig = g_new
+      g_new  = 0
+!
+      end subroutine noft_replace_data
+!
+!-----------------------------------------------------------------------
