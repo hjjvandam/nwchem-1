@@ -1,0 +1,32 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Finalize the calculation instances
+!>
+!> Instances are non-trivial entities that the calculation needs.
+!> Because these entities are non-trivial they also need to be cleaned
+!> up when they are no longer needed. Which is what this routine does.
+!>
+      subroutine noft_finalize_instances(noft_instances)
+      implicit none
+#include "bas.fh"
+#include "errquit.fh"
+#include "geom.fh"
+      !> The instances
+      type(noft_instances_tp), intent(inout) :: noft_instances
+!
+      character(len=26), parameter :: pname =
+     &  "noft_finalize_instances: "
+!
+      if (noft_instances%geom.ne.0) then
+        if (.not.geom_destroy(noft_instances%geom))
+     &    call errquit(pname//"failed to destroy geometry",10, GEOM_ERR)
+      endif
+!
+      if (noft_instances%basis.ne.0) then
+        if (.not.bas_destroy(noft_instances%basis))
+     &    call errquit(pname//"failed to destroy basis", 20, BASIS_ERR)
+      endif
+!
+      end subroutine noft_finalize_instances
+!
+!-----------------------------------------------------------------------

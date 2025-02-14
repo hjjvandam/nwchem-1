@@ -1,0 +1,14 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Finalize the integral routines
+!>
+!> The counter part of noft_initialize_integrals.
+!>
+       subroutine noft_finalize_integrals
+       implicit none
+!
+       call int_terminate()
+!
+       end subroutine noft_finalize_integrals
+!
+!-----------------------------------------------------------------------

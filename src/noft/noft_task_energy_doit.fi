@@ -57,6 +57,7 @@
       else
         call errquit("invalid initial wavefunction",10,CAPMIS_ERR)
       endif
+      call noft_finalize_integrals()
       call noft_ortho_operators(noft_wavefunction,noft_oper)
       if (noft_params%solver.eq.monte_carlo) then
         call noft_solve_monte_carlo(noft_params,noft_instances,
@@ -70,6 +71,7 @@
       call noft_save_energy(rtdb,noft_energy)
       call noft_destroy_operators(noft_oper)
       call noft_destroy_wavefunction(noft_wavefunction)
+      call noft_finalize_instances(noft_instances)
       call util_print_pop
       end function noft_task_energy_doit
 c-----------------------------------------------------------------------
