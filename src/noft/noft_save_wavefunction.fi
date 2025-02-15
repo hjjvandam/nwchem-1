@@ -1,0 +1,137 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Save the wavefunction to files
+!>
+!> As the wavefunction in the NOFT module consists of multiple
+!> components we need to save all these components. We store these
+!> components in separate files as other modules in NWChem do not know
+!> the wavefunction as we use it here. To maintain compatibilits with
+!> the rest of NWChem we need to adapt our storage format.
+!>
+!> The components to store are:
+!> - the orthogonalizing transformation
+!> - the molecular orbitals in the orthogonal basis
+!> - the tilde functions
+!> - the molecular orbitals in the atomic orbital basis (the movecs that
+!>   the rest of NWChem expects)
+!>
+      subroutine noft_save_wavefunction(rtdb,noft_params,noft_instances,
+     &                                  noft_files,noft_wavefunction)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      !> The runtime database handle
+      integer,                    intent(in) :: rtdb
+      !> The calculation parameters
+      type(noft_parameter_tp),    intent(in) :: noft_params
+      !> The calculation instances
+      type(noft_instances_tp),    intent(in) :: noft_instances
+      !> files The vector filenames
+      type(noft_files_tp),        intent(in) :: noft_files
+      !> The wavefunction
+      type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
+!
+      character(len=24), parameter :: pname =
+     &  "noft_save_wavefunction: "
+      character(len=8), parameter :: title = "noft"
+      character(len=1), parameter :: tn = "n"
+      logical, external :: movecs_write
+      real(kind=dp), allocatable :: occ(:)
+      real(kind=dp), allocatable :: evals(:)
+      real(kind=dp), parameter :: one = 1.0_dp
+      real(kind=dp), parameter :: zero = 0.0_dp
+      integer, parameter :: ndim = 2
+      integer :: g_vecs(ndim)
+      integer :: idim(ndim)
+      integer :: chunk(ndim)
+!
+      allocate(occ(1:2*noft_params%nso))
+      allocate(evals(1:2*noft_params%nso))
+      occ = 0.0_dp
+      evals = 0.0_dp
+!
+      if (.not.movecs_write(rtdb,
+     &    noft_instances%basis,
+     &    noft_files%svecs_out,
+     &    "rhf",
+     &    title,
+     &    noft_params%nao,
+     &    1,
+     &    noft_params%nso,
+     &    occ,1,
+     &    evals,1,
+     &    noft_wavefunction%so))
+     &  call errquit(pname//"failed to save orthogonalizing vectors",
+     &               10, UERR)
+!
+      g_vecs(1) = noft_wavefunction%mo_a
+      g_vecs(2) = noft_wavefunction%mo_b
+      if (.not.movecs_write(rtdb,
+     &    noft_instances%basis,
+     &    noft_files%mvecs_out,
+     &    "uhf",
+     &    title,
+     &    noft_params%nso,
+     &    2,
+     &    noft_params%nmo,
+     &    occ,1,
+     &    evals,1,
+     &    g_vecs))
+     &  call errquit(pname//"failed to save orbitals",
+     &               20, UERR)
+!
+      g_vecs(1) = noft_wavefunction%to_a
+      g_vecs(2) = noft_wavefunction%to_b
+      if (.not.movecs_write(rtdb,
+     &    noft_instances%basis,
+     &    noft_files%tvecs_out,
+     &    "uhf",
+     &    title,
+     &    noft_params%nmo,
+     &    2,
+     &    noft_params%nto,
+     &    occ,1,
+     &    evals,1,
+     &    g_vecs))
+     &  call errquit(pname//"failed to save tilde functions",
+     &               30, UERR)
+!
+      chunk = -1
+      idim(1) = noft_params%nao
+      idim(2) = noft_params%nmo
+      if (.not.nga_create(mt_dbl,ndim,"alpha mos",chunk,g_vecs(1)))
+     &  call errquit(pname//"failed to create alpha mos", 40, UERR)
+      if (.not.nga_create(mt_dbl,ndim,"beta mos",chunk,g_vecs(2)))
+     &  call errquit(pname//"failed to create beta mos", 50, UERR)
+      call ga_dgemm(tn,tn,noft_params%nao,noft_params%nmo,
+     &              noft_params%nso,
+     &              one,noft_wavefunction%so,noft_wavefunction%mo_a,
+     &              zero,g_vecs(1))
+      call ga_dgemm(tn,tn,noft_params%nao,noft_params%nmo,
+     &              noft_params%nso,
+     &              one,noft_wavefunction%so,noft_wavefunction%mo_b,
+     &              zero,g_vecs(2))
+      if (.not.movecs_write(rtdb,
+     &    noft_instances%basis,
+     &    noft_files%movecs_out,
+     &    "uhf",
+     &    title,
+     &    noft_params%nao,
+     &    2,
+     &    noft_params%nmo,
+     &    occ,1,
+     &    evals,1,
+     &    g_vecs))
+     &  call errquit(pname//"failed to save movecs", 60, UERR)
+      if (.not.ga_destroy(g_vecs(1)))
+     &  call errquit(pname//"failed to destroy alpha mos", 70, GA_ERR)
+      if (.not.ga_destroy(g_vecs(2)))
+     &  call errquit(pname//"failed to destroy beta mos", 80, GA_ERR)
+!
+      deallocate(evals)
+      deallocate(occ)
+!
+      end subroutine noft_save_wavefunction
+!
+!-----------------------------------------------------------------------

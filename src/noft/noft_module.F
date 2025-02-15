@@ -85,6 +85,7 @@ c-----------------------------------------------------------------------
 #include "noft_replace_data.fi"
 #include "noft_save_convergence.fi"
 #include "noft_save_energy.fi"
+#include "noft_save_wavefunction.fi"
 #include "noft_set_nao.fi"
 #include "noft_set_nuclear_energy.fi"
 #include "noft_set_num_electrons.fi"
