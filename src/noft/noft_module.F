@@ -69,6 +69,7 @@ c-----------------------------------------------------------------------
 #include "noft_load_monte_carlo_params.fi"
 #include "noft_load_params.fi"
 #include "noft_load_vectors.fi"
+#include "noft_load_wavefunction.fi"
 #include "noft_local.fi"
 #include "noft_monte_carlo_range.fi"
 #include "noft_monte_carlo_rotate_wavefunction.fi"

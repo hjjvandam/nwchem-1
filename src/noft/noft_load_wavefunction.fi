@@ -1,0 +1,95 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Load the wavefunction from files
+!>
+!> As the wavefunction in the NOFT module consists of multiple
+!> components we need to read all these components. We store these
+!> components in separate files as other modules in NWChem do not know
+!> the wavefunction as we use it here. To maintain compatibilits with
+!> the rest of NWChem we need to adapt our storage format.
+!>
+      subroutine noft_load_wavefunction(noft_files,noft_wavefunction)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+      !> The vectors specification
+      type(noft_files_tp),        intent(in)    :: noft_files
+      !> The wavefunction
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+!
+      logical, external :: movecs_read_header
+      logical, external :: movecs_read
+      real(kind=dp) :: dnorm
+      integer, parameter :: ndim = 2
+      integer :: ldnmo
+      integer :: nmo(ndim)
+      integer :: nbf
+      integer :: nsets
+      character(len=256) :: title
+      character(len=256) :: scftype
+      character(len=256) :: basis
+      real(kind=dp), allocatable :: occ(:)
+      real(kind=dp), allocatable :: evals(:)
+      character(len=24), parameter :: pname =
+     &  "noft_load_wavefunction: "
+!
+      call ga_norm_infinity(noft_wavefunction%so,dnorm)
+      if (dnorm.gt.0.0_dp) then
+!       The orthogonalizing transformation is already set and will 
+!       correspond to the current geometry. In this case we should not
+!       load the transformation that might correspond to a previous
+!       geometry.
+      else
+        if (movecs_read_header(noft_files%svecs_in,title,basis,
+     &                         scftype,nbf,nsets,nmo,ldnmo)) then
+          allocate(occ(1:nbf))
+          allocate(evals(1:nbf))
+          if (.not.movecs_read(noft_files%svecs_in,1,occ,evals,
+     &                         noft_wavefunction%so)) then
+            call errquit(pname//"failed to read orthogonalizing vecs",
+     &                   10, UERR)
+          endif
+          deallocate(evals)
+          deallocate(occ)
+        endif
+      endif
+!
+      if (movecs_read_header(noft_files%mvecs_in,title,basis,
+     &                       scftype,nbf,nsets,nmo,ldnmo)) then
+        allocate(occ(1:nbf))
+        allocate(evals(1:nbf))
+        if (.not.movecs_read(noft_files%mvecs_in,1,occ,evals,
+     &                       noft_wavefunction%mo_a)) then
+          call errquit(pname//"failed to read alpha MO vecs",
+     &                 20, UERR)
+        endif
+        if (.not.movecs_read(noft_files%mvecs_in,2,occ,evals,
+     &                       noft_wavefunction%mo_b)) then
+          call errquit(pname//"failed to read beta MO vecs",
+     &                 30, UERR)
+        endif
+        deallocate(evals)
+        deallocate(occ)
+      endif
+!
+      if (movecs_read_header(noft_files%tvecs_in,title,basis,
+     &                       scftype,nbf,nsets,nmo,ldnmo)) then
+        allocate(occ(1:nbf))
+        allocate(evals(1:nbf))
+        if (.not.movecs_read(noft_files%tvecs_in,1,occ,evals,
+     &                       noft_wavefunction%to_a)) then
+          call errquit(pname//"failed to read alpha TO vecs",
+     &                 40, UERR)
+        endif
+        if (.not.movecs_read(noft_files%tvecs_in,2,occ,evals,
+     &                       noft_wavefunction%to_b)) then
+          call errquit(pname//"failed to read beta TO vecs",
+     &                 50, UERR)
+        endif
+        deallocate(evals)
+        deallocate(occ)
+      endif
+!
+      end subroutine noft_load_wavefunction
+!
+!-----------------------------------------------------------------------
