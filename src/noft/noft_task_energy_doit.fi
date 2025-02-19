@@ -76,6 +76,7 @@
       call noft_save_energy(rtdb,noft_energy)
       call noft_save_wavefunction(rtdb,noft_params,noft_instances,
      &                            noft_vectors,noft_wavefunction)
+      call noft_wavefunction_analysis(noft_params,noft_wavefunction)
       call noft_destroy_operators(noft_oper)
       call noft_destroy_wavefunction(noft_wavefunction)
       call noft_finalize_instances(noft_instances)

@@ -1,0 +1,114 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Wavefunction analysis
+!>
+!> This routine calculates and prints various properties of the 
+!> wavefunction. In particular for small problems these analysis are
+!> useful to check the results of a calculation (even though for large
+!> calculations the volume of printed data is often more of a problem
+!> than a benefit).
+!>
+!> Conventionally the NWChem analysis includes a print out the 
+!> molecular orbitals in the AO basis. This we can easily generate.
+!>
+!> A print out of the molecular orbitals represented in the orthogonal
+!> basis is not very useful as no user will have experience with this
+!> information. Therefore this will generate more questions than it 
+!> will answer. So we won't print this.
+!>
+!> The 1-electron occupation numbers are certainly useful for
+!> comparisons with other post-Hartree-Fock methods. So we will print
+!> those.
+!>
+!> The 2-electron occupation numbers for same spin electrons might be
+!> useful. In practice the volume of is likely too large to be
+!> informative. So we should only print this information if desired.
+!>
+!> A print out of the tilde functions might be useful. So we should 
+!> generate that if requested.
+!>
+      subroutine noft_wavefunction_analysis(noft_params,
+     &           noft_wavefunction)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "util.fh"
+      !> The calculation parameters
+      type(noft_parameter_tp),    intent(in) :: noft_params
+      !> the wavefunction
+      type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
+!
+      integer :: iproc
+!
+      iproc = ga_nodeid()
+      if (util_print("occupation",print_medium)) then
+!       occupation numbers
+        call noft_print_occupations(noft_params,noft_wavefunction)
+      endif
+!
+      if (util_print("movecs",print_medium).and.noft_params%nao.le.50)
+     &then
+!       molecular orbitals
+      endif
+!
+      if (util_print("tilde",print_high).and.noft_params%nao.le.50) then
+!       tilde functions
+        call ga_print(noft_wavefunction%to_a)
+        call ga_print(noft_wavefunction%to_b)
+      endif
+!
+      if (util_print("orbitals",print_high).and.
+     &    noft_params%nao.le.50) then
+!       orbital functions
+        call ga_print(noft_wavefunction%mo_a)
+        call ga_print(noft_wavefunction%mo_b)
+      endif
+!
+      if (util_print("orthogonal",print_high).and.
+     &    noft_params%nao.le.50) then
+!       orthogonal functions
+        call ga_print(noft_wavefunction%so)
+      endif
+!
+      end subroutine noft_wavefunction_analysis
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Print the occupation numbers
+!>
+      subroutine noft_print_occupations(noft_params,noft_wavefunction)
+      implicit none
+#include "global.fh"
+#include "stdio.fh"
+      !> The calculation parameters
+      type(noft_parameter_tp), intent(in) :: noft_params
+      !> The wavefunction
+      type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
+!
+      type(noft_occupations_tp) :: noft_occupations
+      real(kind=dp) :: occ_a, occ_b
+      integer :: ii
+      integer :: iproc
+      integer, parameter :: ndim = 1
+      integer :: idim(ndim)
+!
+      iproc = ga_nodeid()
+!
+      call noft_occupations_create(noft_params,noft_occupations)
+      call noft_occupations_calculate(noft_params,noft_wavefunction,
+     &                                noft_occupations)
+      if (iproc.eq.0) then
+        write(luout,'("mo #",10x,"alpha occ",10x,"beta occ")')
+        write(luout,'("====",10x,"=========",10x,"========")')
+        do ii = 1, noft_params%nmo
+          idim(1) = ii
+          call nga_get(noft_occupations%occ_1e_a,idim,idim,occ_a)
+          call nga_get(noft_occupations%occ_1e_b,idim,idim,occ_b)
+          write(luout,*)ii,occ_a,occ_b
+        enddo
+      endif
+      call noft_occupations_destroy(noft_occupations)
+!
+      end subroutine noft_print_occupations
+!
+!-----------------------------------------------------------------------

@@ -93,6 +93,7 @@ c-----------------------------------------------------------------------
 #include "noft_solve_monte_carlo.fi"
 #include "noft_swap_wavefunctions.fi"
 #include "noft_task_energy_doit.fi"
+#include "noft_wavefunction_analysis.fi"
       end module noft
 !>
 !> @}
