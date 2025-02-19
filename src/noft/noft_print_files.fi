@@ -1,0 +1,49 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Print the vector filenames
+!>
+!> The vectors type holds the filenames for the various vector kinds.
+!> This routine prints those filenames.
+!>
+      subroutine noft_print_files(noft_files)
+      implicit none
+#include "global.fh"
+#include "inp.fh"
+#include "stdio.fh"
+      type(noft_files_tp), intent(in) :: noft_files
+!
+      integer :: iproc
+      integer :: ilen
+!
+      iproc = ga_nodeid()
+      if (iproc.eq.0) then
+        write(luout,'("Vector filenames")')
+        write(luout,'("================")')
+        write(luout,*)
+        write(luout,'("Inputs:")')
+        write(luout,*)
+        ilen = inp_strlen(noft_files%svecs_in)
+        write(luout,'("orthogonal: ",a)')noft_files%svecs_in(1:ilen)
+        ilen = inp_strlen(noft_files%mvecs_in)
+        write(luout,'("orbitals  : ",a)')noft_files%mvecs_in(1:ilen)
+        ilen = inp_strlen(noft_files%tvecs_in)
+        write(luout,'("tilde     : ",a)')noft_files%tvecs_in(1:ilen)
+        ilen = inp_strlen(noft_files%movecs_in)
+        write(luout,'("movecs    : ",a)')noft_files%movecs_in(1:ilen)
+        write(luout,*)
+        write(luout,'("Outputs:")')
+        write(luout,*)
+        ilen = inp_strlen(noft_files%svecs_out)
+        write(luout,'("orthogonal: ",a)')noft_files%svecs_out(1:ilen)
+        ilen = inp_strlen(noft_files%mvecs_out)
+        write(luout,'("orbitals  : ",a)')noft_files%mvecs_out(1:ilen)
+        ilen = inp_strlen(noft_files%tvecs_out)
+        write(luout,'("tilde     : ",a)')noft_files%tvecs_out(1:ilen)
+        ilen = inp_strlen(noft_files%movecs_out)
+        write(luout,'("movecs    : ",a)')noft_files%movecs_out(1:ilen)
+        write(luout,*)
+      endif
+!
+      end subroutine noft_print_files
+!
+!-----------------------------------------------------------------------

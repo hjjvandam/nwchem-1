@@ -81,6 +81,7 @@ c-----------------------------------------------------------------------
 #include "noft_orthogonalizing_transformation.fi"
 #include "noft_print_basis.fi"
 #include "noft_print_energy.fi"
+#include "noft_print_files.fi"
 #include "noft_print_geometry.fi"
 #include "noft_print_header.fi"
 #include "noft_replace_data.fi"

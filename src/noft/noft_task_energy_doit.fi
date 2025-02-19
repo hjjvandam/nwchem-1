@@ -45,6 +45,7 @@
       call noft_set_num_electrons(noft_instances,noft_params)
       call noft_print_basis(noft_instances)
       call noft_print_geometry(noft_instances)
+      call noft_print_files(noft_vectors)
       call noft_create_operators(noft_params,noft_oper)
       call noft_initialize_integrals(rtdb,noft_instances)
       call noft_compute_operators(noft_instances,noft_oper)
