@@ -100,9 +100,9 @@
       chunk = -1
       idim(1) = noft_params%nao
       idim(2) = noft_params%nmo
-      if (.not.nga_create(mt_dbl,ndim,"alpha mos",chunk,g_vecs(1)))
+      if (.not.nga_create(mt_dbl,ndim,idim,"alpha mos",chunk,g_vecs(1)))
      &  call errquit(pname//"failed to create alpha mos", 40, UERR)
-      if (.not.nga_create(mt_dbl,ndim,"beta mos",chunk,g_vecs(2)))
+      if (.not.nga_create(mt_dbl,ndim,idim,"beta mos",chunk,g_vecs(2)))
      &  call errquit(pname//"failed to create beta mos", 50, UERR)
       call ga_dgemm(tn,tn,noft_params%nao,noft_params%nmo,
      &              noft_params%nso,
