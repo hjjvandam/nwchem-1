@@ -124,7 +124,7 @@
 !     Orthonormalize the vectors
 !
       call noft_orthogonalize_vecs(noft_wavefunction%to_a,ii,.false.)
-      call noft_orthogonalize_vecs(noft_wavefunction%to_a,ii,.false.)
+      call noft_orthogonalize_vecs(noft_wavefunction%to_b,ii,.false.)
 !
       end subroutine noft_guess_tilde
 !
