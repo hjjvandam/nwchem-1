@@ -45,9 +45,9 @@
 !
       wght = c_ab*
      &       (noft_2el_weight_occ(o1a)*
-     &        noft_2el_weight_occ(o1a)*
-     &        noft_2el_weight_occ(o1a)*
-     &        noft_2el_weight_occ(o1a))**(quarter*p_ab)
+     &        noft_2el_weight_occ(o2a)*
+     &        noft_2el_weight_occ(o1b)*
+     &        noft_2el_weight_occ(o2b))**(quarter*p_ab)
 !
       end function noft_2el_weight_ab
 !
