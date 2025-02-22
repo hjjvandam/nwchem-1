@@ -102,14 +102,15 @@
       call noft_occupations_calculate(noft_params,noft_wavefunction,
      &                                noft_occupations)
       if (iproc.eq.0) then
-        write(luout,'("mo #",10x,"alpha occ",10x,"beta occ")')
-        write(luout,'("====",10x,"=========",10x,"========")')
+        write(luout,'(2x,"mo #",3x,"alpha occ",3x,"beta  occ")')
+        write(luout,'(2x,"====",3x,"=========",3x,"=========")')
         do ii = 1, noft_params%nmo
           idim(1) = ii
           call nga_get(noft_occupations%occ_1e_a,idim,idim,occ_a)
           call nga_get(noft_occupations%occ_1e_b,idim,idim,occ_b)
-          write(luout,*)ii,occ_a,occ_b
+          write(luout,'(i6,f12.6,f12.6)')ii,occ_a,occ_b
         enddo
+        write(luout,*)
       endif
       call noft_occupations_destroy(noft_occupations)
 !
