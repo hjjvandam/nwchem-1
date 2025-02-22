@@ -27,7 +27,7 @@
 !> A print out of the tilde functions might be useful. So we should 
 !> generate that if requested.
 !>
-      subroutine noft_wavefunction_analysis(noft_params,
+      subroutine noft_wavefunction_analysis(noft_params,noft_instances,
      &           noft_wavefunction)
       implicit none
 #include "errquit.fh"
@@ -35,6 +35,8 @@
 #include "util.fh"
       !> The calculation parameters
       type(noft_parameter_tp),    intent(in) :: noft_params
+      !> The calculation instances
+      type(noft_instances_tp),    intent(in) :: noft_instances
       !> the wavefunction
       type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
 !
@@ -49,6 +51,8 @@
       if (util_print("movecs",print_medium).and.noft_params%nao.le.50)
      &then
 !       molecular orbitals
+        call noft_print_molecular_orbitals(noft_params,noft_instances,
+     &                                     noft_wavefunction)
       endif
 !
       if (util_print("tilde",print_high).and.noft_params%nao.le.50) then
@@ -110,5 +114,81 @@
       call noft_occupations_destroy(noft_occupations)
 !
       end subroutine noft_print_occupations
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Print the molecular orbitals
+!>
+      subroutine noft_print_molecular_orbitals(
+     &   noft_params,noft_instances,noft_wavefunction)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+#include "stdio.fh"
+      !> The calculation parameters
+      type(noft_parameter_tp), intent(in) :: noft_params
+      !> The calculation instances
+      type(noft_instances_tp), intent(in) :: noft_instances
+      !> The wavefunction
+      type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
+!
+      type(noft_occupations_tp) :: noft_occupations
+      integer, parameter :: ndim = 2
+      integer :: idim(ndim)
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      integer :: chk(ndim)
+      integer :: g_moa, g_mob
+      real(kind=dp), allocatable :: occs(:,:)
+      real(kind=dp), parameter :: one  = 1.0_dp
+      real(kind=dp), parameter :: zero = 0.0_dp
+      real(kind=dp) :: evals
+      integer :: nao, nso, nmo
+      integer :: irs
+      character(len=1), parameter :: tn = "N"
+      character(len=32), parameter :: pname
+     &  = "noft_print_molecular_orbitals: "
+!
+      nao = noft_params%nao
+      nso = noft_params%nso
+      nmo = noft_params%nmo
+!
+      call noft_occupations_create(noft_params,noft_occupations)
+      call noft_occupations_calculate(noft_params,noft_wavefunction,
+     &                                noft_occupations)
+      allocate(occs(1:noft_params%nmo,1:ndim))
+      ilo = 1
+      ihi(1) = nmo
+      ihi(2) = 1
+      call nga_get(noft_occupations%occ_1e_a,ilo,ihi,occs(:,1))
+      call nga_get(noft_occupations%occ_1e_b,ilo,ihi,occs(:,2))
+      idim(1) = nao
+      idim(2) = nmo
+      chk = -1
+      if (.not.nga_create(MT_DBL,ndim,idim,"mo a",chk,g_moa))
+     &  call errquit(pname//"failed to create mo_a",10,GA_ERR)
+      if (.not.nga_create(MT_DBL,ndim,idim,"mo b",chk,g_mob))
+     &  call errquit(pname//"failed to create mo_b",20,GA_ERR)
+      call ga_dgemm(tn,tn,nao,nmo,nso,one,
+     &              noft_wavefunction%so,noft_wavefunction%mo_a,
+     &              zero,g_moa)
+      call ga_dgemm(tn,tn,nao,nmo,nso,one,
+     &              noft_wavefunction%so,noft_wavefunction%mo_b,
+     &              zero,g_mob)
+      call movecs_print_anal(noft_instances%basis, 1, nmo, 0.005_dp,
+     &     g_moa, "alpha mos",
+     &     .false., evals, .false., irs, .true., occs(:,1))
+      call movecs_print_anal(noft_instances%basis, 1, nmo, 0.005_dp,
+     &     g_mob, "beta mos",
+     &     .false., evals, .false., irs, .true., occs(:,2))
+      deallocate(occs)
+      if (.not.ga_destroy(g_mob))
+     &  call errquit(pname//"failed to destroy mo_b",30,GA_ERR)
+      if (.not.ga_destroy(g_moa))
+     &  call errquit(pname//"failed to destroy mo_a",40,GA_ERR)
+      call noft_occupations_destroy(noft_occupations)
+!
+      end subroutine noft_print_molecular_orbitals
 !
 !-----------------------------------------------------------------------
