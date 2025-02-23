@@ -101,7 +101,7 @@
       attempt_count = 0
       iteration = 0
       if (noft_ionode()) then
-        write(luout,"('  ',i4,$)")1
+        write(luout,"('  ',i4,$)")0
         call noft_print_energy(noft_energy,luout,.true.)
       endif
       do while (range_max.gt.threshold.and.iteration.le.max_iteration)
