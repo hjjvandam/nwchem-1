@@ -310,7 +310,7 @@
      &  then
           if (.not. inp_i(maxiter))
      &      call errquit(pname//"read maxiter failed", 80, INPUT_ERR)
-          if (.not. rtdb_put(rtdb, "noft:mc:maxiter",MT_DBL,1,maxiter))
+          if (.not. rtdb_put(rtdb, "noft:mc:maxiter",MT_INT,1,maxiter))
      &      call errquit(pname//"rtdb_put failed", 80, RTDB_ERR)
 !
 !       Fails
