@@ -186,8 +186,8 @@
             do ii = max(ncore+1,ilo), min(ihi,nmo-nvirt)
               if (ii.eq.jj) then
                 buf(ii,jj) = 1.0d0
-              else
-                buf(ii,jj) = 1.0d0
+!             else
+!               buf(ii,jj) = 1.0d0
               endif
             enddo
           else

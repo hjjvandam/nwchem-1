@@ -22,7 +22,7 @@
      &             params%step_threshold))
      &then
       else
-        params%step_threshold = 1.0d-4
+        params%step_threshold = 1.0d-8
       endif
 !
 !     Load the range maximum

@@ -46,7 +46,7 @@
       if (rtdb_get(rtdb,"noft:threshold", MT_DBL, 1,
      &             noft_params%threshold)) then
       else
-          noft_params%threshold = 1.0e-4
+          noft_params%threshold = 1.0e-8
       endif
 !
 !     Load levelshifts
@@ -116,4 +116,5 @@
       endif
 !
       end subroutine noft_load_params
+!
 !-----------------------------------------------------------------------

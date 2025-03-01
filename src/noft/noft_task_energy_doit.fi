@@ -84,4 +84,5 @@
       call noft_finalize_instances(noft_instances)
       call util_print_pop
       end function noft_task_energy_doit
+c
 c-----------------------------------------------------------------------
