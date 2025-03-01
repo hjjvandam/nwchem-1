@@ -92,6 +92,7 @@
 !
       integer, parameter     :: ndim = 2
       real(kind=dp), pointer :: data(:,:)
+      real(kind=dp), parameter :: fac = -0.5_dp
       integer                :: ilo(ndim)
       integer                :: ihi(ndim)
       integer ii, jj
@@ -100,7 +101,7 @@
       do jj = ilo(2), ihi(2)
         do ii = ilo(1), ihi(1)
           if (ii.lt.jj) then
-            data(ii,jj) = value
+            data(ii,jj) = value*exp(fac*(jj-ii-1))
           else
             data(ii,jj) = 0.0d0
           endif
