@@ -9,16 +9,17 @@ c
 * $Id$
 *
       implicit none
-#include "errquit.fh"
-#include "mafdecls.fh"
-#include "global.fh"
-#include "rtdb.fh"
 #include "bas.fh"
-#include "geom.fh"
-#include "util.fh"
 #include "detciP.fh"
 #include "detci.fh"
+#include "errquit.fh"
+#include "geom.fh"
+#include "global.fh"
 #include "mcscfprof.fh"
+#include "mafdecls.fh"
+#include "rtdb.fh"
+#include "stdio.fh"
+#include "util.fh"
 c
       integer rtdb, geom, basis
       integer nbf, nclosed, nact
@@ -75,6 +76,15 @@ c
 C      data civec_in/'civec'/
 c
 c
+      if (nact.gt.detci_maxorb) then
+        if (ga_nodeid().eq.0) then
+          write(luout,*)"# active orbitals = ",nact
+          write(luout,*)"detci_maxorb      = ",detci_maxorb
+          write(luout,*)"Adjust detci_maxorb and recompile."
+        endif
+        call errquit("mcscf_cisolve: active orbs exceeds maxorb",
+     $               10,UERR)
+      endif
       iprint = 1
       if (hasprint.ne.0 .or. (.not. oprint)) iprint = 0
       hasprint = hasprint + 1
@@ -91,10 +101,10 @@ c
       nelb = nactel - nela
       if ((mod((nactel + multip - 1),2).ne.0).or.
      $    (nela.lt.0).or.(nelb.lt.0))
-     $    call errquit('detci: incompatible elec and spin',0, INPUT_ERR)
+     $    call errquit('detci: incompatible elec and spin',20,INPUT_ERR)
       if ((nela.gt.detci_maxelec).or.(nelb.gt.detci_maxelec).or.
      $    ((nela+nelb).gt.detci_maxelec_tot))
-     $    call errquit('mcscf_ci: too many electrons - redimension',0,
+     $    call errquit('mcscf_ci: too many electrons - redimension',30,
      &       INPUT_ERR)
 c
 c   Retrieve symmetry stuff
@@ -116,9 +126,9 @@ c   Push global MO integrals into local space
 c
       n2 = nact*nact
       if (.not.ma_push_get(MT_DBL,n2,'1e hamil',l_h1,k_h1))
-     $  call errquit('mcscf_cisolve: cannot allocate',0, MA_ERR)
+     $  call errquit('mcscf_cisolve: cannot allocate',40, MA_ERR)
       if (.not.ma_push_get(MT_DBL,(n2*n2),'eri',l_eri,k_eri))
-     $  call errquit('mcscf_cisolve: cannot allocate',0, MA_ERR)
+     $  call errquit('mcscf_cisolve: cannot allocate',50, MA_ERR)
       call dfill(n2,0.d0,dbl_mb(k_h1),1)
       call dfill((n2*n2),0.d0,dbl_mb(k_eri),1)
       call mcscf_getmolocal( nclosed, nact, nbf, g_h, g_coul,
@@ -134,11 +144,11 @@ c
 c   Create CI-vectors
 c
       if (.not.ga_civec_create('CI vector',g_civec))
-     $   call errquit('detci: cannot create CI vector',0, GA_ERR)
+     $   call errquit('detci: cannot create CI vector',60, GA_ERR)
       do i=1,mxworkvec
         vstr = 'CI work ' // char(ichar('0')+i)
         if (.not.ga_civec_create(vstr,g_wvec(i)))
-     $    call errquit('detci: cannot create CI vector',0, GA_ERR)
+     $    call errquit('detci: cannot create CI vector',70, GA_ERR)
         call ga_zero(g_wvec(i))
       enddo
 c
@@ -153,7 +163,7 @@ c
 c
       if ((ociread).and.(civec_saved)) then
         if (.not.(file_read_ga(civec_in,g_civec)))
-     $    call errquit('mcscf_ci: cannot read CI vector',0, DISK_ERR)
+     $    call errquit('mcscf_ci: cannot read CI vector',80, DISK_ERR)
       else
         if (rtdb_get(rtdb,'mcscf:guess',MT_INT,(nela+nelb),itmp)) then
           do i=1,(nela+nelb)
@@ -196,7 +206,7 @@ c   Free work vectors ASAP
 c
       do i=1,mxworkvec
         if (.not.ga_destroy(g_wvec(i)))
-     $    call errquit('mcscf_cisolve: cannot destroy CI vector',0,
+     $    call errquit('mcscf_cisolve: cannot destroy CI vector',90,
      &       GA_ERR)
       enddo
 c
@@ -230,12 +240,12 @@ c
 c   Save CI vector for restart
 c
       if (.not. file_write_ga(civec_in,g_civec))
-     $  call errquit('mcscf_ci: error in CI vector save',0, DISK_ERR)
+     $  call errquit('mcscf_ci: error in CI vector save',100, DISK_ERR)
 c
 c   Release CI vectors
 c
       if (.not.ga_destroy(g_civec))
-     $   call errquit('mcscf_cisolve: cannot destroy CI vector',0,
+     $   call errquit('mcscf_cisolve: cannot destroy CI vector',110,
      &       GA_ERR)
 c
 c   Release DetCI internals
@@ -245,9 +255,9 @@ c
 c   Clean up
 c
       if (.not.ma_pop_stack(l_eri))
-     $  call errquit('mcscf_cisolve: cannot pop stack',0, MA_ERR)
+     $  call errquit('mcscf_cisolve: cannot pop stack',120, MA_ERR)
       if (.not.ma_pop_stack(l_h1))
-     $  call errquit('mcscf_cisolve: cannot pop stack',0, MA_ERR)
+     $  call errquit('mcscf_cisolve: cannot pop stack',130, MA_ERR)
 c
 c
       return
