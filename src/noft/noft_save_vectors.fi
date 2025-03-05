@@ -1,0 +1,46 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Store the names at the end of the calculation
+!>
+!> Key here is to update the input vectors file names if they were
+!> set to atomic, so that a follow up calculation finds the right
+!> file names.
+!>
+      subroutine noft_save_vectors(rtdb,noft_files)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+#include "rtdb.fh"
+      !> The runtime database handle
+      integer,             intent(in)    :: rtdb
+      !> files The vector filenames
+      type(noft_files_tp), intent(inout) :: noft_files
+!
+      character(len=32) :: tag
+!
+      if (noft_files%movecs_in.eq."atomic") then
+        noft_files%movecs_in = noft_files%movecs_out
+      endif
+      if (noft_files%svecs_in.eq."atomic") then
+        noft_files%svecs_in = noft_files%svecs_out
+      endif
+      if (noft_files%mvecs_in.eq."atomic") then
+        noft_files%mvecs_in = noft_files%mvecs_out
+      endif
+      if (noft_files%tvecs_in.eq."atomic") then
+        noft_files%tvecs_in = noft_files%tvecs_out
+      endif
+!
+      tag = "noft:input vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, noft_files%movecs_in)) then
+         call errquit("writing movecs to RTDB failed",10,RTDB_ERR)
+      endif
+      tag = "noft:output vectors"
+      if (.not. rtdb_cput(rtdb, tag, 1, noft_files%movecs_out)) then
+         call errquit("writing movecs to RTDB failed",20,RTDB_ERR)
+      endif
+!
+      end subroutine noft_save_vectors
+!
+!-----------------------------------------------------------------------
