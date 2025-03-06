@@ -84,8 +84,10 @@
       integer :: consecutive_fails
       integer :: iteration
       integer :: max_iteration
+      integer :: nao
 !
       oconv = .false.
+      nao = noft_params%nao
       consecutive_fails = noft_params%monte_carlo%consecutive_fails
       max_iteration = noft_params%monte_carlo%maxiter
       range_init = noft_params%monte_carlo%step_maximum/10.0_dp
@@ -111,6 +113,8 @@
         call noft_monte_carlo_compute_rotation(noft_rotation,noft_step)
         call noft_monte_carlo_rotate_wavefunction(
      &           noft_wavefunction_step,noft_rotation,noft_wavefunction)
+        call noft_orthogonalize(noft_wavefunction)
+        call noft_restrict_wavefunction(noft_params,noft_wavefunction)
         call noft_eval_energy(noft_params,noft_operators,
      &           noft_wavefunction_step,noft_energy_step)
         if (noft_energy_step%e_total.lt.noft_energy%e_total) then
@@ -125,10 +129,10 @@
      &                                 noft_wavefunction_step)
           noft_energy = noft_energy_step
           if (noft_ionode()) then
-            write(luout,"('  ',i4,$)")iteration
+            write(luout,"('  ',i8,$)")iteration
             call noft_print_energy(noft_energy,luout,.true.)
           endif
-        else if (mod(attempt_count,consecutive_fails).eq.0) then
+        else if (mod(attempt_count,consecutive_fails*nao*nao).eq.0) then
           !
           ! Scale the range
           !
@@ -137,7 +141,7 @@
         endif
       enddo
       if (noft_ionode()) then
-        write(luout,"('  ',i4,$)")iteration
+        write(luout,"('  ',i8,$)")iteration
         call noft_print_energy(noft_energy,luout,.true.)
       endif
       if (range_max.gt.threshold) then

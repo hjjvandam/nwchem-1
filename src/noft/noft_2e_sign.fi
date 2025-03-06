@@ -30,16 +30,49 @@
       real(kind=dp), intent(in) :: o2b
 !
       real(kind=dp), parameter :: half = 0.5_dp
+      integer nhigh
+      integer nlow
 !
-      sw = -1.0_dp
-      if (o1a.le.half.and.o2a.le.half.and.o1b.le.half.and.o2b.le.half)
-     &then
-        sw = 1.0_dp
+      nhigh = 0
+      nlow  = 0
+      if (o1a.le.half) then
+        nlow = nlow + 1
+      else
+        nhigh = nhigh + 1
       endif
-      if (o1a.gt.half.and.o2a.gt.half.and.o1b.gt.half.and.o2b.gt.half)
-     &then
-        sw = 1.0_dp
+      if (o2a.le.half) then
+        nlow = nlow + 1
+      else
+        nhigh = nhigh + 1
       endif
+      if (o1b.le.half) then
+        nlow = nlow + 1
+      else
+        nhigh = nhigh + 1
+      endif
+      if (o2b.le.half) then
+        nlow = nlow + 1
+      else
+        nhigh = nhigh + 1
+      endif
+!
+      sw =  0.0_dp
+      if (nhigh.eq.4.and.nlow.eq.0) then
+        sw = 1.0_dp
+      else if (nhigh.eq.0.and.nlow.eq.4) then
+        sw = 1.0_dp
+      else if (nhigh.eq.2.and.nlow.eq.2) then
+        sw = -1.0_dp
+      endif
+!     sw = -1.0_dp
+!     if (o1a.le.half.and.o2a.le.half.and.o1b.le.half.and.o2b.le.half)
+!    &then
+!       sw = 1.0_dp
+!     endif
+!     if (o1a.gt.half.and.o2a.gt.half.and.o1b.gt.half.and.o2b.gt.half)
+!    &then
+!       sw = 1.0_dp
+!     endif
 !
       end function noft_2el_sign_1el_occ
 !

@@ -96,6 +96,14 @@
         noft_params%temperature = 0.5
       endif
 !
+!     Load the restricted setting
+!
+      if (rtdb_get(rtdb,"noft:restricted", MT_LOG, 1,
+     &             noft_params%restricted)) then
+      else
+        noft_params%restricted = .false.
+      endif
+!
 !     Load the solver selection
 !
       if (rtdb_get(rtdb,"noft:solver", MT_INT, 1,

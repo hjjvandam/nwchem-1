@@ -161,6 +161,7 @@
           tag = "noft:input t-vectors"
           if (.not. rtdb_cget(rtdb, tag, 1, tvecs_in)) 
      &        tvecs_in = replace_extension(movecs_in,"tvecs")
+          noft_vectors%movecs_in = movecs_in
           noft_vectors%svecs_in  = svecs_in
           noft_vectors%mvecs_in  = mvecs_in
           noft_vectors%tvecs_in  = tvecs_in

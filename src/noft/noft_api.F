@@ -195,6 +195,24 @@
      &        call errquit("noft_input: rtdb_put failed", 92, RTDB_ERR)
           endif
 !
+!       Restricted
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "restricted"))
+     &  then
+          if (.not. rtdb_put(rtdb, "noft:restricted", mt_log, 1,
+     &                       .true.))
+     &      call errquit("noft_input: rtdb_put failed", 100, RTDB_ERR)
+!
+!       Unrestricted
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "unrestricted"))
+     &  then
+          if (.not. rtdb_put(rtdb, "noft:unrestricted", mt_log, 1,
+     &                       .false.))
+     &      call errquit("noft_input: rtdb_put failed", 110, RTDB_ERR)
+!
 !       MonteCarlo
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),

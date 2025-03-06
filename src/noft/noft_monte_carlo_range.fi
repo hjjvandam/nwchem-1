@@ -92,7 +92,7 @@
 !
       integer, parameter     :: ndim = 2
       real(kind=dp), pointer :: data(:,:)
-      real(kind=dp), parameter :: fac = -0.5_dp
+      real(kind=dp), parameter :: fac = -0.25_dp
       integer                :: ilo(ndim)
       integer                :: ihi(ndim)
       integer ii, jj
@@ -268,3 +268,15 @@
 !
       end subroutine noft_monte_carlo_range_max
 !-----------------------------------------------------------------------
+!
+      function noft_scale_1(scale,nn,ii,jj) result(fac)
+      implicit none
+      real(kind=dp), intent(in) :: scale
+      integer, intent(in) :: nn
+      integer, intent(in) :: ii
+      integer, intent(in) :: jj
+      real(kind=dp) :: fac
+!
+      fac = scale*((1.0_dp*nn)/(1.0_dp*nn+ii-jj-1.0_dp))
+!
+      end function noft_scale_1

@@ -1,0 +1,24 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Restrict the wavefunction if required
+!>
+!> This subroutine turns the wavefunction into a spin restricted
+!> wavefunction simply by copying the \f$\alpha\f$-spin components
+!> over the \f$\beta\f$-spin components.
+!>
+      subroutine noft_restrict_wavefunction(noft_parameters,
+     &           noft_wavefunction)
+      implicit none
+      !> The calculation parameters
+      type(noft_parameter_tp),    intent(in)    :: noft_parameters
+      !> The wavefunction
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+!
+      if (noft_parameters%restricted) then
+        call ga_copy(noft_wavefunction%mo_a,noft_wavefunction%mo_b)
+        call ga_copy(noft_wavefunction%to_a,noft_wavefunction%to_b)
+      endif
+!
+      end subroutine noft_restrict_wavefunction
+!
+!-----------------------------------------------------------------------

@@ -63,6 +63,7 @@
       else
         call errquit("invalid initial wavefunction",10,CAPMIS_ERR)
       endif
+      call noft_restrict_wavefunction(noft_params,noft_wavefunction)
       call noft_ortho_operators(noft_wavefunction,noft_oper)
       if (noft_params%solver.eq.monte_carlo) then
         call noft_solve_monte_carlo(noft_params,noft_instances,
