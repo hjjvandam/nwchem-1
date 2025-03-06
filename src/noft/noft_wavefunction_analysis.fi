@@ -90,11 +90,12 @@
       type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
 !
       type(noft_occupations_tp) :: noft_occupations
-      real(kind=dp) :: occ_a, occ_b
       integer :: ii
       integer :: iproc
       integer, parameter :: ndim = 1
       integer :: idim(ndim)
+      integer :: ild(ndim)
+      real(kind=dp) :: occ_a(ndim), occ_b(ndim)
 !
       iproc = ga_nodeid()
 !
@@ -106,9 +107,9 @@
         write(luout,'(2x,"====",3x,"=========",3x,"=========")')
         do ii = 1, noft_params%nmo
           idim(1) = ii
-          call nga_get(noft_occupations%occ_1e_a,idim,idim,occ_a)
-          call nga_get(noft_occupations%occ_1e_b,idim,idim,occ_b)
-          write(luout,'(i6,f12.6,f12.6)')ii,occ_a,occ_b
+          call nga_get(noft_occupations%occ_1e_a,idim,idim,occ_a,ild)
+          call nga_get(noft_occupations%occ_1e_b,idim,idim,occ_b,ild)
+          write(luout,'(i6,f12.6,f12.6)')ii,occ_a(1),occ_b(1)
         enddo
         write(luout,*)
       endif
@@ -139,6 +140,7 @@
       integer :: idim(ndim)
       integer :: ilo(ndim)
       integer :: ihi(ndim)
+      integer :: ild(ndim)
       integer :: chk(ndim)
       integer :: g_moa, g_mob
       real(kind=dp), allocatable :: occs(:,:)
@@ -162,8 +164,8 @@
       ilo = 1
       ihi(1) = nmo
       ihi(2) = 1
-      call nga_get(noft_occupations%occ_1e_a,ilo,ihi,occs(:,1))
-      call nga_get(noft_occupations%occ_1e_b,ilo,ihi,occs(:,2))
+      call nga_get(noft_occupations%occ_1e_a,ilo,ihi,occs(:,1),ild)
+      call nga_get(noft_occupations%occ_1e_b,ilo,ihi,occs(:,2),ild)
       idim(1) = nao
       idim(2) = nmo
       chk = -1
