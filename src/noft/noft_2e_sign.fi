@@ -58,9 +58,9 @@
 !
       sw =  0.0_dp
       if (nhigh.eq.4.and.nlow.eq.0) then
-        sw = 1.0_dp
+        sw =  1.0_dp
       else if (nhigh.eq.0.and.nlow.eq.4) then
-        sw = 1.0_dp
+        sw =  1.0_dp
       else if (nhigh.eq.2.and.nlow.eq.2) then
         sw = -1.0_dp
       endif
