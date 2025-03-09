@@ -103,7 +103,7 @@
       attempt_count = 0
       iteration = 0
       if (noft_ionode()) then
-        write(luout,"('  ',i4,$)")0
+        write(luout,"('  ',i8,$)")0
         call noft_print_energy(noft_energy,luout,.true.)
       endif
       do while (range_max.gt.threshold.and.iteration.le.max_iteration)
@@ -113,8 +113,9 @@
         call noft_monte_carlo_compute_rotation(noft_rotation,noft_step)
         call noft_monte_carlo_rotate_wavefunction(
      &           noft_wavefunction_step,noft_rotation,noft_wavefunction)
-        call noft_orthogonalize(noft_wavefunction)
-        call noft_restrict_wavefunction(noft_params,noft_wavefunction)
+        call noft_orthogonalize(noft_wavefunction_step)
+        call noft_restrict_wavefunction(noft_params,
+     &           noft_wavefunction_step)
         call noft_eval_energy(noft_params,noft_operators,
      &           noft_wavefunction_step,noft_energy_step)
         if (noft_energy_step%e_total.lt.noft_energy%e_total) then
