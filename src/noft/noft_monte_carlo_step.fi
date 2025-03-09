@@ -114,7 +114,7 @@
       real(kind=dp), allocatable :: range(:,:)
       real(kind=dp) :: onem
 !
-      onem = -1.0d0
+      onem = -1.0_dp
       call ga_zero(ga_step)
       call noft_access(ga_step,step,ilo,ihi)
       allocate(stept(ilo(2):ihi(2),ilo(1):ihi(1)))
