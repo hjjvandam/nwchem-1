@@ -10,7 +10,9 @@
 !
       noft_energy%e_total = noft_energy%e_1electron
      &                    + noft_energy%e_2electron
-     &                    + noft_energy%e_correlation
+     &                    + noft_energy%e_correlation_aa
+     &                    + noft_energy%e_correlation_ab
+     &                    + noft_energy%e_correlation_bb
      &                    + noft_energy%e_nuclear
 !
       end subroutine noft_eval_tot_energy

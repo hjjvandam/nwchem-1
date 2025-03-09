@@ -16,7 +16,9 @@
         !> The 2-electron meanfield energy
         real(kind=dp) :: e_2electron
         !> The correlation energy
-        real(kind=dp) :: e_correlation
+        real(kind=dp) :: e_correlation_aa
+        real(kind=dp) :: e_correlation_ab
+        real(kind=dp) :: e_correlation_bb
         !> The nuclear repulsion energy
         real(kind=dp) :: e_nuclear
       end type noft_energy_tp

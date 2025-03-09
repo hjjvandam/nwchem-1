@@ -39,25 +39,24 @@
       occ_2e_bb = noft_occupations%occ_2e_bb
 !
       noft_energy%e_2electron = 0.0_dp
-      noft_energy%e_correlation = 0.0_dp
+      noft_energy%e_correlation_aa = 0.0_dp
+      noft_energy%e_correlation_ab = 0.0_dp
+      noft_energy%e_correlation_bb = 0.0_dp
 !
       call noft_eval_2e_energy_ab(c_ab,p_ab,occ_1e_a,occ_1e_b,
      &                            moab_el_2,en_2el,en_2el_corr)
       noft_energy%e_2electron = noft_energy%e_2electron + en_2el
-      noft_energy%e_correlation = noft_energy%e_correlation
-     &                          + en_2el_corr
+      noft_energy%e_correlation_ab = en_2el_corr
 !
-      call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_2e_aa,
+      call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_2e_aa,
      &                              moaa_el_2,en_2el,en_2el_corr)
       noft_energy%e_2electron = noft_energy%e_2electron + en_2el
-      noft_energy%e_correlation = noft_energy%e_correlation
-     &                          + en_2el_corr
+      noft_energy%e_correlation_aa = en_2el_corr
 !
-      call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_2e_bb,
+      call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_2e_bb,
      &                              mobb_el_2,en_2el,en_2el_corr)
       noft_energy%e_2electron = noft_energy%e_2electron + en_2el
-      noft_energy%e_correlation = noft_energy%e_correlation
-     &                          + en_2el_corr
+      noft_energy%e_correlation_bb = en_2el_corr
 !
       end subroutine noft_eval_2e_energy
 !
