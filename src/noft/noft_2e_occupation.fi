@@ -34,6 +34,7 @@
       do jj = ilo(2), ihi(2)
         do ii = ilo(1), ihi(1)
           oo(ii,jj) = oo(ii,jj) + v1(ii) * v2(jj)
+          oo(ii,jj) = max(0.0_dp,min(1.0_dp,oo(ii,jj)))
         enddo
       enddo
       deallocate(v2)
@@ -97,6 +98,11 @@
      &        - t1(i1,is)*t1(i1,it)*t2(i2,it)*t2(i2,is)
             enddo
           enddo
+        enddo
+      enddo
+      do i2 = it2lo(1), it2hi(1)
+        do i1 = it1lo(1), it1hi(1)
+          oo(i1,i2) = max(0.0_dp,min(1.0_dp,oo(i1,i2)))
         enddo
       enddo
 !
