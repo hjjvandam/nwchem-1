@@ -90,13 +90,15 @@
               if (i1.eq.i2.and.i3.eq.i4) then
                 e_2e_ab = e_2e_ab
      &                  + occ_i_a(i1)*occ_i_b(i3)*moab(i1,i2,i3,i4)
-              else if (i1.ne.i2.and.i3.ne.i4) then
+              else if (i1.ne.i2.and.i3.ne.i4.and.
+     &                 ((i1.eq.i3.and.i2.eq.i4).or.
+     &                  (i1.eq.i4.and.i2.eq.i3))) then
                 o1a = occ_i_a(i1)
                 o2a = occ_j_a(i2)
                 o1b = occ_i_b(i3)
                 o2b = occ_j_b(i4)
                 e_2e_ab_corr = e_2e_ab_corr
-     &            + moab(i1,i2,i3,i4)*
+     &            + abs(moab(i1,i2,i3,i4))*
      &              noft_2el_weight_ab(c_ab,p_ab,o1a,o2a,o1b,o2b)*
      &              noft_2el_sign_1el_occ(o1a,o2a,o1b,o2b)
               endif
