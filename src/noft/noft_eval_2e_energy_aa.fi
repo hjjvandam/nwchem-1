@@ -157,7 +157,7 @@
               else if (ii.ne.jj.and.ii.ne.kk.and.ii.ne.ll.and.
      &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll) then
                 e_2e_aa_corr = e_2e_aa_corr
-     &            + half*half*moaa_as(ii,jj,kk,ll)*
+     &            + half*half*abs(moaa_as(ii,jj,kk,ll))*
      &              noft_2el_weight_aa(c_aa,p_aa,oik(ii,kk),ojl(jj,ll))*
      &              noft_2el_sign_2el_occ(oik(ii,kk),ojl(jj,ll))
               endif
@@ -254,7 +254,7 @@
               else if (ii.ne.jj.and.ii.ne.kk.and.ii.ne.ll.and.
      &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll) then
                 e_2e_aa_corr = e_2e_aa_corr
-     &            + half*half*moaa_as(ii,jj,kk,ll)*
+     &            + half*half*abs(moaa_as(ii,jj,kk,ll))*
      &              noft_2el_weight_aa(c_aa,p_aa,oil(ii,ll),ojk(jj,kk))*
      &              noft_2el_sign_2el_occ(oil(ii,ll),ojk(jj,kk))
               endif
