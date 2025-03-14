@@ -132,6 +132,103 @@
 !
 !-----------------------------------------------------------------------
 !
+!> \brief Initialize a single range GA element
+!>
+!> This subroutine applies the range initialization for one element to
+!> one of the global arrays in the range data type.
+!>
+!> Basically we are assuming that if the energy depends strongly on the
+!> coupling between two states then we want small rotations. In addition
+!> the energy expression tends to have redundant rotations. So we need
+!> an expression that generates a finite range when mixing two states
+!> the energy difference is zero. Hence we use the following expression
+!> \f{eqnarray}{
+!>   r = v*\frac{1}{1+c*d}
+!> \f}
+!> where \f$v\f$ is the initial maximum range value,
+!> \f$c\f$ is a constant,
+!> and \f$d\f$ is the energy difference due to the mixing of two states.
+!>
+!> Only the upper triangle of range is non-zero, and all values
+!> are non-negative.
+!>
+      subroutine noft_monte_carlo_range_init_elm_1(ga_x,value,diff,cc,
+     &                                             ii,jj)
+      implicit none
+#include "global.fh"
+#include "errquit.fh"
+      !> The range global array
+      integer,       intent(inout) :: ga_x
+      !> The value \f$v\f$
+      real(kind=dp), intent(in)    :: value
+      !> The energy difference \f$d\f$
+      real(kind=dp), intent(in)    :: diff
+      !> The constant \f$c\f$
+      real(kind=dp), intent(in)    :: cc
+      !> The indeces of the two states
+      integer,       intent(in)    :: ii, jj
+!
+      character(len=30), parameter :: pname
+     &    = "noft_monte_carlo_range_init_elm_1: "
+!
+!     Local
+!
+      integer, parameter     :: ndim = 2
+      real(kind=dp), pointer :: data(:,:)
+      real(kind=dp), parameter :: fac = -0.25_dp
+      integer                :: ilo(ndim)
+      integer                :: ihi(ndim)
+!
+      call noft_access(ga_x,data,ilo,ihi)
+      if (ilo(2).le.jj.and.jj.le.ihi(2)) then
+        if (ilo(1).le.ii.and.ii.le.ihi(1)) then
+          if (ii.lt.jj) then
+            data(ii,jj) = value/(1.0_dp+cc*diff)
+          endif
+        endif
+      endif
+      call noft_release(ga_x,data,ilo,ihi)
+!
+      end subroutine noft_monte_carlo_range_init_elm_1
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_monte_carlo_range_init_elm(noft_range,name,
+     &           value,diff,cc,ii,jj)
+      implicit none
+#include "global.fh"
+#include "errquit.fh"
+      type(noft_monte_carlo_range_tp), intent(inout) :: noft_range
+      real(kind=dp),                   intent(in)    :: value
+      real(kind=dp),                   intent(in)    :: diff
+      real(kind=dp),                   intent(in)    :: cc
+      integer,                         intent(in)    :: ii, jj
+      character(len=4),                intent(in)    :: name
+!
+      character(len=30), parameter :: pname
+     &    = "noft_monte_carlo_range_init: "
+!
+      if      (name.eq."mo_a") then
+        call noft_monte_carlo_range_init_elm_1(noft_range%mo_a,
+     &       value,diff,cc,ii,jj)
+      else if (name.eq."mo_b") then
+        call noft_monte_carlo_range_init_elm_1(noft_range%mo_b,
+     &       value,diff,cc,ii,jj)
+      else if (name.eq."to_a") then
+        call noft_monte_carlo_range_init_elm_1(noft_range%to_a,
+     &       value,diff,cc,ii,jj)
+      else if (name.eq."to_b") then
+        call noft_monte_carlo_range_init_elm_1(noft_range%to_b,
+     &       value,diff,cc,ii,jj)
+      else
+        call errquit(pname//"invalid range component: "//name,
+     &               10, UERR)
+      endif
+!
+      end subroutine noft_monte_carlo_range_init_elm
+!
+!-----------------------------------------------------------------------
+!
 !> \brief Apply update expression to a single range global array
 !>
 !> The update expression is given in MonteCarlo.py.
@@ -267,16 +364,19 @@
       value = max(val1,val2,val3,val4)
 !
       end subroutine noft_monte_carlo_range_max
+!
 !-----------------------------------------------------------------------
 !
-      function noft_scale_1(scale,nn,ii,jj) result(fac)
+      subroutine noft_monte_carlo_range_zero(noft_range)
       implicit none
-      real(kind=dp), intent(in) :: scale
-      integer, intent(in) :: nn
-      integer, intent(in) :: ii
-      integer, intent(in) :: jj
-      real(kind=dp) :: fac
+      !> The input Monte Carlo range data
+      type(noft_monte_carlo_range_tp), intent(inout) :: noft_range
 !
-      fac = scale*((1.0_dp*nn)/(1.0_dp*nn+ii-jj-1.0_dp))
+      call ga_zero(noft_range%mo_a)
+      call ga_zero(noft_range%mo_b)
+      call ga_zero(noft_range%to_a)
+      call ga_zero(noft_range%to_b)
 !
-      end function noft_scale_1
+      end subroutine noft_monte_carlo_range_zero
+!
+!-----------------------------------------------------------------------
