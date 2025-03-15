@@ -183,7 +183,7 @@
       if (ilo(2).le.jj.and.jj.le.ihi(2)) then
         if (ilo(1).le.ii.and.ii.le.ihi(1)) then
           if (ii.lt.jj) then
-            data(ii,jj) = value/(1.0_dp+cc*diff)
+            data(ii,jj) = value/(1.0_dp+cc*abs(diff))
           endif
         endif
       endif
