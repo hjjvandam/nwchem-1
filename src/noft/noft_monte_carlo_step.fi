@@ -165,3 +165,84 @@
       end subroutine noft_monte_carlo_step_choose
 !
 !-----------------------------------------------------------------------
+!
+      subroutine noft_monte_carlo_step_zero(noft_step)
+      implicit none
+      !> The Monte Carlo step
+      type(noft_monte_carlo_step_tp),  intent(inout) :: noft_step
+!
+      call ga_zero(noft_step%mo_a)
+      call ga_zero(noft_step%mo_b)
+      call ga_zero(noft_step%to_a)
+      call ga_zero(noft_step%to_b)
+!
+      end subroutine noft_monte_carlo_step_zero
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Set one element of the step
+!>
+      subroutine noft_monte_carlo_step_set_1(ga_step,value,ii,jj)
+      implicit none
+      !> The Monte Carlo step global array handle
+      integer,  intent(inout)   :: ga_step
+      !> The step value
+      real(kind=dp), intent(in) :: value
+      !> The indeces
+      integer, intent(in)       :: ii, jj
+!
+!     Local
+!
+      integer, parameter :: ndim = 2
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      real(kind=dp), pointer     :: step(:,:)
+!
+      call noft_access(ga_step,step,ilo,ihi)
+      if (ii.lt.jj) then
+        if (ilo(1).le.ii.and.ii.le.ihi(1)) then
+          if (ilo(2).le.jj.and.jj.le.ihi(2)) then
+            step(ii,jj) = value
+          endif
+        endif
+        if (ilo(1).le.jj.and.jj.le.ihi(1)) then
+          if (ilo(2).le.ii.and.ii.le.ihi(2)) then
+            step(jj,ii) = -value
+          endif
+        endif
+      endif
+      call noft_release(ga_step,step,ilo,ihi)
+!
+      end subroutine noft_monte_carlo_step_set_1
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Set the Monte Carlo step
+!>
+      subroutine noft_monte_carlo_step_set(noft_step,name,value,ii,jj)
+      implicit none
+#include "errquit.fh"
+      !> The Monte Carlo step
+      type(noft_monte_carlo_step_tp),  intent(inout) :: noft_step
+      !> The component name
+      character(len=4), intent(in) :: name
+      !> The value of the step
+      real(kind=dp), intent(in) :: value
+      !> The element indeces
+      integer, intent(in) :: ii, jj
+!
+      if       (name.eq."mo_a") then
+        call noft_monte_carlo_step_set_1(noft_step%mo_a,value,ii,jj)
+      else if (name.eq."mo_b") then
+        call noft_monte_carlo_step_set_1(noft_step%mo_b,value,ii,jj)
+      else if (name.eq."to_a") then
+        call noft_monte_carlo_step_set_1(noft_step%to_a,value,ii,jj)
+      else if (name.eq."to_b") then
+        call noft_monte_carlo_step_set_1(noft_step%to_b,value,ii,jj)
+      else
+        call errquit("failed to set step",10,UERR)
+      endif
+!
+      end subroutine noft_monte_carlo_step_set
+!
+!-----------------------------------------------------------------------
