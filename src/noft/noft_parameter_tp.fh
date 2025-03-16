@@ -27,7 +27,7 @@
         real(kind=dp) :: p_ab
         !> "Temperature"
         real(kind=dp) :: temperature
-        !> Is this an unrestricted calculation?
+        !> Is this a spin restricted calculation?
         logical :: restricted
         !> The number of open shell orbitals
         integer :: no_open

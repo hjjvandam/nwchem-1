@@ -96,10 +96,14 @@
       call noft_monte_carlo_range_create(noft_params,noft_range)
       call noft_monte_carlo_rotation_create(noft_params,noft_rotation)
       call noft_monte_carlo_step_create(noft_params,noft_step)
-      call noft_monte_carlo_range_init(noft_range,range_init)
-      call noft_monte_carlo_range_max(noft_range,range_max)
       call noft_eval_energy(noft_params,noft_operators,
      &                      noft_wavefunction,noft_energy)
+      !call noft_monte_carlo_range_init(noft_range,range_init)
+      call noft_monte_carlo_initialize_range(noft_params,noft_operators,
+     &     noft_wavefunction,noft_energy,
+     &     noft_wavefunction_step,noft_energy_step,
+     &     noft_step,noft_rotation,noft_range)
+      call noft_monte_carlo_range_max(noft_range,range_max)
       attempt_count = 0
       iteration = 0
       if (noft_ionode()) then

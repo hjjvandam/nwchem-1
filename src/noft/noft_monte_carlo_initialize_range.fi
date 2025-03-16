@@ -1,0 +1,78 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Initialize the range based on the sensitivity of mixing states
+!>
+!> In this function we use the effect on the energy of mixing a pair
+!> of states to set the range for that mixing. In short if mixing two
+!> states leads to large change in energy then we should probably only
+!> take small steps along that dimension. If the effect on the energy
+!> small then we can probably take bigger steps.
+!>
+!> Thinking along these lines we loop over all pairs of states and mix
+!> them by a constant amount and see what the effect on the energy is.
+!> Then we set that corresponding range based on that.
+!>
+      subroutine noft_monte_carlo_initialize_range(noft_params,
+     &           noft_operators,
+     &           noft_wavefunction,noft_energy,
+     &           noft_wavefunction_step,noft_energy_step,noft_step,
+     &           noft_rotation,noft_range)
+      implicit none
+      !> The calculation parameters
+      type(noft_parameter_tp), intent(in) :: noft_params
+      !> The operators
+      type(noft_operators_tp), intent(inout) :: noft_operators
+      !> The current wavefunction
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+      !> The current energy
+      type(noft_energy_tp), intent(inout) :: noft_energy
+      !> The test wavefunction
+      type(noft_wavefunction_tp), intent(inout) ::
+     &    noft_wavefunction_step
+      !> The test energy
+      type(noft_energy_tp), intent(inout) :: noft_energy_step
+      !> The test step
+      type(noft_monte_carlo_step_tp), intent(inout) :: noft_step
+      !> The test rotation
+      type(noft_monte_carlo_rotation_tp), intent(inout) :: noft_rotation
+      !> The range that is computed
+      type(noft_monte_carlo_range_tp), intent(inout) :: noft_range
+!
+      integer, parameter :: nfields = 4
+      integer, parameter :: nfields_csh = 2
+      integer :: ifield
+      character(len=4) :: fields(nfields)
+      integer :: ii, jj
+      real(kind=dp), parameter :: step = dacos(-1.0_dp)*0.1_dp
+      real(kind=dp) :: ediff
+      real(kind=dp) :: range_init
+!
+      fields = (/"mo_a","to_a","mo_b","to_b"/)
+      range_init = noft_params%monte_carlo%step_maximum/10.0_dp
+      call noft_monte_carlo_range_zero(noft_range)
+      do ifield = 1, nfields
+        if (noft_params%restricted.and.ifield.gt.nfields_csh) then
+          return
+        endif
+        do jj = 1, noft_params%nmo
+          do ii = 1, jj-1
+            call noft_monte_carlo_step_zero(noft_step)
+            call noft_monte_carlo_step_set(noft_step,fields(ifield),
+     &           step,ii,jj)
+            call noft_monte_carlo_compute_rotation(noft_rotation,
+     &           noft_step)
+            call noft_monte_carlo_rotate_wavefunction(
+     &           noft_wavefunction_step,noft_rotation,noft_wavefunction)
+            call noft_orthogonalize(noft_wavefunction_step)
+            call noft_restrict_wavefunction(noft_params,
+     &           noft_wavefunction_step)
+            call noft_eval_energy(noft_params,noft_operators,
+     &           noft_wavefunction_step,noft_energy_step)
+            ediff = noft_energy%e_total - noft_energy_step%e_total
+            call noft_monte_carlo_range_init_elm(noft_range,
+     &           fields(ifield),range_init,ediff,1.0_dp,ii,jj)
+          enddo
+        enddo
+      enddo
+      end subroutine noft_monte_carlo_initialize_range
+!-----------------------------------------------------------------------
