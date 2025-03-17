@@ -1,0 +1,79 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Take regular movecs and return them in an orthogonal basis
+!>
+!> Whether we get the MOs from the guess routines or load ones from
+!> an SCF calculation, they are always expressed in the non-orthogonal
+!> AO basis. We need the MOs in the basis created by the orthogonalizing
+!> transformation. Here we do that conversion.
+!>
+!> Now we have the MOs in an non-orthogonal basis, but we need them
+!> in terms of the orthogonal basis. So we need the solution of
+!> \$S^{-1/2} X = M\$ where \$M\$ are the MOs we have now, and
+!> \$S^{-1/2}\$ is the orthogonalizing transformation. We can also
+!> write this as \$X = (S^{-1/2})^T S M\$ because then 
+!> \$S^{-1/2}X = S^{-1/2}(S^{-1/2})^T S M = S^{-1}S M = M\$
+!>
+      subroutine noft_orthogonal_basis_mos(noft_params,noft_operators,
+     &                                     noft_wavefunction)
+      implicit none
+#include "global.fh"
+#include "errquit.fh"
+#include "mafdecls.fh"
+!>    The parameters of the calculation
+      type(noft_parameter_tp),    intent(in)    :: noft_params
+!>    The calculation operators
+      type(noft_operators_tp),    intent(in)    :: noft_operators
+!>    The wavefunction
+      type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
+!
+!     Local
+!
+      character(len=22), parameter :: pname =
+     &    "noft_orthogonal_basis_mos: "
+      integer :: g_ao_ao
+      integer :: g_s12 ! \$S^{-1/2}\$
+      integer :: g_s   ! \$S\$
+      integer :: mo_s
+      integer :: nao
+      integer :: nelec
+      integer :: nmo
+      integer :: ii
+      real(kind=dp) :: aa, bb
+!
+      g_s12    = noft_wavefunction%so
+      g_s      = noft_operators%ao_s
+      mo_s     = noft_wavefunction%mo_a
+      nao      = noft_params%nao
+      nelec    = noft_params%ne_a
+     &         + noft_params%ne_b
+      nmo      = noft_params%nmo
+      aa       = 1.0_dp
+      bb       = 0.0_dp
+!
+      if (.not.ga_create(MT_DBL,nao,nao,"g_ao_ao",-1,-1,g_ao_ao)) then
+        call errquit(pname//" allocate g_ao_ao failed",10,GA_ERR)
+      endif
+!
+      do ii = 1, 2
+        if (ii.eq.1) then
+          mo_s = noft_wavefunction%mo_a
+        else
+          mo_s = noft_wavefunction%mo_b
+        endif
+!
+        call ga_dgemm('n','n',nao,nmo,nao,aa,g_s,mo_s,bb,g_ao_ao)
+        call ga_dgemm('t','n',nmo,nao,nao,aa,g_s12,g_ao_ao,bb,mo_s)
+!
+      enddo
+!
+      if (noft_params%restricted) then
+        call ga_copy(noft_wavefunction%mo_a,noft_wavefunction%mo_b)
+      endif
+      if (.not.ga_destroy(g_ao_ao)) then
+        call errquit(pname//" destroy g_ao_ao failed",20,GA_ERR)
+      endif
+!
+      end subroutine noft_orthogonal_basis_mos
+!
+!-----------------------------------------------------------------------

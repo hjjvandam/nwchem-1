@@ -63,20 +63,13 @@
       call rhf_dens_to_mo(rtdb,geometry,basis,nelec,nao,nmo,1.0d-7,
      &                    g_ao_ao,mo_a,.false.,eigval)
 !
-!     Now we have the MOs in an non-orthogonal basis, but we need them
-!     in terms of the orthogonal basis. So we need the solution of
-!     \$S^{-1/2} X = M\$ where \$M\$ are the MOs we have now, and
-!     \$S^{-1/2}\$ is the orthogonalizing transformation. We can also
-!     write this as \$X = (S^{-1/2})^T S M\$ because then 
-!     \$S^{-1/2}X = S^{-1/2}(S^{-1/2})^T S M = S^{-1}S M = M\$
-!
-      call ga_dgemm('n','n',nao,nmo,nao,aa,g_s,mo_a,bb,g_ao_ao)
-      call ga_dgemm('t','n',nmo,nao,nao,aa,g_s12,g_ao_ao,bb,mo_a)
-!
       call ga_copy(noft_wavefunction%mo_a,noft_wavefunction%mo_b)
       if (.not.ga_destroy(g_ao_ao)) then
         call errquit(pname//" destroy g_ao_ao failed",20,GA_ERR)
       endif
+!
+      call noft_orthogonal_basis_mos(noft_params,noft_operators,
+     &                               noft_wavefunction)
 !
       end subroutine noft_guess_mos
 !

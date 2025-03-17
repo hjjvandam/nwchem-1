@@ -56,10 +56,15 @@
       if (noft_vectors%movecs_in.eq."atomic") then
         call noft_guess_wavefunction(rtdb,noft_instances,noft_params,
      &                               noft_oper,noft_wavefunction)
+!DEBUG
+      call noft_wavefunction_analysis(noft_params,noft_instances,
+     &                                noft_wavefunction)
+!DEBUG
       else if (noft_vectors%movecs_in(
      &         inp_strlen(noft_vectors%movecs_in)-6:
      &         inp_strlen(noft_vectors%movecs_in)).eq.".movecs") then
-        call noft_load_wavefunction(noft_vectors,noft_wavefunction)
+        call noft_load_wavefunction(noft_vectors,noft_params,
+     &                              noft_oper,noft_wavefunction)
       else
         call errquit("invalid initial wavefunction",10,CAPMIS_ERR)
       endif

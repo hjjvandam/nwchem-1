@@ -2,7 +2,8 @@
 # makefile,v 1.8 1994/12/05 20:37:08 og845 Exp
 
    OBJ = noft_module.o \
-	 noft_api.o
+	 noft_api.o \
+	 ga_unit.o
 
    LIBRARY = libnoft.a
 

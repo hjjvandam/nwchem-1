@@ -8,12 +8,17 @@
 !> the wavefunction as we use it here. To maintain compatibilits with
 !> the rest of NWChem we need to adapt our storage format.
 !>
-      subroutine noft_load_wavefunction(noft_files,noft_wavefunction)
+      subroutine noft_load_wavefunction(noft_files,noft_params,
+     &           noft_operators,noft_wavefunction)
       implicit none
 #include "errquit.fh"
 #include "global.fh"
       !> The vectors specification
       type(noft_files_tp),        intent(in)    :: noft_files
+      !> The parameters of the calculation
+      type(noft_parameter_tp),    intent(in)    :: noft_params
+      !> The calculation operators
+      type(noft_operators_tp),    intent(in)    :: noft_operators
       !> The wavefunction
       type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
 !
@@ -70,6 +75,24 @@
         endif
         deallocate(evals)
         deallocate(occ)
+      else if (movecs_read_header(noft_files%movecs_in,title,basis,
+     &                       scftype,nbf,nsets,nmo,ldnmo)) then
+        allocate(occ(1:nbf))
+        allocate(evals(1:nbf))
+        if (.not.movecs_read(noft_files%movecs_in,1,occ,evals,
+     &                       noft_wavefunction%mo_a)) then
+          call errquit(pname//"failed to read alpha MO vecs",
+     &                 40, UERR)
+        endif
+        if (.not.movecs_read(noft_files%movecs_in,2,occ,evals,
+     &                       noft_wavefunction%mo_b)) then
+          call errquit(pname//"failed to read beta MO vecs",
+     &                 50, UERR)
+        endif
+        deallocate(evals)
+        deallocate(occ)
+        call noft_orthogonal_basis_mos(noft_params,noft_operators,
+     &                                 noft_wavefunction)
       endif
 !
       if (movecs_read_header(noft_files%tvecs_in,title,basis,
@@ -79,15 +102,18 @@
         if (.not.movecs_read(noft_files%tvecs_in,1,occ,evals,
      &                       noft_wavefunction%to_a)) then
           call errquit(pname//"failed to read alpha TO vecs",
-     &                 40, UERR)
+     &                 60, UERR)
         endif
         if (.not.movecs_read(noft_files%tvecs_in,2,occ,evals,
      &                       noft_wavefunction%to_b)) then
           call errquit(pname//"failed to read beta TO vecs",
-     &                 50, UERR)
+     &                 70, UERR)
         endif
         deallocate(evals)
         deallocate(occ)
+      else
+        call ga_unit(noft_wavefunction%to_a)
+        call ga_unit(noft_wavefunction%to_b)
       endif
 !
       end subroutine noft_load_wavefunction
