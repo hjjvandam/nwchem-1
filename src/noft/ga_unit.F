@@ -20,7 +20,7 @@
       call ga_zero(g_m)
 !
       iproc = ga_nodeid()
-      call ga_inquire(g_m,iproc,ilo,ihi,jlo,jhi)
+      call ga_distribution(g_m,iproc,ilo,ihi,jlo,jhi)
       do ii = max(ilo,jlo), min(ihi,jhi)
         call ga_acc(g_m,ii,ii,ii,ii,r_one,i_one,r_one)
       enddo
