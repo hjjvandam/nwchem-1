@@ -43,10 +43,19 @@
       integer :: ifield
       character(len=4) :: fields(nfields)
       integer :: ii, jj
-      real(kind=dp), parameter :: step = dacos(-1.0_dp)*0.1_dp
+      real(kind=dp), parameter :: step = dacos(-1.0_dp)*0.01_dp
       real(kind=dp) :: ediff
       real(kind=dp) :: range_init
+      real(kind=dp) :: x1, x2, x3
+      real(kind=dp) :: e1, e2, e3
+      real(kind=dp) :: aa, bb, cc
+      real(kind=dp) :: xmin, emin
+      real(kind=dp) :: grad, hess, range
 !
+      x1 = -step
+      x2 =  0.0_dp
+      x3 = +step
+      e2 = noft_energy%e_total
       fields = (/"mo_a","to_a","mo_b","to_b"/)
       range_init = noft_params%monte_carlo%step_maximum/10.0_dp
       call noft_monte_carlo_range_zero(noft_range)
@@ -56,6 +65,21 @@
         endif
         do jj = 1, noft_params%nmo
           do ii = 1, jj-1
+!
+            call noft_monte_carlo_step_zero(noft_step)
+            call noft_monte_carlo_step_set(noft_step,fields(ifield),
+     &           -step,ii,jj)
+            call noft_monte_carlo_compute_rotation(noft_rotation,
+     &           noft_step)
+            call noft_monte_carlo_rotate_wavefunction(
+     &           noft_wavefunction_step,noft_rotation,noft_wavefunction)
+            call noft_orthogonalize(noft_wavefunction_step)
+            call noft_restrict_wavefunction(noft_params,
+     &           noft_wavefunction_step)
+            call noft_eval_energy(noft_params,noft_operators,
+     &           noft_wavefunction_step,noft_energy_step)
+            e1 = noft_energy_step%e_total
+!
             call noft_monte_carlo_step_zero(noft_step)
             call noft_monte_carlo_step_set(noft_step,fields(ifield),
      &           step,ii,jj)
@@ -68,9 +92,19 @@
      &           noft_wavefunction_step)
             call noft_eval_energy(noft_params,noft_operators,
      &           noft_wavefunction_step,noft_energy_step)
-            ediff = noft_energy%e_total - noft_energy_step%e_total
+            e3 = noft_energy_step%e_total
+!
+            call noft_parabola(x1,x2,x3,e1,e2,e3,20.0*step,aa,bb,cc,
+     &           xmin,emin)
+            grad = 2.0_dp*aa*x2+bb
+            hess = 2.0_dp*aa
+            range = 0.02_dp/max(0.1_dp,dsign(hess*hess,hess))
+!DEBUG
+!           write(*,'(a," ",i4," ",i4," ",6f12.6)')fields(ifield),ii,jj,
+!    &            range,hess,grad,e1,e2,e3
+!DEBUG
             call noft_monte_carlo_range_init_elm(noft_range,
-     &           fields(ifield),range_init,ediff,1.0_dp,ii,jj)
+     &           fields(ifield),range,0.0_dp,1.0_dp,ii,jj)
           enddo
         enddo
       enddo

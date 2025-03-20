@@ -81,6 +81,7 @@ c-----------------------------------------------------------------------
 #include "noft_orthogonal_basis_mos.fi"
 #include "noft_orthogonalize_vecs.fi"
 #include "noft_orthogonalizing_transformation.fi"
+#include "noft_parabola.fi"
 #include "noft_print_basis.fi"
 #include "noft_print_energy.fi"
 #include "noft_print_files.fi"
