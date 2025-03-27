@@ -42,6 +42,10 @@
       integer, parameter :: nfields_csh = 2
       integer :: ifield
       character(len=4) :: fields(nfields)
+!DEBUG
+      character(len=256) :: filename
+      integer :: kk
+!DEBUG
       integer :: ii, jj
       real(kind=dp), parameter :: step = dacos(-1.0_dp)*0.01_dp
       real(kind=dp) :: ediff
@@ -99,12 +103,42 @@
             grad = 2.0_dp*aa*x2+bb
             hess = 2.0_dp*aa
             range = 0.02_dp/max(0.1_dp,dsign(hess*hess,hess))
-!DEBUG
-!           write(*,'(a," ",i4," ",i4," ",6f12.6)')fields(ifield),ii,jj,
-!    &            range,hess,grad,e1,e2,e3
-!DEBUG
             call noft_monte_carlo_range_init_elm(noft_range,
      &           fields(ifield),range,0.0_dp,1.0_dp,ii,jj)
+!DEBUG
+!!          write(*,'(a," ",i4," ",i4," ",6f12.6)')fields(ifield),ii,jj,
+!!   &            range,hess,grad,e1,e2,e3
+!           open(unit=10,file="reference.dat")
+!           !write(10,*)0.0_dp,noft_energy%e_total
+!           do kk = -100, 100
+!             write(10,*)kk*step,noft_energy%e_total
+!           enddo
+!           close(unit=10)
+!           if (abs(hess).gt.1.0d-4) then
+!             write(filename,'("mix_",a4,"_",i4.4,"_",i4.4,".dat")')
+!    &              fields(ifield),ii,jj
+!             open(unit=10,file=filename)
+!             write(10,'("# ",i4,i4,f16.8)')ii,jj,hess
+!             !write(10,*)0.0_dp,noft_energy%e_total
+!             do kk = -100, 100
+!               call noft_monte_carlo_step_zero(noft_step)
+!               call noft_monte_carlo_step_set(noft_step,fields(ifield),
+!    &               kk*step,ii,jj)
+!               call noft_monte_carlo_compute_rotation(noft_rotation,
+!    &               noft_step)
+!               call noft_monte_carlo_rotate_wavefunction(
+!    &               noft_wavefunction_step,noft_rotation,
+!    &               noft_wavefunction)
+!               call noft_orthogonalize(noft_wavefunction_step)
+!               call noft_restrict_wavefunction(noft_params,
+!    &               noft_wavefunction_step)
+!               call noft_eval_energy(noft_params,noft_operators,
+!    &               noft_wavefunction_step,noft_energy_step)
+!               write(10,*)kk*step,noft_energy_step%e_total
+!             enddo
+!             close(unit=10)
+!           endif
+!DEBUG
           enddo
         enddo
       enddo

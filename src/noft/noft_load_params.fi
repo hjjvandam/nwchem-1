@@ -116,6 +116,7 @@
 !
       if      (noft_params%solver.eq.monte_carlo) then
         call noft_load_monte_carlo_params(rtdb,noft_params%monte_carlo)
+      else if (noft_params%solver.eq.pair_rotation) then
       else if (noft_params%solver.eq.gradient_descent) then
         call errquit("Gradient descent not implemented (yet)", 0,
      &               CAPMIS_ERR)

@@ -71,6 +71,11 @@
      &                              noft_oper,noft_wavefunction,
      &                              noft_energy,oconv)
         noft_task_energy_doit = oconv
+      else if (noft_params%solver.eq.pair_rotation) then
+        call noft_solve_pair_rotation(noft_params,noft_instances,
+     &                                noft_oper,noft_wavefunction,
+     &                                noft_energy,oconv)
+        noft_task_energy_doit = oconv
       else
         call errquit("invalid solver selection",20,CAPMIS_ERR)
       endif

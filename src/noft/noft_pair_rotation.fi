@@ -1,0 +1,137 @@
+!-----------------------------------------------------------------------
+!
+!> \brief Find the minimum in an array
+!>
+!> This subroutine find the minimum in an ordered array. It returns
+!> a range of indeces containing \f$nn\f$ points that includes the
+!> minimum.
+!>
+      subroutine noft_pair_rotation_minimum(ee,mm,nn,ilo,ihi)
+      implicit none
+      !> The length of the array
+      integer, intent(in) :: mm
+      !> Array with energies
+      real(kind=dp) :: ee(mm)
+      !> The requested number of points
+      integer, intent(in) :: nn
+      !> The range lower limit
+      integer, intent(out) :: ilo
+      !> The range upper limit
+      integer, intent(out) :: ihi
+!
+      integer :: ii
+      integer :: imn
+!
+      imn = 1
+      do ii = 1, mm
+        if (ee(ii).lt.ee(imn)) then
+          imn = ii
+        endif
+      enddo
+      ilo = imn - nn/2
+      ilo = max(1,imn)
+      ihi = min(ilo+nn-1,mm)
+!
+      end subroutine noft_pair_rotation_minimum
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Sort a new position into an order array
+!>
+      subroutine noft_pair_rotation_sort(xx,ee,mm,nn,xn,en)
+      implicit none
+      !> The length of the position and energy arrays
+      integer, intent(in) :: mm
+      !> The position array
+      real(kind=dp), intent(inout) :: xx(mm)
+      !> The energy array
+      real(kind=dp), intent(inout) :: ee(mm)
+      !> The number of points
+      integer, intent(inout) :: nn
+      !> The new position
+      real(kind=dp), intent(in) :: xn
+      !> The new energy
+      real(kind=dp), intent(in) :: en
+!
+      integer :: ii
+      integer :: imn
+!
+      imn = 1
+      do ii = 1, nn
+        if (xx(ii).lt.xn) then
+          imn = ii
+        endif
+      enddo
+      do ii = nn, imn+1
+        ee(ii+1) = ee(ii)
+        xx(ii+1) = xx(ii)
+      enddo
+      ee(imn+1) = en
+      xx(imn+1) = xn
+      nn = nn + 1
+!
+      end subroutine noft_pair_rotation_sort
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Find the minimum difference in position
+!>
+!> All the points in the array are predictions for the minimum
+!> energy. If the predictions are very close together then we are
+!> unlikely to find more information.
+!>
+      subroutine noft_pair_rotation_delta(xx,ee,nn,dd)
+      implicit none
+      !> The number of points
+      integer, intent(in) :: nn
+      !> The positions
+      real(kind=dp), intent(in) :: xx(nn)
+      !> The energies
+      real(kind=dp), intent(in) :: ee(nn)
+      !> The minimum difference
+      real(kind=dp), intent(out) :: dd
+!
+      integer :: ii
+!
+      dd = 1.0d100
+      do ii = 1, nn-1
+        dd = min(dd,abs(xx(ii)-xx(ii+1)))
+      enddo
+!
+      end subroutine noft_pair_rotation_delta
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Compute the difference between the minimum and maximum energy
+!>
+!> For redundant rotations the energy does not change with the angle
+!> of rotation. If we find such a rotation we should skip it.
+!> To detect such a rotation we calculate the absolute difference
+!> between the minimum and maximum energy in the array.
+!>
+      subroutine noft_pair_rotation_minmax(xx,ee,nn,dd)
+      implicit none
+      !> The number of points
+      integer, intent(in) :: nn
+      !> The positions
+      real(kind=dp), intent(in) :: xx(nn)
+      !> The energies
+      real(kind=dp), intent(in) :: ee(nn)
+      !> The minimum difference
+      real(kind=dp), intent(out) :: dd
+!
+      integer :: ii
+      real(kind=dp) :: dmin
+      real(kind=dp) :: dmax
+!
+      dmin =  1.0d100
+      dmax = -1.0d100
+      do ii = 1, nn-1
+        dmin = min(dmin,ee(ii))
+        dmax = max(dmax,ee(ii))
+      enddo
+      dd = dmax - dmin
+!
+      end subroutine noft_pair_rotation_minmax
+!
+!-----------------------------------------------------------------------

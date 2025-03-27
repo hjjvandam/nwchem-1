@@ -13,9 +13,10 @@
       subroutine noft_input(rtdb)
       implicit none
 #include "errquit.fh"
-#include "rtdb.fh"
 #include "inp.fh"
 #include "mafdecls.fh"
+#include "noft_solver_options.fh"
+#include "rtdb.fh"
       integer, intent(inout) :: rtdb !> [Input] The runtime database
 !
       integer, parameter :: dp = selected_real_kind(15)
@@ -219,6 +220,15 @@
      &                       "montecarlo"))
      &  then
           call noft_input_monte_carlo(rtdb)
+!
+!       PairRotation
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "pairrotation"))
+     &  then
+          if (.not. rtdb_put(rtdb, "noft:solver", mt_int, 1,
+     &                       pair_rotation))
+     &      call errquit("noft_input: rtdb_put failed", 120, RTDB_ERR)
 !
 !       End
 !

@@ -3,6 +3,7 @@
 !> Enumerate solver algorithm options
 !>
       integer, parameter :: monte_carlo = 1
-      integer, parameter :: gradient_descent = 2
+      integer, parameter :: pair_rotation = 2
+      integer, parameter :: gradient_descent = 3
 !
 !-----------------------------------------------------------------------

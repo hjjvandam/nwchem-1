@@ -1,0 +1,258 @@
+!-----------------------------------------------------------------------
+!
+!> \brief Fit a shifted cosine
+!>
+!> The energy as function of the angle of rotation between two
+!> 1-electron states (either MOs or tilde functions) can be
+!> approximated as 
+!> \f{eqnarray}{
+!> e &=& a + b \cos(2\theta+c[\pi - \theta])
+!> \f}
+!> In this routine $a$, $b$, and $c$ are obtained using a least
+!> squares fit.
+!>
+      subroutine noft_shifted_cosine(x,e,n,a,b,c)
+      implicit none
+      !> The number of data points
+      integer,       intent(in)  :: n
+      !> The values of $\theta$
+      real(kind=dp), intent(in)  :: x(n)
+      !> The energy values
+      real(kind=dp), intent(in)  :: e(n)
+      !> The expression parameters
+      real(kind=dp), intent(inout) :: a, b, c
+!
+      real(kind=dp) :: da, db, dc, dt
+      real(kind=dp) :: dg
+      real(kind=dp) :: ll, ll_old
+      real(kind=dp) :: damp
+      integer :: it
+      integer :: ii
+!
+      it = 0
+      da = 1.0
+      db = 0.0
+      dc = 0.0
+      dg = sqrt(da*da+db*db+dc*dc)
+      ll_old = 1.0d+100
+      damp = 1.0_dp
+!DEBUG
+      write(*,*)"HVD0:",n
+      write(*,*)"HVD0:",x
+      write(*,*)"HVD0:",e
+!DEBUG
+      do while (dg.gt.1.0d-6)
+        it = it + 1
+        ll = noft_loss(a,b,c,x,e,n)
+        da = noft_dlossda(a,b,c,x,e,n)
+        db = noft_dlossdb(a,b,c,x,e,n)
+        dc = noft_dlossdc(a,b,c,x,e,n)
+        if (ll.gt.ll_old) then
+          damp = damp*0.75d0
+        endif
+        a = a - damp*da
+        b = b - damp*db
+        c = c - damp*dc
+        dg = sqrt(da*da+db*db+dc*dc)
+!DEBUG
+        write(*,*)"HVD1:",it,ll,dg,a,b,c
+!DEBUG
+        ll_old = ll
+      enddo
+!
+      end subroutine noft_shifted_cosine
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Return the location of the energy minimum
+!>
+!> Find the location of the energy minimum based on the expression
+!> we have fitted above.
+!>
+      function noft_minimum_cosine(a,b,c) result(x)
+      implicit none
+      !> The expression parameters
+      real(kind=dp), intent(inout) :: a, b, c
+      !> The location of the minimum
+      real(kind=dp) :: x
+!
+      real(kind=dp), parameter :: pi = acos(-1.0d0)
+!
+      x = (c-1.0_dp)/(c-2.0_dp)*pi
+!
+      end function noft_minimum_cosine
+     
+!
+!-----------------------------------------------------------------------
+!
+      function noft_loss(a,b,c,x,e,n) result(s)
+      implicit none
+      !> The function parameters
+      real(kind=dp), intent(in) :: a, b, c
+      !> The number of points
+      integer, intent(in) :: n
+      !> The "position"
+      real(kind=dp), intent(in) :: x(n)
+      !> The energy
+      real(kind=dp), intent(in) :: e(n)
+      !> The sum of squares
+      real(kind=dp) :: s
+!
+      integer :: ii
+!
+      s = 0.0_dp
+      do ii = 1, n
+        s = s + (noft_ee(a,b,c,x(ii))-e(ii))**2
+      enddo
+      s = sqrt(s)
+!
+      end function noft_loss
+!
+!-----------------------------------------------------------------------
+!
+      function noft_dlossda(a,b,c,x,e,n) result(dlda)
+      !> The function parameters
+      real(kind=dp), intent(in) :: a, b, c
+      !> The number of points
+      integer, intent(in) :: n
+      !> The "position"
+      real(kind=dp), intent(in) :: x(n)
+      !> The energy
+      real(kind=dp), intent(in) :: e(n)
+      !> The derivative of the loss wrt. a
+      real(kind=dp) :: dlda
+!
+      real(kind=dp) :: loss
+      integer :: jj
+!
+      dlda = 0.0_dp
+      loss = noft_loss(a,b,c,x,e,n)
+      do jj = 1, n
+        dlda = dlda + (noft_ee(a,b,c,x(jj))-e(jj))/loss*
+     &                noft_deeda(a,b,c,x(jj))
+      enddo
+!
+      end function noft_dlossda
+!
+!-----------------------------------------------------------------------
+!
+      function noft_dlossdb(a,b,c,x,e,n) result(dldb)
+      !> The function parameters
+      real(kind=dp), intent(in) :: a, b, c
+      !> The number of points
+      integer, intent(in) :: n
+      !> The "position"
+      real(kind=dp), intent(in) :: x(n)
+      !> The energy
+      real(kind=dp), intent(in) :: e(n)
+      !> The derivative of the loss wrt. b
+      real(kind=dp) :: dldb
+!
+      real(kind=dp) :: loss
+      integer :: jj
+!
+      dldb = 0.0_dp
+      loss = noft_loss(a,b,c,x,e,n)
+      do jj = 1, n
+        dldb = dldb + (noft_ee(a,b,c,x(jj))-e(jj))/loss*
+     &                noft_deedb(a,b,c,x(jj))
+      enddo
+!
+      end function noft_dlossdb
+!
+!-----------------------------------------------------------------------
+!
+      function noft_dlossdc(a,b,c,x,e,n) result(dldc)
+      !> The function parameters
+      real(kind=dp), intent(in) :: a, b, c
+      !> The number of points
+      integer, intent(in) :: n
+      !> The "position"
+      real(kind=dp), intent(in) :: x(n)
+      !> The energy
+      real(kind=dp), intent(in) :: e(n)
+      !> The derivative of the loss wrt. c
+      real(kind=dp) :: dldc
+!
+      real(kind=dp) :: loss
+      integer :: jj
+!
+      dldc = 0.0_dp
+      loss = noft_loss(a,b,c,x,e,n)
+      do jj = 1, n
+        dldc = dldc + (noft_ee(a,b,c,x(jj))-e(jj))/loss*
+     &                noft_deedc(a,b,c,x(jj))
+      enddo
+!
+      end function noft_dlossdc
+!
+!-----------------------------------------------------------------------
+!
+      function noft_ee(a,b,c,x) result(e)
+      implicit none
+      !> The function parameters
+      real(kind=dp), intent(in) :: a, b, c
+      !> The "position"
+      real(kind=dp), intent(in) :: x
+      !> The energy
+      real(kind=dp) :: e
+!
+      real(kind=dp), parameter :: two = 2.0_dp
+      real(kind=dp), parameter :: pi = acos(-1.0_dp)
+!
+      e = a + b*cos(two*x+sign(c,x)*(pi-abs(x)))
+!
+      end function noft_ee
+!
+!-----------------------------------------------------------------------
+!
+      function noft_deeda(a,b,c,x) result(da)
+      implicit none
+      !> The function parameters
+      real(kind=dp), intent(in) :: a, b, c
+      !> The "position"
+      real(kind=dp), intent(in) :: x
+      !> The derivative of the energy wrt. a
+      real(kind=dp) :: da
+!
+      da = 1.0_dp
+!
+      end function noft_deeda
+!
+!-----------------------------------------------------------------------
+!
+      function noft_deedb(a,b,c,x) result(db)
+      implicit none
+      !> The function parameters
+      real(kind=dp), intent(in) :: a, b, c
+      !> The "position"
+      real(kind=dp), intent(in) :: x
+      !> The derivative of the energy wrt. b
+      real(kind=dp) :: db
+!
+      real(kind=dp), parameter :: two = 2.0_dp
+      real(kind=dp), parameter :: pi = acos(-1.0_dp)
+!
+      db = cos(two*x+sign(c,x)*(pi-abs(x)))
+!
+      end function noft_deedb
+!
+!-----------------------------------------------------------------------
+!
+      function noft_deedc(a,b,c,x) result(dc)
+      implicit none
+      !> The function parameters
+      real(kind=dp), intent(in) :: a, b, c
+      !> The "position"
+      real(kind=dp), intent(in) :: x
+      !> The energy
+      real(kind=dp) :: dc
+!
+      real(kind=dp), parameter :: two = 2.0_dp
+      real(kind=dp), parameter :: pi = acos(-1.0_dp)
+!
+      dc = -b*sin(two*x+sign(c,x)*(pi-abs(x)))*(pi-abs(x))
+!
+      end function noft_deedc
+!
+!-----------------------------------------------------------------------
