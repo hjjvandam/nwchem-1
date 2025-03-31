@@ -37,7 +37,9 @@
       real(kind=dp), allocatable :: evals(:)
       character(len=24), parameter :: pname =
      &  "noft_load_wavefunction: "
+      logical :: onoft_mos
 !
+      onoft_mos = .false.
       call ga_norm_infinity(noft_wavefunction%so,dnorm)
       if (dnorm.gt.0.0_dp) then
 !       The orthogonalizing transformation is already set and will 
@@ -59,58 +61,74 @@
         endif
       endif
 !
-      if (movecs_read_header(noft_files%mvecs_in,title,basis,
+      if (movecs_read_header(noft_files%movecs_in,title,basis,
      &                       scftype,nbf,nsets,nmo,ldnmo)) then
         allocate(occ(1:nbf))
         allocate(evals(1:nbf))
-        if (.not.movecs_read(noft_files%mvecs_in,1,occ,evals,
-     &                       noft_wavefunction%mo_a)) then
-          call errquit(pname//"failed to read alpha MO vecs",
-     &                 20, UERR)
-        endif
-        if (.not.movecs_read(noft_files%mvecs_in,2,occ,evals,
-     &                       noft_wavefunction%mo_b)) then
-          call errquit(pname//"failed to read beta MO vecs",
-     &                 30, UERR)
+        if (scftype.eq."scf".or.scftype.eq."dft".or.scftype.eq."mcscf")
+     &  then
+          if (.not.movecs_read(noft_files%movecs_in,1,occ,evals,
+     &                         noft_wavefunction%mo_a)) then
+            call errquit(pname//"failed to read alpha MO vecs",
+     &                   40, UERR)
+          endif
+          if (nsets.eq.1) then
+            call ga_copy(noft_wavefunction%mo_a,noft_wavefunction%mo_b)
+          else
+            if (.not.movecs_read(noft_files%movecs_in,2,occ,evals,
+     &                           noft_wavefunction%mo_b)) then
+              call errquit(pname//"failed to read beta MO vecs",
+     &                     50, UERR)
+            endif
+          endif
+          onoft_mos = .false.
+        else if (scftype.eq."unoft") then
+          if (movecs_read_header(noft_files%mvecs_in,title,basis,
+     &                           scftype,nbf,nsets,nmo,ldnmo)) then
+            if (.not.movecs_read(noft_files%mvecs_in,1,occ,evals,
+     &                           noft_wavefunction%mo_a)) then
+              call errquit(pname//"failed to read alpha MO vecs",
+     &                     20, UERR)
+            endif
+            if (.not.movecs_read(noft_files%mvecs_in,2,occ,evals,
+     &                           noft_wavefunction%mo_b)) then
+              call errquit(pname//"failed to read beta MO vecs",
+     &                     30, UERR)
+            endif
+            onoft_mos = .true.
+          endif
+        else
+          call errquit(pname//"unknown scftype: "//scftype, 35, UERR)
         endif
         deallocate(evals)
         deallocate(occ)
-      else if (movecs_read_header(noft_files%movecs_in,title,basis,
-     &                       scftype,nbf,nsets,nmo,ldnmo)) then
-        allocate(occ(1:nbf))
-        allocate(evals(1:nbf))
-        if (.not.movecs_read(noft_files%movecs_in,1,occ,evals,
-     &                       noft_wavefunction%mo_a)) then
-          call errquit(pname//"failed to read alpha MO vecs",
-     &                 40, UERR)
+        if (.not.onoft_mos) then
+          call noft_orthogonal_basis_mos(noft_params,noft_operators,
+     &                                   noft_wavefunction)
         endif
-        if (.not.movecs_read(noft_files%movecs_in,2,occ,evals,
-     &                       noft_wavefunction%mo_b)) then
-          call errquit(pname//"failed to read beta MO vecs",
-     &                 50, UERR)
-        endif
-        deallocate(evals)
-        deallocate(occ)
-        call noft_orthogonal_basis_mos(noft_params,noft_operators,
-     &                                 noft_wavefunction)
       endif
 !
-      if (movecs_read_header(noft_files%tvecs_in,title,basis,
-     &                       scftype,nbf,nsets,nmo,ldnmo)) then
-        allocate(occ(1:nbf))
-        allocate(evals(1:nbf))
-        if (.not.movecs_read(noft_files%tvecs_in,1,occ,evals,
-     &                       noft_wavefunction%to_a)) then
-          call errquit(pname//"failed to read alpha TO vecs",
-     &                 60, UERR)
+      if (onoft_mos) then
+        if (movecs_read_header(noft_files%tvecs_in,title,basis,
+     &                         scftype,nbf,nsets,nmo,ldnmo)) then
+          allocate(occ(1:nbf))
+          allocate(evals(1:nbf))
+          if (.not.movecs_read(noft_files%tvecs_in,1,occ,evals,
+     &                         noft_wavefunction%to_a)) then
+            call errquit(pname//"failed to read alpha TO vecs",
+     &                   60, UERR)
+          endif
+          if (.not.movecs_read(noft_files%tvecs_in,2,occ,evals,
+     &                         noft_wavefunction%to_b)) then
+            call errquit(pname//"failed to read beta TO vecs",
+     &                   70, UERR)
+          endif
+          deallocate(evals)
+          deallocate(occ)
+        else
+          call ga_unit(noft_wavefunction%to_a)
+          call ga_unit(noft_wavefunction%to_b)
         endif
-        if (.not.movecs_read(noft_files%tvecs_in,2,occ,evals,
-     &                       noft_wavefunction%to_b)) then
-          call errquit(pname//"failed to read beta TO vecs",
-     &                 70, UERR)
-        endif
-        deallocate(evals)
-        deallocate(occ)
       else
         call ga_unit(noft_wavefunction%to_a)
         call ga_unit(noft_wavefunction%to_b)

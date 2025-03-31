@@ -3,16 +3,20 @@
 !> \brief Minimize the energy by rotating pair of 1-electron states
 !>
 !> In this function we use the effect on the energy of mixing a pair
-!> of states to minimize the total energy. We use a model for the 
-!> energy for which we optimize the parameters. Then we use the
-!> minimum of that expression as a guess for the true minimum.
-!> We iterate over all pairs of states until no further improvement
-!> is possible.
+!> of states to minimize the total energy. 
+!> The method we use is similar to bisection. We bracket the initial
+!> with points on the left and right. Next we find the minimum 
+!> energy among these points. If the minimal energy point has a point
+!> to the left and the right then we half the largest distance and
+!> at that point. If the minimal energy is at the end of the list of
+!> then we extend the list with an extra point. We keep repeating this
+!> until the minimum is bracketed by points at a short distance.
 !>
       subroutine noft_solve_pair_rotation(noft_params,noft_instances,
      &           noft_operators,
      &           noft_wavefunction,noft_energy,oconv)
       implicit none
+#include "errquit.fh"
 #include "stdio.fh"
       !> The calculation parameters
       type(noft_parameter_tp),    intent(in)    :: noft_params
@@ -35,19 +39,22 @@
       type(noft_monte_carlo_step_tp) :: noft_step
       !> The test rotation
       type(noft_monte_carlo_rotation_tp) :: noft_rotation
+!DEBUG
+      type(noft_monte_carlo_range_tp) :: noft_range
+!DEBUG
       integer, parameter :: nfields_all = 4
       integer, parameter :: nfields_csh = 2
       integer :: nfields
       integer :: ifield
       integer :: npoints
-      integer, parameter :: mpoints = 100
+      integer, parameter :: mpoints = 200
       character(len=4) :: fields(nfields_all)
 !DEBUG
       character(len=256) :: filename
       integer :: kk
 !DEBUG
       integer :: ii, jj
-      integer :: ilo, ihi
+      integer :: ilo, ihi, imn
       integer :: ipts
       integer :: iteration
       integer :: nlower
@@ -78,6 +85,15 @@
       if (noft_params%restricted) then
         nfields = nfields_csh
       endif
+!DEBUG
+!     call noft_monte_carlo_range_create(noft_params, noft_range)
+!     call noft_monte_carlo_initialize_range(noft_params,
+!    &           noft_operators,
+!    &           noft_wavefunction,noft_energy,
+!    &           noft_wavefunction_step,noft_energy_step,noft_step,
+!    &           noft_rotation,noft_range)
+!     call noft_monte_carlo_range_destroy(noft_range)
+!DEBUG
       iteration = 0
       do imacro = 1, noft_params%maxiter
         nlower = 0
@@ -85,12 +101,9 @@
           do jj = 1, noft_params%nmo
             do ii = 1, jj-1
 !
-              npoints = 1
               iteration = iteration + 1
-              xx(npoints) = 0.0_dp
-              ee(npoints) = noft_energy%e_total
 !
-              step = 0.5_dp*pi
+              step = -0.5_dp*pi
               call noft_monte_carlo_step_zero(noft_step)
               call noft_monte_carlo_step_set(noft_step,fields(ifield),
      &             step,ii,jj)
@@ -104,11 +117,15 @@
      &             noft_wavefunction_step)
               call noft_eval_energy(noft_params,noft_operators,
      &             noft_wavefunction_step,noft_energy_step)
-              npoints = npoints + 1
+              npoints = 1
               xx(npoints) = step
               ee(npoints) = noft_energy_step%e_total
 !
-              step = pi
+              npoints = npoints + 1
+              xx(npoints) = 0.0_dp
+              ee(npoints) = noft_energy%e_total
+!
+              step = 0.5_dp*pi
               iteration = iteration + 1
               call noft_monte_carlo_step_zero(noft_step)
               call noft_monte_carlo_step_set(noft_step,fields(ifield),
@@ -133,23 +150,42 @@
                 cycle
               endif
 !
-              aa =  0.0_dp
-              bb = -1.0_dp
-              cc =  0.0_dp
 !DEBUG
-              write(*,*)"HVDA:",ii,jj
-              write(*,*)"HVDA:",xx(1:npoints)
-              write(*,*)"HVDA:",ee(1:npoints)
+!             write(*,*)"HVDA:",ii,jj
+!             write(*,*)"HVDA:",xx(1:npoints)
+!             write(*,*)"HVDA:",ee(1:npoints)
 !DEBUG
               do ipts = 4, mpoints
-                call noft_pair_rotation_minimum(ee,npoints,3,ilo,ihi)
+                call noft_pair_rotation_minimum(ee,npoints,3,
+     &                                          ilo,ihi,imn)
 !DEBUG
-                write(*,*)"HVDB:",npoints,ilo,ihi
+!               write(*,*)"HVDB:",npoints,ilo,imn,ihi
+!               write(*,*)"HVDB:",xx(ilo:ihi)
+!               write(*,*)"HVDB:",ee(ilo:ihi)
+!               write(*,*)
 !DEBUG
                 call noft_pair_rotation_delta(xx(ilo:ihi),ee(ilo:ihi),
      &                                        ihi-ilo+1,dd)
                 if (dd.lt.1.0d-8) then
+                  if (ee(imn).ge.noft_energy%e_total) then
+                    exit
+                  endif
                   nlower = nlower + 1
+                  step = xx(imn)
+                  iteration = iteration + 1
+                  call noft_monte_carlo_step_zero(noft_step)
+                  call noft_monte_carlo_step_set(noft_step,
+     &                 fields(ifield),step,ii,jj)
+                  call noft_monte_carlo_compute_rotation(noft_rotation,
+     &                 noft_step)
+                  call noft_monte_carlo_rotate_wavefunction(
+     &                 noft_wavefunction_step,noft_rotation,
+     &                 noft_wavefunction)
+                  call noft_orthogonalize(noft_wavefunction_step)
+                  call noft_restrict_wavefunction(noft_params,
+     &                 noft_wavefunction_step)
+                  call noft_eval_energy(noft_params,noft_operators,
+     &                 noft_wavefunction_step,noft_energy_step)
                   call noft_swap_wavefunctions(noft_wavefunction,
      &                                         noft_wavefunction_step)
                   noft_energy = noft_energy_step
@@ -159,15 +195,64 @@
                   endif
                   exit
                 endif
-                call noft_shifted_cosine(xx(ilo:ihi),ee(ilo:ihi),3,
-     &                                   aa,bb,cc)
-                step = noft_minimum_cosine(aa,bb,cc)
-                if (bb.lt.0.0_dp.and.abs(cc).lt.1.0d-6) then
-                  ! The minimum is at x=0 and we started at the minimum
-                  exit
+!
+                if (imn.eq.ilo) then
+                  if (imn.ne.1) then
+                    call errquit("assumption failed A", 10, UERR)
+                  endif
+!                 Extend the points to the left
+                  step = xx(imn)-0.1_dp*pi
+                  iteration = iteration + 1
+                  call noft_monte_carlo_step_zero(noft_step)
+                  call noft_monte_carlo_step_set(noft_step,
+     &                 fields(ifield),step,ii,jj)
+                  call noft_monte_carlo_compute_rotation(noft_rotation,
+     &                 noft_step)
+                  call noft_monte_carlo_rotate_wavefunction(
+     &                 noft_wavefunction_step,noft_rotation,
+     &                 noft_wavefunction)
+                  call noft_orthogonalize(noft_wavefunction_step)
+                  call noft_restrict_wavefunction(noft_params,
+     &                 noft_wavefunction_step)
+                  call noft_eval_energy(noft_params,noft_operators,
+     &                 noft_wavefunction_step,noft_energy_step)
+                  en = noft_energy_step%e_total
+                  call noft_pair_rotation_sort(xx,ee,mpoints,npoints,
+     &                 step,en)
+                  cycle
                 endif
-                etst = noft_ee(aa,bb,cc,step)
-                iteration = iteration + 1
+!
+                if (imn.eq.ihi) then
+                  if (imn.ne.npoints) then
+                    call errquit("assumption failed B", 20, UERR)
+                  endif
+!                 Extend the points to the left
+                  step = xx(imn)+0.1_dp*pi
+                  iteration = iteration + 1
+                  call noft_monte_carlo_step_zero(noft_step)
+                  call noft_monte_carlo_step_set(noft_step,
+     &                 fields(ifield),step,ii,jj)
+                  call noft_monte_carlo_compute_rotation(noft_rotation,
+     &                 noft_step)
+                  call noft_monte_carlo_rotate_wavefunction(
+     &                 noft_wavefunction_step,noft_rotation,
+     &                 noft_wavefunction)
+                  call noft_orthogonalize(noft_wavefunction_step)
+                  call noft_restrict_wavefunction(noft_params,
+     &                 noft_wavefunction_step)
+                  call noft_eval_energy(noft_params,noft_operators,
+     &                 noft_wavefunction_step,noft_energy_step)
+                  en = noft_energy_step%e_total
+                  call noft_pair_rotation_sort(xx,ee,mpoints,npoints,
+     &                 step,en)
+                  cycle
+                endif
+!
+                if (xx(imn+1)-xx(imn).ge.xx(imn)-xx(imn-1)) then
+                  step = 0.5_dp*(xx(imn+1)+xx(imn))
+                else
+                  step = 0.5_dp*(xx(imn)+xx(imn-1))
+                endif
                 call noft_monte_carlo_step_zero(noft_step)
                 call noft_monte_carlo_step_set(noft_step,fields(ifield),
      &               step,ii,jj)

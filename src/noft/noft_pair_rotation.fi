@@ -6,7 +6,7 @@
 !> a range of indeces containing \f$nn\f$ points that includes the
 !> minimum.
 !>
-      subroutine noft_pair_rotation_minimum(ee,mm,nn,ilo,ihi)
+      subroutine noft_pair_rotation_minimum(ee,mm,nn,ilo,ihi,imn)
       implicit none
       !> The length of the array
       integer, intent(in) :: mm
@@ -18,9 +18,10 @@
       integer, intent(out) :: ilo
       !> The range upper limit
       integer, intent(out) :: ihi
+      !> The point at the minimum
+      integer, intent(out) :: imn
 !
       integer :: ii
-      integer :: imn
 !
       imn = 1
       do ii = 1, mm
@@ -29,7 +30,7 @@
         endif
       enddo
       ilo = imn - nn/2
-      ilo = max(1,imn)
+      ilo = max(1,ilo)
       ihi = min(ilo+nn-1,mm)
 !
       end subroutine noft_pair_rotation_minimum
@@ -56,13 +57,13 @@
       integer :: ii
       integer :: imn
 !
-      imn = 1
+      imn = 0
       do ii = 1, nn
         if (xx(ii).lt.xn) then
           imn = ii
         endif
       enddo
-      do ii = nn, imn+1
+      do ii = nn, imn+1, -1
         ee(ii+1) = ee(ii)
         xx(ii+1) = xx(ii)
       enddo
