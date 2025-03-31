@@ -11,7 +11,7 @@
       !> Print all contributions or not
       logical,              intent(in) :: oall
 !
-      write(luout,"(' ',f12.4,$)")noft_energy%e_total
+      write(luout,"(' ',f16.8,$)")noft_energy%e_total
       if (oall) then
         write(luout,"(' ',f12.4,$)")noft_energy%e_nuclear
         write(luout,"(' ',f12.4,$)")noft_energy%e_1electron
