@@ -12,7 +12,10 @@
       !> The occupation number of a single orbital
       real(kind=dp), intent(in) :: occ
 !
-      wght = occ*(1.0_dp-occ)
+      !> Scale factor so that the maximum value is 1.0
+      real(kind=dp), parameter :: dnorm = 4.0_dp
+!
+      wght = dnorm*(occ*(1.0_dp-occ))
 !
       end function noft_2el_weight_occ
 !
@@ -43,6 +46,9 @@
 !
       real(kind=dp), parameter :: quarter = 1.0_dp/4.0_dp
 !
+!DEBUG
+!     write(*,*)"HVD: 1el occ: ",o1a,o2a,o1b,o2b
+!DEBUG
       wght = c_ab*
      &       (noft_2el_weight_occ(o1a)*
      &        noft_2el_weight_occ(o2a)*
