@@ -67,12 +67,12 @@
       if (rtdb_get(rtdb,"noft:c_aa", MT_DBL, 1,
      &             noft_params%c_aa)) then
       else
-        noft_params%c_aa = 1.0
+        noft_params%c_aa = 0.5
       endif
       if (rtdb_get(rtdb,"noft:c_ab", MT_DBL, 1,
      &             noft_params%c_ab)) then
       else
-        noft_params%c_ab = 1.0
+        noft_params%c_ab = 0.5
       endif
 !
 !     Load the off-diagonal powers
@@ -85,7 +85,7 @@
       if (rtdb_get(rtdb,"noft:p_ab", MT_DBL, 1,
      &             noft_params%p_ab)) then
       else
-        noft_params%p_ab = 0.5
+        noft_params%p_ab = 0.5155
       endif
 !
 !     Load the "temperature"
