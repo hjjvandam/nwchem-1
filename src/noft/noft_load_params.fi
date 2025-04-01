@@ -72,7 +72,7 @@
       if (rtdb_get(rtdb,"noft:c_ab", MT_DBL, 1,
      &             noft_params%c_ab)) then
       else
-        noft_params%c_ab = 0.5
+        noft_params%c_ab = 0.25
       endif
 !
 !     Load the off-diagonal powers
