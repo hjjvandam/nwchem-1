@@ -85,7 +85,7 @@
       if (rtdb_get(rtdb,"noft:p_ab", MT_DBL, 1,
      &             noft_params%p_ab)) then
       else
-        noft_params%p_ab = 0.5155
+        noft_params%p_ab = 0.5233
       endif
 !
 !     Load the "temperature"
