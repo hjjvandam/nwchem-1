@@ -71,42 +71,46 @@
       integer :: i1, i2
       integer :: ii
 !
-      call noft_access(g_o,oo,ilo,ihi)
-      it1lo(1) = ilo(1)
-      it1lo(2) = 1
-      it1hi(1) = ihi(1)
-      it1hi(2) = ne
-      it2lo(1) = ilo(2)
-      it2lo(2) = 1
-      it2hi(1) = ihi(2)
-      it2hi(2) = ne
-      do ii = 1, ndim
-        ild(ii)   = ihi(ii)   - ilo(ii)   + 1
-        it1ld(ii) = it1hi(ii) - it1lo(ii) + 1
-        it2ld(ii) = it2hi(ii) - it2lo(ii) + 1
-      enddo
-      allocate(t1(it1lo(1):it1hi(1),it1lo(2):it1hi(2)))
-      allocate(t2(it2lo(1):it2hi(1),it2lo(2):it2hi(2)))
-      call nga_get(g_t,it1lo,it1hi,t1,it1ld)
-      call nga_get(g_t,it2lo,it2hi,t2,it2ld)
+      if (ne.eq.0) then
+        call ga_zero(g_o)
+      else
+        call noft_access(g_o,oo,ilo,ihi)
+        it1lo(1) = ilo(1)
+        it1lo(2) = 1
+        it1hi(1) = ihi(1)
+        it1hi(2) = ne
+        it2lo(1) = ilo(2)
+        it2lo(2) = 1
+        it2hi(1) = ihi(2)
+        it2hi(2) = ne
+        do ii = 1, ndim
+          ild(ii)   = ihi(ii)   - ilo(ii)   + 1
+          it1ld(ii) = it1hi(ii) - it1lo(ii) + 1
+          it2ld(ii) = it2hi(ii) - it2lo(ii) + 1
+        enddo
+        allocate(t1(it1lo(1):it1hi(1),it1lo(2):it1hi(2)))
+        allocate(t2(it2lo(1):it2hi(1),it2lo(2):it2hi(2)))
+        call nga_get(g_t,it1lo,it1hi,t1,it1ld)
+        call nga_get(g_t,it2lo,it2hi,t2,it2ld)
 !
-      do it = it2lo(2), it2hi(2)
-        do is = it1lo(2), it1hi(2)
-          do i2 = it2lo(1), it2hi(1)
-            do i1 = it1lo(1), it1hi(1)
-              oo(i1,i2) = oo(i1,i2)
-     &        - t1(i1,is)*t1(i1,it)*t2(i2,it)*t2(i2,is)
+        do it = it2lo(2), it2hi(2)
+          do is = it1lo(2), it1hi(2)
+            do i2 = it2lo(1), it2hi(1)
+              do i1 = it1lo(1), it1hi(1)
+                oo(i1,i2) = oo(i1,i2)
+     &          - t1(i1,is)*t1(i1,it)*t2(i2,it)*t2(i2,is)
+              enddo
             enddo
           enddo
         enddo
-      enddo
-      do i2 = it2lo(1), it2hi(1)
-        do i1 = it1lo(1), it1hi(1)
-          oo(i1,i2) = max(0.0_dp,min(1.0_dp,oo(i1,i2)))
+        do i2 = it2lo(1), it2hi(1)
+          do i1 = it1lo(1), it1hi(1)
+            oo(i1,i2) = max(0.0_dp,min(1.0_dp,oo(i1,i2)))
+          enddo
         enddo
-      enddo
 !
-      call noft_release(g_o,oo,ilo,ihi)
+        call noft_release(g_o,oo,ilo,ihi)
+      endif
 !
       end subroutine noft_2e_occupation_x
 !
