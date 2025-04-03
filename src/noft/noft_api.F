@@ -35,6 +35,7 @@
       integer       :: nindep ! Number of linearly independ vectors
       real(kind=dp) :: cindep ! Cutoff to determine independ vectors
       integer       :: itype
+      integer       :: nopen
 !
 !     Fix the SCF type for the atomic guess
 !
@@ -65,6 +66,16 @@
      &                   INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:maxiter", mt_int, 1, maxiter))
      &      call errquit("noft_input: rtdb_put failed", 10, RTDB_ERR)
+!
+!       Nopen
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"nopen"))
+     &  then
+          if (.not. inp_i(nopen))
+     &      call errquit("noft_input: read nopen failed", 0,
+     &                   INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:nopen", mt_int, 1, nopen))
+     &      call errquit("noft_input: rtdb_put failed", 15, RTDB_ERR)
 !
 !       Threshold
 !
