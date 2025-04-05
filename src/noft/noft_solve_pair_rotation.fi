@@ -166,7 +166,7 @@
 !DEBUG
                 call noft_pair_rotation_delta(xx(ilo:ihi),ee(ilo:ihi),
      &                                        ihi-ilo+1,dd)
-                if (dd.lt.1.0d-8) then
+                if (dd.lt.thresh) then
                   if (ee(imn).ge.noft_energy%e_total) then
                     exit
                   endif

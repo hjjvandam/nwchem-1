@@ -55,6 +55,8 @@
         integer :: nto
         !> The solver algorithm
         integer :: solver
+        !> The functional form
+        integer :: functional
         !> The Monte Carlo parameters
         type(noft_parameter_monte_carlo_tp) :: monte_carlo
       end type noft_parameter_tp

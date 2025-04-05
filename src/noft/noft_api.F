@@ -15,6 +15,7 @@
 #include "errquit.fh"
 #include "inp.fh"
 #include "mafdecls.fh"
+#include "noft_functional_options.fh"
 #include "noft_solver_options.fh"
 #include "rtdb.fh"
       integer, intent(inout) :: rtdb !> [Input] The runtime database
@@ -36,6 +37,7 @@
       real(kind=dp) :: cindep ! Cutoff to determine independ vectors
       integer       :: itype
       integer       :: nopen
+      integer       :: functional
 !
 !     Fix the SCF type for the atomic guess
 !
@@ -240,6 +242,32 @@
           if (.not. rtdb_put(rtdb, "noft:solver", mt_int, 1,
      &                       pair_rotation))
      &      call errquit("noft_input: rtdb_put failed", 120, RTDB_ERR)
+!
+!       Functional
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "functional"))
+     &  then
+          if (.not. inp_a(test))
+     &      call errquit("noft_input: failed to read functional",130,
+     &                   INPUT_ERR)
+          if (inp_compare(.false.,test(1:inp_strlen(test)),"same"))
+     &    then
+            functional = same
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "conjugate"))
+     &    then
+            functional = conjugate
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"both"))
+     &    then
+            functional = both
+          else
+            call errquit("noft_input: invalid functional: "//test,
+     &                   140, INPUT_ERR)
+          endif
+          if (.not. rtdb_put(rtdb, "noft:functional", mt_int, 1,
+     &                       functional))
+     &      call errquit("noft_input: rtdb_put failed", 150, RTDB_ERR)
 !
 !       End
 !

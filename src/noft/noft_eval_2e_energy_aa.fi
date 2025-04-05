@@ -62,7 +62,9 @@
 !> of electron 1 with the bra orbital of electron 2.
 !>
 !> Either choice is arbitrary except that they produce different 
-!> results. Option 3: Of course if we don't want to have to justify a particular
+!> results.
+!>
+!> Option 3: Of course if we don't want to have to justify a particular
 !> approach we can just include everything
 !> \f{eqnarray}{
 !> E_{corr} = \sum_{ijkl}\frac{1}{2}[(ij|kl)-(kj|il)/2-(il|kj)/2]
@@ -79,8 +81,8 @@
 !> correlation energy but considers all possible orbital pairings
 !> equally.
 !>
-      subroutine noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_2e_aa,moaa_el_2,
-     &           e_2e_aa,e_2e_aa_corr)
+      subroutine noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_1e_a,occ_2e_aa,
+     &           moaa_el_2,e_2e_aa,e_2e_aa_corr)
       implicit none
 #include "errquit.fh"
 #include "global.fh"
@@ -89,6 +91,8 @@
       real(kind=dp), intent(in)  :: c_aa
       !> The same spin correlation power
       real(kind=dp), intent(in)  :: p_aa
+      !> The alpha 1-electron occupation numbers
+      integer, intent(in)        :: occ_1e_a
       !> The alpha-alpha pair occupation numbers
       integer, intent(in)        :: occ_2e_aa
       !> The alpha-alpha 2-electron integrals in MO basis
@@ -101,6 +105,10 @@
       real(kind=dp), pointer :: moaa_as(:,:,:,:)
       real(kind=dp), allocatable :: oik(:,:)
       real(kind=dp), allocatable :: ojl(:,:)
+      real(kind=dp), allocatable :: oi(:)
+      real(kind=dp), allocatable :: oj(:)
+      real(kind=dp), allocatable :: ok(:)
+      real(kind=dp), allocatable :: ol(:)
       integer, parameter :: ndim = 4
       integer, parameter :: mdim = 2
       integer :: ilo(ndim)
@@ -142,8 +150,16 @@
       jlhi(2) = ihi(4)
       jlld(1) = ild(2)
       jlld(2) = ild(4)
+      allocate(oi(ilo(1):ihi(1)))
+      allocate(oj(ilo(2):ihi(2)))
+      allocate(ok(ilo(3):ihi(3)))
+      allocate(ol(ilo(4):ihi(4)))
       allocate(oik(iklo(1):ikhi(1),iklo(2):ikhi(2)))
       allocate(ojl(jllo(1):jlhi(1),jllo(2):jlhi(2)))
+      call nga_get(occ_1e_a,ilo(1),ihi(1),oi,ild(1))
+      call nga_get(occ_1e_a,ilo(2),ihi(2),oj,ild(2))
+      call nga_get(occ_1e_a,ilo(3),ihi(3),ok,ild(3))
+      call nga_get(occ_1e_a,ilo(4),ihi(4),ol,ild(4))
       call nga_get(occ_2e_aa,iklo,ikhi,oik,ikld)
       call nga_get(occ_2e_aa,jllo,jlhi,ojl,jlld)
       e_2e_aa = 0.0_dp
@@ -159,7 +175,8 @@
                 e_2e_aa_corr = e_2e_aa_corr
      &            + half*half*abs(moaa_as(ii,jj,kk,ll))*
      &              noft_2el_weight_aa(c_aa,p_aa,oik(ii,kk),ojl(jj,ll))*
-     &              noft_2el_sign_2el_occ(oik(ii,kk),ojl(jj,ll))
+!    &              noft_2el_sign_2el_occ(oik(ii,kk),ojl(jj,ll))
+     &              noft_2el_sign_1el_occ(oi(ii),oj(jj),ok(kk),ol(ll))
               endif
             enddo
           enddo
@@ -167,6 +184,10 @@
       enddo
       deallocate(ojl)
       deallocate(oik)
+      deallocate(ol)
+      deallocate(ok)
+      deallocate(oj)
+      deallocate(oi)
       call noft_release(moaa_el_2_as,moaa_as,ilo,ihi)
 !
       if (.not.nga_destroy(moaa_el_2_as))
@@ -176,8 +197,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_2e_aa,moaa_el_2,
-     &           e_2e_aa,e_2e_aa_corr)
+      subroutine noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_1e_a,occ_2e_aa,
+     &           moaa_el_2,e_2e_aa,e_2e_aa_corr)
       implicit none
 #include "errquit.fh"
 #include "global.fh"
@@ -186,6 +207,8 @@
       real(kind=dp), intent(in)  :: c_aa
       !> The same spin correlation power
       real(kind=dp), intent(in)  :: p_aa
+      !> The alpha 1-electron occupation numbers
+      integer, intent(in)        :: occ_1e_a
       !> The alpha-alpha pair occupation numbers
       integer, intent(in)        :: occ_2e_aa
       !> The alpha-alpha 2-electron integrals in MO basis
@@ -198,6 +221,10 @@
       real(kind=dp), pointer :: moaa_as(:,:,:,:)
       real(kind=dp), allocatable :: oil(:,:)
       real(kind=dp), allocatable :: ojk(:,:)
+      real(kind=dp), allocatable :: oi(:)
+      real(kind=dp), allocatable :: oj(:)
+      real(kind=dp), allocatable :: ok(:)
+      real(kind=dp), allocatable :: ol(:)
       integer, parameter :: ndim = 4
       integer, parameter :: mdim = 2
       integer :: ilo(ndim)
@@ -215,7 +242,7 @@
       integer :: ndm
       real(kind=dp), parameter :: half = 0.5_dp
       character(len=20), parameter :: pname
-     &  = "noft_eval_2e_energy_aa_1: "
+     &  = "noft_eval_2e_energy_aa_2: "
 !
       call nga_inquire(moaa_el_2,itype,ndm,ild)
       ilo = -1
@@ -239,8 +266,16 @@
       jkhi(2) = ihi(3)
       jkld(1) = ild(2)
       jkld(2) = ild(3)
+      allocate(oi(ilo(1):ihi(1)))
+      allocate(oj(ilo(2):ihi(2)))
+      allocate(ok(ilo(3):ihi(3)))
+      allocate(ol(ilo(4):ihi(4)))
       allocate(oil(illo(1):ilhi(1),illo(2):ilhi(2)))
       allocate(ojk(jklo(1):jkhi(1),jklo(2):jkhi(2)))
+      call nga_get(occ_1e_a,ilo(1),ihi(1),oi,ild(1))
+      call nga_get(occ_1e_a,ilo(2),ihi(2),oj,ild(2))
+      call nga_get(occ_1e_a,ilo(3),ihi(3),ok,ild(3))
+      call nga_get(occ_1e_a,ilo(4),ihi(4),ol,ild(4))
       call nga_get(occ_2e_aa,illo,ilhi,oil,illd)
       call nga_get(occ_2e_aa,jklo,jkhi,ojk,jkld)
       e_2e_aa = 0.0_dp
@@ -256,7 +291,8 @@
                 e_2e_aa_corr = e_2e_aa_corr
      &            + half*half*abs(moaa_as(ii,jj,kk,ll))*
      &              noft_2el_weight_aa(c_aa,p_aa,oil(ii,ll),ojk(jj,kk))*
-     &              noft_2el_sign_2el_occ(oil(ii,ll),ojk(jj,kk))
+!    &              noft_2el_sign_2el_occ(oil(ii,ll),ojk(jj,kk))
+     &              noft_2el_sign_1el_occ(oi(ii),oj(jj),ok(kk),ol(ll))
               endif
             enddo
           enddo
@@ -264,11 +300,157 @@
       enddo
       deallocate(ojk)
       deallocate(oil)
+      deallocate(ol)
+      deallocate(ok)
+      deallocate(oj)
+      deallocate(oi)
       call noft_release(moaa_el_2_as,moaa_as,ilo,ihi)
 !
       if (.not.nga_destroy(moaa_el_2_as))
      &  call errquit(pname//"failed to create moaa_as",20,GA_ERR)
 !
       end subroutine noft_eval_2e_energy_aa_2
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_eval_2e_energy_aa_3(c_aa,p_aa,occ_1e_a,occ_2e_aa,
+     &           moaa_el_2,e_2e_aa,e_2e_aa_corr)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      !> The same spin correlation coefficient
+      real(kind=dp), intent(in)  :: c_aa
+      !> The same spin correlation power
+      real(kind=dp), intent(in)  :: p_aa
+      !> The alpha 1-electron occupation numbers
+      integer, intent(in)        :: occ_1e_a
+      !> The alpha-alpha pair occupation numbers
+      integer, intent(in)        :: occ_2e_aa
+      !> The alpha-alpha 2-electron integrals in MO basis
+      integer, intent(in)        :: moaa_el_2
+      !> The same spin independent particle repulsion energy
+      real(kind=dp), intent(out) :: e_2e_aa
+      !> The same spin electron correlation energy
+      real(kind=dp), intent(out) :: e_2e_aa_corr
+!
+      real(kind=dp), pointer :: moaa_as(:,:,:,:)
+      real(kind=dp), allocatable :: oik(:,:)
+      real(kind=dp), allocatable :: oil(:,:)
+      real(kind=dp), allocatable :: ojk(:,:)
+      real(kind=dp), allocatable :: ojl(:,:)
+      real(kind=dp), allocatable :: oi(:)
+      real(kind=dp), allocatable :: oj(:)
+      real(kind=dp), allocatable :: ok(:)
+      real(kind=dp), allocatable :: ol(:)
+      integer, parameter :: ndim = 4
+      integer, parameter :: mdim = 2
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      integer :: ild(ndim)
+      integer :: iklo(ndim)
+      integer :: illo(ndim)
+      integer :: ikhi(ndim)
+      integer :: ilhi(ndim)
+      integer :: ikld(ndim)
+      integer :: illd(ndim)
+      integer :: jklo(ndim)
+      integer :: jllo(ndim)
+      integer :: jkhi(ndim)
+      integer :: jlhi(ndim)
+      integer :: jkld(ndim)
+      integer :: jlld(ndim)
+      integer :: itype
+      integer :: ii, jj, kk, ll
+      integer :: moaa_el_2_as
+      integer :: ndm
+      real(kind=dp), parameter :: half = 0.5_dp
+      character(len=20), parameter :: pname
+     &  = "noft_eval_2e_energy_aa_3: "
+!
+      call nga_inquire(moaa_el_2,itype,ndm,ild)
+      ilo = -1
+      if (.not.nga_create(itype,ndim,ild,"moaa_as",ilo,moaa_el_2_as))
+     &  call errquit(pname//"failed to create moaa_as",10,GA_ERR)
+      call noft_2e_anti_symmetry(moaa_el_2,moaa_el_2_as)
+!
+      call noft_access(moaa_el_2_as,moaa_as,ilo,ihi)
+      do ii = 1, ndim
+        ild(ii) = ihi(ii) - ilo(ii) + 1
+      enddo
+      iklo(1) = ilo(1)
+      iklo(2) = ilo(3)
+      ikhi(1) = ihi(1)
+      ikhi(2) = ihi(3)
+      ikld(1) = ild(1)
+      ikld(2) = ild(3)
+      illo(1) = ilo(1)
+      illo(2) = ilo(4)
+      ilhi(1) = ihi(1)
+      ilhi(2) = ihi(4)
+      illd(1) = ild(1)
+      illd(2) = ild(4)
+      jklo(1) = ilo(2)
+      jklo(2) = ilo(3)
+      jkhi(1) = ihi(2)
+      jkhi(2) = ihi(3)
+      jkld(1) = ild(2)
+      jkld(2) = ild(3)
+      jllo(1) = ilo(2)
+      jllo(2) = ilo(4)
+      jlhi(1) = ihi(2)
+      jlhi(2) = ihi(4)
+      jlld(1) = ild(2)
+      jlld(2) = ild(4)
+      allocate(oi(ilo(1):ihi(1)))
+      allocate(oj(ilo(2):ihi(2)))
+      allocate(ok(ilo(3):ihi(3)))
+      allocate(ol(ilo(4):ihi(4)))
+      allocate(oik(iklo(1):ikhi(1),iklo(2):ikhi(2)))
+      allocate(oil(illo(1):ilhi(1),illo(2):ilhi(2)))
+      allocate(ojk(jklo(1):jkhi(1),jklo(2):jkhi(2)))
+      allocate(ojl(jllo(1):jlhi(1),jllo(2):jlhi(2)))
+      call nga_get(occ_1e_a,ilo(1),ihi(1),oi,ild(1))
+      call nga_get(occ_1e_a,ilo(2),ihi(2),oj,ild(2))
+      call nga_get(occ_1e_a,ilo(3),ihi(3),ok,ild(3))
+      call nga_get(occ_1e_a,ilo(4),ihi(4),ol,ild(4))
+      call nga_get(occ_2e_aa,iklo,ikhi,oik,ikld)
+      call nga_get(occ_2e_aa,illo,ilhi,oil,illd)
+      call nga_get(occ_2e_aa,jklo,jkhi,ojk,jkld)
+      call nga_get(occ_2e_aa,jllo,jlhi,ojl,jlld)
+      e_2e_aa = 0.0_dp
+      e_2e_aa_corr = 0.0_dp
+      do ll = ilo(4), ihi(4)
+        do kk = ilo(3), ihi(3)
+          do jj = ilo(2), ihi(2)
+            do ii = ilo(1), ihi(1)
+              if (ii.eq.jj.and.kk.eq.ll) then
+                e_2e_aa = e_2e_aa + half*moaa_as(ii,jj,kk,ll)*oil(ii,ll)
+              else if (ii.ne.jj.and.ii.ne.kk.and.ii.ne.ll.and.
+     &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll) then
+                e_2e_aa_corr = e_2e_aa_corr
+     &            + half*half*abs(moaa_as(ii,jj,kk,ll))*
+     &              noft_2el_weight_ab(c_aa,p_aa,
+     &                oik(ii,kk),oil(ii,ll),ojk(jj,kk),ojl(jj,ll))*
+     &              noft_2el_sign_1el_occ(oi(ii),oj(jj),ok(kk),ol(ll))
+              endif
+            enddo
+          enddo
+        enddo
+      enddo
+      deallocate(ojl)
+      deallocate(ojk)
+      deallocate(oil)
+      deallocate(oik)
+      deallocate(ol)
+      deallocate(ok)
+      deallocate(oj)
+      deallocate(oi)
+      call noft_release(moaa_el_2_as,moaa_as,ilo,ihi)
+!
+      if (.not.nga_destroy(moaa_el_2_as))
+     &  call errquit(pname//"failed to create moaa_as",20,GA_ERR)
+!
+      end subroutine noft_eval_2e_energy_aa_3
 !
 !-----------------------------------------------------------------------

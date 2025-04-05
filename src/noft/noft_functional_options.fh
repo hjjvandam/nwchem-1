@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+!>
+!> Enumerate solver algorithm options
+!>
+      integer, parameter :: same = 11
+      integer, parameter :: conjugate = 12
+      integer, parameter :: both = 13
+!
+!-----------------------------------------------------------------------

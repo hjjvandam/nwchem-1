@@ -11,6 +11,7 @@
 #include "mafdecls.fh"
 #include "rtdb.fh"
 #include "noft_solver_options.fh"
+#include "noft_functional_options.fh"
       !> The runtime database handle
       integer, intent(in) :: rtdb
       !> The calculation parameters
@@ -110,6 +111,14 @@
      &             noft_params%solver)) then
       else
         noft_params%solver = monte_carlo
+      endif
+!
+!     Load the functional selection
+!
+      if (rtdb_get(rtdb,"noft:functional", MT_INT, 1,
+     &             noft_params%functional)) then
+      else
+        noft_params%functional = conjugate
       endif
 !
 !     Load the solver parameters

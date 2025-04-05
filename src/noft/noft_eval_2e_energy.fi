@@ -5,6 +5,8 @@
       subroutine noft_eval_2e_energy(noft_parameters,noft_operators,
      &                               noft_occupations,noft_energy)
       implicit none
+#include "errquit.fh"
+#include "noft_functional_options.fh"
       !> The calculation parameters
       type(noft_parameter_tp),   intent(in)    :: noft_parameters
       !> The operators
@@ -23,11 +25,16 @@
       integer :: moaa_el_2, moab_el_2, mobb_el_2
       integer :: occ_1e_a,  occ_1e_b
       integer :: occ_2e_aa, occ_2e_bb
+      integer :: functional
+      character(len=21), parameter :: pname =
+     &  "noft_eval_2e_energy: "
+      character(len=4) :: func
 !
       c_aa = noft_parameters%c_aa
       c_ab = noft_parameters%c_ab
       p_aa = noft_parameters%p_aa
       p_ab = noft_parameters%p_ab
+      functional = noft_parameters%functional
 !
       moaa_el_2 = noft_operators%moaa_el_2
       moab_el_2 = noft_operators%moab_el_2
@@ -48,13 +55,37 @@
       noft_energy%e_2electron = noft_energy%e_2electron + en_2el
       noft_energy%e_correlation_ab = en_2el_corr
 !
-      call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_2e_aa,
-     &                              moaa_el_2,en_2el,en_2el_corr)
+      if (functional.eq.same) then
+        call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_1e_a,occ_2e_aa,
+     &                                moaa_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.conjugate) then
+        call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_1e_a,occ_2e_aa,
+     &                                moaa_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.both) then
+        call noft_eval_2e_energy_aa_3(c_aa,p_aa,occ_1e_a,occ_2e_aa,
+     &                                moaa_el_2,en_2el,en_2el_corr)
+      else
+        write(func,*)functional
+        call errquit(pname//" unknown functional: "//func, 10,
+     &               UERR)
+      endif
       noft_energy%e_2electron = noft_energy%e_2electron + en_2el
       noft_energy%e_correlation_aa = en_2el_corr
 !
-      call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_2e_bb,
-     &                              mobb_el_2,en_2el,en_2el_corr)
+      if (functional.eq.same) then
+        call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_1e_b,occ_2e_bb,
+     &                                mobb_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.conjugate) then
+        call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_1e_b,occ_2e_bb,
+     &                                mobb_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.both) then
+        call noft_eval_2e_energy_aa_3(c_aa,p_aa,occ_1e_b,occ_2e_bb,
+     &                                mobb_el_2,en_2el,en_2el_corr)
+      else
+        write(func,*)functional
+        call errquit(pname//" unknown functional: "//func, 20,
+     &               UERR)
+      endif
       noft_energy%e_2electron = noft_energy%e_2electron + en_2el
       noft_energy%e_correlation_bb = en_2el_corr
 !
