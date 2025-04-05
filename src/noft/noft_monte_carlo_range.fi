@@ -229,6 +229,36 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine noft_monte_carlo_range_get_elm(noft_range,name,ii,jj,
+     &           value)
+      implicit none
+#include "global.fh"
+#include "errquit.fh"
+      type(noft_monte_carlo_range_tp), intent(inout) :: noft_range
+      character(len=4),                intent(in)    :: name
+      integer,                         intent(in)    :: ii, jj
+      real(kind=dp),                   intent(out)   :: value
+!
+      character(len=30), parameter :: pname
+     &    = "noft_monte_carlo_range_get_elm: "
+!
+      if      (name.eq."mo_a") then
+        call ga_get(noft_range%mo_a,ii,ii,jj,jj,value,1)
+      else if (name.eq."mo_b") then
+        call ga_get(noft_range%mo_b,ii,ii,jj,jj,value,1)
+      else if (name.eq."to_a") then
+        call ga_get(noft_range%to_a,ii,ii,jj,jj,value,1)
+      else if (name.eq."to_b") then
+        call ga_get(noft_range%to_b,ii,ii,jj,jj,value,1)
+      else
+        call errquit(pname//"invalid range component: "//name,
+     &               10, UERR)
+      endif
+!
+      end subroutine noft_monte_carlo_range_get_elm
+!
+!-----------------------------------------------------------------------
+!
 !> \brief Apply update expression to a single range global array
 !>
 !> The update expression is given in MonteCarlo.py.

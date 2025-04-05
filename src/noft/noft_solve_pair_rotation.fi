@@ -39,9 +39,9 @@
       type(noft_monte_carlo_step_tp) :: noft_step
       !> The test rotation
       type(noft_monte_carlo_rotation_tp) :: noft_rotation
-!DEBUG
+      !> Storage for the step size
       type(noft_monte_carlo_range_tp) :: noft_range
-!DEBUG
+!
       integer, parameter :: nfields_all = 4
       integer, parameter :: nfields_csh = 2
       integer :: nfields
@@ -82,6 +82,7 @@
       nocc_b = noft_params%ne_b
       call noft_create_wavefunction(noft_params,noft_wavefunction_step)
       call noft_monte_carlo_rotation_create(noft_params,noft_rotation)
+      call noft_monte_carlo_range_create(noft_params, noft_range)
       call noft_monte_carlo_step_create(noft_params,noft_step)
       call noft_eval_energy(noft_params,noft_operators,
      &                      noft_wavefunction,noft_energy)
@@ -100,12 +101,25 @@
 !     call noft_monte_carlo_range_destroy(noft_range)
 !DEBUG
       iteration = 0
+      imacro = 0
+      jj = 0
+      ii = 0
       step_now = 0.5_dp*pi
       if (noft_ionode()) then
-        write(luout,"(i8,a6,f12.4,$)")iteration,fields(nfields_all+1),
-     &                                step_now
+        write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,iteration,
+     &                                  fields(nfields_all+1),
+     &                                  step_now,step_now
         call noft_print_energy(noft_energy,luout,.true.)
       endif
+      call noft_monte_carlo_range_zero(noft_range)
+      do ifield = 1, nfields
+        do jj = 1, noft_params%nmo
+          do ii = 1, jj-1
+            call noft_monte_carlo_range_init_elm(noft_range,
+     &           fields(ifield),step_now,0.0_dp,0.0_dp,ii,jj)
+          enddo
+        enddo
+      enddo
       do imacro = 1, noft_params%maxiter
         nlower = 0
         step_new = 0.0_dp
@@ -123,6 +137,8 @@
             do ii = 1, min(jj-1,nocc)
 !
               iteration = iteration + 1
+              call noft_monte_carlo_range_get_elm(noft_range,
+     &             fields(ifield),ii,jj,step_now)
 !
               step = -step_now
               call noft_monte_carlo_step_zero(noft_step)
@@ -188,12 +204,14 @@
                 call noft_pair_rotation_delta(xx(ilo:ihi),ee(ilo:ihi),
      &                                        ihi-ilo+1,dd)
                 if (dd.lt.thresh) then
+                  step = xx(imn)
+                  step_new = max(abs(step),thresh)
+                  call noft_monte_carlo_range_init_elm(noft_range,
+     &                 fields(ifield),step_new,0.0_dp,0.0_dp,ii,jj)
                   if (ee(imn).ge.noft_energy%e_total) then
                     exit
                   endif
                   nlower = nlower + 1
-                  step = xx(imn)
-                  step_new = max(step_new,abs(step))
                   iteration = iteration + 1
                   call noft_monte_carlo_step_zero(noft_step)
                   call noft_monte_carlo_step_set(noft_step,
@@ -212,8 +230,8 @@
      &                                         noft_wavefunction_step)
                   noft_energy = noft_energy_step
                   if (noft_ionode()) then
-                    write(luout,"(i8,a6,f12.4,$)")iteration,
-     &                   fields(ifield),step_now
+                    write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,
+     &                   iteration,fields(ifield),step_now,step_new
                     call noft_print_energy(noft_energy,luout,.true.)
                   endif
                   exit
@@ -320,6 +338,7 @@
       endif
 !
       call noft_monte_carlo_step_destroy(noft_step)
+      call noft_monte_carlo_range_destroy(noft_range)
       call noft_monte_carlo_rotation_destroy(noft_rotation)
       call noft_destroy_wavefunction(noft_wavefunction_step)
 !
