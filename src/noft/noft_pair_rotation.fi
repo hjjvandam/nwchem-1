@@ -3,7 +3,7 @@
 !> \brief Find the minimum in an array
 !>
 !> This subroutine find the minimum in an ordered array. It returns
-!> a range of indeces containing \f$nn\f$ points that includes the
+!> a range of indeces containing \f$nn\f$ points that include the
 !> minimum.
 !>
       subroutine noft_pair_rotation_minimum(ee,mm,nn,ilo,ihi,imn)

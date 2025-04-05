@@ -48,7 +48,7 @@
       integer :: ifield
       integer :: npoints
       integer, parameter :: mpoints = 200
-      character(len=4) :: fields(nfields_all)
+      character(len=4) :: fields(nfields_all+1)
 !DEBUG
       character(len=256) :: filename
       integer :: kk
@@ -59,6 +59,7 @@
       integer :: iteration
       integer :: nlower
       integer :: imacro
+      integer :: nocc, nocc_a, nocc_b
       real(kind=dp) :: pi = dacos(-1.0_dp)
       real(kind=dp) :: step
       real(kind=dp) :: ediff
@@ -72,15 +73,19 @@
       real(kind=dp) :: dd   ! maximum difference
       real(kind=dp) :: en   ! energy new
       real(kind=dp) :: etst ! energy for testing
+      real(kind=dp) :: step_now ! the step size for this macro iteration
+      real(kind=dp) :: step_new ! the step size for the next iteration
 !
       oconv = .false.
       thresh = noft_params%threshold
+      nocc_a = noft_params%ne_a
+      nocc_b = noft_params%ne_b
       call noft_create_wavefunction(noft_params,noft_wavefunction_step)
       call noft_monte_carlo_rotation_create(noft_params,noft_rotation)
       call noft_monte_carlo_step_create(noft_params,noft_step)
       call noft_eval_energy(noft_params,noft_operators,
      &                      noft_wavefunction,noft_energy)
-      fields = (/"to_a","mo_a","to_b","mo_b"/)
+      fields = (/"to_a","mo_a","to_b","mo_b","    "/)
       nfields = nfields_all
       if (noft_params%restricted) then
         nfields = nfields_csh
@@ -95,15 +100,31 @@
 !     call noft_monte_carlo_range_destroy(noft_range)
 !DEBUG
       iteration = 0
+      step_now = 0.5_dp*pi
+      if (noft_ionode()) then
+        write(luout,"(i8,a6,f12.4,$)")iteration,fields(nfields_all+1),
+     &                                step_now
+        call noft_print_energy(noft_energy,luout,.true.)
+      endif
       do imacro = 1, noft_params%maxiter
         nlower = 0
+        step_new = 0.0_dp
         do ifield = 1, nfields
+          if      (ifield.eq.1) then
+            nocc = nocc_a
+          else if (ifield.eq.2) then
+            nocc = noft_params%nmo
+          else if (ifield.eq.3) then
+            nocc = nocc_b
+          else if (ifield.eq.4) then
+            nocc = noft_params%nmo
+          endif
           do jj = 1, noft_params%nmo
-            do ii = 1, jj-1
+            do ii = 1, min(jj-1,nocc)
 !
               iteration = iteration + 1
 !
-              step = -0.5_dp*pi
+              step = -step_now
               call noft_monte_carlo_step_zero(noft_step)
               call noft_monte_carlo_step_set(noft_step,fields(ifield),
      &             step,ii,jj)
@@ -125,7 +146,7 @@
               xx(npoints) = 0.0_dp
               ee(npoints) = noft_energy%e_total
 !
-              step = 0.5_dp*pi
+              step = step_now
               iteration = iteration + 1
               call noft_monte_carlo_step_zero(noft_step)
               call noft_monte_carlo_step_set(noft_step,fields(ifield),
@@ -172,6 +193,7 @@
                   endif
                   nlower = nlower + 1
                   step = xx(imn)
+                  step_new = max(step_new,abs(step))
                   iteration = iteration + 1
                   call noft_monte_carlo_step_zero(noft_step)
                   call noft_monte_carlo_step_set(noft_step,
@@ -190,7 +212,8 @@
      &                                         noft_wavefunction_step)
                   noft_energy = noft_energy_step
                   if (noft_ionode()) then
-                    write(luout,"('  ',i8,$)")iteration
+                    write(luout,"(i8,a6,f12.4,$)")iteration,
+     &                   fields(ifield),step_now
                     call noft_print_energy(noft_energy,luout,.true.)
                   endif
                   exit
@@ -201,7 +224,7 @@
                     call errquit("assumption failed A", 10, UERR)
                   endif
 !                 Extend the points to the left
-                  step = xx(imn)-0.1_dp*pi
+                  step = xx(imn)-step_now
                   iteration = iteration + 1
                   call noft_monte_carlo_step_zero(noft_step)
                   call noft_monte_carlo_step_set(noft_step,
@@ -227,7 +250,7 @@
                     call errquit("assumption failed B", 20, UERR)
                   endif
 !                 Extend the points to the left
-                  step = xx(imn)+0.1_dp*pi
+                  step = xx(imn)+step_now
                   iteration = iteration + 1
                   call noft_monte_carlo_step_zero(noft_step)
                   call noft_monte_carlo_step_set(noft_step,
@@ -253,6 +276,7 @@
                 else
                   step = 0.5_dp*(xx(imn)+xx(imn-1))
                 endif
+                iteration = iteration + 1
                 call noft_monte_carlo_step_zero(noft_step)
                 call noft_monte_carlo_step_set(noft_step,fields(ifield),
      &               step,ii,jj)
@@ -274,6 +298,7 @@
             enddo
           enddo
         enddo
+        step_now = step_new
         if (nlower.eq.0) then
           ! We didn't find a single energy lowering rotation
           ! so we're done
