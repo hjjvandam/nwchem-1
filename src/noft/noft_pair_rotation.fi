@@ -94,9 +94,9 @@
 !
       integer :: ii
 !
-      dd = 1.0d100
+      dd = 0.0_dp
       do ii = 1, nn-1
-        dd = min(dd,abs(xx(ii)-xx(ii+1)))
+        dd = max(dd,abs(xx(ii)-xx(ii+1)))
       enddo
 !
       end subroutine noft_pair_rotation_delta
