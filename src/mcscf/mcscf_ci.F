@@ -61,6 +61,7 @@ c
       integer l_eri, k_eri
       integer g_civec, g_wvec(mxworkvec)
       character*20 vstr
+      character*5  mstr
       character*255 civec_in
       logical civec_saved
 c
@@ -147,8 +148,10 @@ c
      $   call errquit('detci: cannot create CI vector',60, GA_ERR)
       do i=1,mxworkvec
         vstr = 'CI work ' // char(ichar('0')+i)
+        write(mstr,'(" /",i3)')mxworkvec
         if (.not.ga_civec_create(vstr,g_wvec(i)))
-     $    call errquit('detci: cannot create CI vector',70, GA_ERR)
+     $    call errquit('detci: cannot create CI vector: '//vstr//mstr,
+     $                 70, GA_ERR)
         call ga_zero(g_wvec(i))
       enddo
 c
