@@ -49,6 +49,7 @@ c
 c
 c
 c
+       if (nact.ge.1.and.nvir.ge.1) then
        if (.not.ma_push_get(MT_DBL,(nact*nvir),'xua',l_xua,k_xua))
      $      call errquit('mcscf_hessv_2e_mo: cannot allocate',0,
      &       MA_ERR)
@@ -60,6 +61,7 @@ c
        if (.not.ma_pop_stack(l_xua))
      $      call errquit('mcscf_hessv_2e_mo: failed pop stack',0,
      &       MA_ERR)
+       endif
 c
 c
 c
@@ -140,6 +142,7 @@ c
      $      call errquit('mcscf_hessv_2e_mo_avia: wrong distrib.',0,
      &       GA_ERR)
        call dfill((nact*nvir),0.d0,dbl_mb(k_z),1)
+       if (nvir.ge.1) then
        do v=1,nact
          do x=1,v
            vx = (v*(v-1))/2 + x
@@ -156,12 +159,14 @@ c
            endif
          enddo
        enddo
+       endif
 c
 c
 c
        if (.not.ga_check_JKblocked(g_exch,nact,nbf,jlo,jhi))
      $      call errquit('mcscf_hessv_2e_mo_avia: wrong distrib.',0,
      &       GA_ERR)
+       if (nvir.ge.1) then
        do v=1,nact
          do x=1,v
            vx = (v*(v-1))/2 + x
@@ -177,6 +182,7 @@ c
          enddo
        enddo
        call ga_acc(g_ax,voff,nbf,aoff,aend,dbl_mb(k_z),nvir,1.d0)
+       endif
 c
 c
        if (.not.ma_pop_stack(l_dt))
@@ -522,6 +528,7 @@ c
        if (.not.ga_check_JKblocked(g_coul,nact,nbf,jlo,jhi))
      $      call errquit('mcscf_hessv_2e_mo_avav: wrong distrib.',0,
      &       GA_ERR)
+       if (nvir.ge.1) then
        call dfill((nact*nvir),0.d0,dbl_mb(k_z),1)
        do v=1,nact
          do x=1,v
@@ -539,12 +546,14 @@ c
            endif
          enddo
        enddo
+       endif
 c
 c
 c
        if (.not.ga_check_JKblocked(g_exch,nact,nbf,jlo,jhi))
      $      call errquit('mcscf_hessv_2e_mo_avia: wrong distrib.',0,
      &       GA_ERR)
+       if (nvir.ge.1) then
        do v=1,nact
          do x=1,v
            vx = (v*(v-1))/2 + x
@@ -560,6 +569,7 @@ c
          enddo
        enddo
        call ga_acc(g_ax,voff,nbf,aoff,aend,dbl_mb(k_z),nvir,1.d0)
+       endif
 c
 c
        if (.not.ma_pop_stack(l_dt))

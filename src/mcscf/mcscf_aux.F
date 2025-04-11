@@ -1244,6 +1244,7 @@ c  Virtual orbitals
 c
       aoff = nclosed + nact + 1
       nvir = nbf - nclosed - nact
+      if (nvir.ge.1) then
 *ga:1:0
       if (.not.ga_create(MT_DBL,nvir,nvir,'tmp',nvir,0,g_tmp))
      $  call errquit('mcscf_canonical: cannot allocate tmp',0, GA_ERR)
@@ -1269,6 +1270,7 @@ c
      $  call errquit('mcscf_canonical: cannot destroy tmp',0, GA_ERR)
       if (.not.ga_destroy(g_tmp))
      $  call errquit('mcscf_canonical: cannot destroy tmp',0, GA_ERR)
+      endif
       call dscal( nbf, 0.5d0, eps, 1 )
 c
 c  Transform MOs
