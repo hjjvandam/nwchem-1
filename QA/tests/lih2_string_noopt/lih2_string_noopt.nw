@@ -1,0 +1,49 @@
+echo
+memory noverify
+start mcscf_lih2_sto3g_neb_dat
+basis
+  * library sto-3g
+end
+
+charge +1
+
+geometry units angstroms print xyz noautosym
+Li       0.0000000000      0.0000000000      3.0
+H        0.0000000000      0.0000000000      1.328
+H        0.0000000000      0.0000000000     -3.0
+end
+
+geometry endgeom units angstroms print xyz noautosym
+Li       0.0000000000      0.0000000000      3.0
+H        0.0000000000      0.0000000000     -2.254
+H        0.0000000000      0.0000000000     -3.0
+end
+
+dft
+  cgmin
+  xc scan
+  maxiter 500
+end
+
+mcscf
+  active       7
+  actelec      4
+  multiplicity 1
+end
+
+string
+  nbeads 7
+  stepsize 0.10
+  freeze1 .true.
+  freezeN .true.
+  nhist 5
+  reset
+end
+
+task dft string ignore
+
+string
+  optimize no
+end
+
+task mcscf string ignore

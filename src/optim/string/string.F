@@ -28,6 +28,7 @@ C> @{
 ! string:freeze1  : freeze endpoint 1
 ! string:freezen  : freeze endpoint N
 ! string:linopt   : Turn on/off linear optimization
+! string:optimize   : Turn optimization on or off altogether
 ! string:projection1  : Turn off/on projection of gradient
 ! string:pathguess  : which method for guessing path from 1 to TS to N
 ! string:mode     : do all beads in serial or parallel
@@ -37,7 +38,7 @@ C> @{
 ! "geometry"  Endpoint #1
 ! "endgeom"   Endpoint #2
 ! "midgeom"   Optional transition state
-! At this point the code does not verify that they geometries are the same atoms
+! At this point the code does not verify that the geometries are the same atoms
 ! in the same order, but they need to be for the code to work right.
 ! The main routine can handle having all geometries specified, but the 
 ! driver does support reading them in yet.
@@ -70,6 +71,7 @@ C> @{
       real*8 tol,stepsize,t,t1,t2,t3,rms1,rms2
       logical converged, freeze1, freezeN, newchain,hasmiddle,impose
       logical oprint,value
+      logical optimize
       character*255 geom_name
       character*8 mode
       integer geom_len,nbeads_exist
@@ -158,6 +160,8 @@ C> @{
         if (ga_nnodes().lt.nbeads) mode = 'serial'
       endif
 
+      if (.not.rtdb_get(rtdb,'string:optimize',mt_log,1,optimize))
+     $  optimize = .true.
 
 ! Warning: No way to read in all nbead geomtries
 
@@ -357,6 +361,7 @@ c        **** impose ****
      &       dbl_mb(k_tmp_list+3*natoms*nbeads*m),
      &       dbl_mb(k_tmp_list+3*natoms*nbeads*2*m),
      &       dbl_mb(k_mass),
+     &    optimize,
      &    interpol,freeze1,freezeN,converged,mode)
       if (.not. rtdb_put(rtdb,'opt:string',mt_log,1,.false.))
      $     call errquit('task_string: rtdb_put failed',0,
@@ -404,6 +409,7 @@ C> @}
      &    natoms,middle,
      &    coords,geom,rtdb,dg,energy,dVdx,dcoords,coords_old,wrk,
      &    m,coords_list,dVdx_list,HdVdx,masses,
+     &    optimize,
      &    interpol,freeze1,freezeN,converged,mode)
       implicit none
       
@@ -430,6 +436,7 @@ C> @}
       integer middle ! The "middle" coordinates bead number - 0 if none, -1 all
                      !      of the coordinates are filled
       integer rtdb   ! The runtime database
+      logical optimize ! whether to optimize the string
       integer interpol ! The style of interpolation
       logical freeze1, freezeN ! Freeze ends of string
       character*8 mode ! the mode of execution: serial or parallel
@@ -573,10 +580,12 @@ C> @}
       !*** Calculate the energy and forces for each bead ***
       if (inp_compare(.false.,'serial',mode)) then
         call zts_runall(rtdb,geom,natoms,nbeads,0,
+     >                        optimize,
      >                        freeze1,freezeN,projection1,
      >                        coords,energy,dVdx)
       else if (inp_compare(.false.,'parallel',mode)) then
         call zts_runall_parallel(rtdb,geom,natoms,nbeads,0,
+     >                        optimize,
      >                        freeze1,freezeN,projection1,
      >                        coords,energy,dVdx)
       else
@@ -673,10 +682,12 @@ C> @}
      >                      dg,wrk,dcoords,coords_old,HdVdx,coords)
              if (inp_compare(.false.,'serial',mode)) then
                call zts_runall(rtdb,geom,natoms,nbeads,nstep,
+     >                        optimize,
      >                        freeze1,freezeN,projection1,
      >                        coords,energy,dVdx)
              else if (inp_compare(.false.,'parallel',mode)) then
                call zts_runall_parallel(rtdb,geom,natoms,nbeads,nstep,
+     >                        optimize,
      >                        freeze1,freezeN,projection1,
      >                        coords,energy,dVdx)
              else
@@ -722,10 +733,12 @@ C> @}
 
           if (inp_compare(.false.,'serial',mode)) then
             call zts_runall(rtdb,geom,natoms,nbeads,nstep,
+     >                        optimize,
      >                      freeze1,freezeN,projection1,
      >                      coords,energy,dVdx)
           else if (inp_compare(.false.,'parallel',mode)) then
             call zts_runall_parallel(rtdb,geom,natoms,nbeads,nstep,
+     >                        optimize,
      >                      freeze1,freezeN,projection1,
      >                      coords,energy,dVdx)
           else
@@ -877,6 +890,11 @@ C> @}
      >      call errquit('setting print:print_count failed',4,RTDB_ERR)
 
          if ((xrms.lt.tol).and.(xmax.lt.tol)) goto 747
+         if (.not.optimize) then
+           xrms = 0.0d0
+           xmax = 0.0d0
+           goto 747
+         endif
       end do
 
 
@@ -1782,11 +1800,13 @@ C> @}
 *     *                                      *
 *     ****************************************
       subroutine zts_runall(rtdb,geom,natoms,nbeads,nstep,
+     >                      optimize,
      >                      freeze1,freezeN,projection1,
      >                      coords,energy,dVdx)
       implicit none
       integer rtdb,geom
       integer natoms,nbeads,nstep
+      logical optimize
       logical freeze1,freezeN,projection1,tmpVar
       real*8 coords(3,natoms,nbeads)
       real*8 energy(nbeads)
@@ -1808,6 +1828,8 @@ C> @}
       real*8 g1(3),g2(3),g3(3),tmp
 
 *     **** external functions ****
+      logical  task_energy
+      external task_energy
       logical  task_gradient
       external task_gradient
       character*7 bead_index_name
@@ -1857,7 +1879,11 @@ C> @}
             if (oprint) write(*,*) "string: running bead ",i
             call ga_sync()
 *            if ( .not. (task_gradient(rtdb).or.ignore))
-            tmpVar = task_gradient(rtdb)
+            if (optimize) then
+              tmpVar = task_gradient(rtdb)
+            else
+              tmpVar = task_energy(rtdb)
+            endif
             if ( .not. (tmpVar.or.ignore))
      >         call errquit('zts_meps: gradient failed',0, 0)
 
@@ -1874,9 +1900,12 @@ C> @}
             if (.not. rtdb_get(rtdb,'task:energy',mt_dbl,1,energy(i)))
      &         call errquit('zts_meps: failed getting energy',0,
      &         RTDB_ERR)
-            if (.not. rtdb_get(rtdb, 'task:gradient', mt_dbl, 3*natoms,
-     &          dVdx(1,1,i))) call errquit(
-     &          'zts_meps: failed getting gradient',0,RTDB_ERR)
+            if (optimize) then
+              if (.not. rtdb_get(rtdb, 'task:gradient', mt_dbl,
+     &            3*natoms,
+     &            dVdx(1,1,i))) call errquit(
+     &            'zts_meps: failed getting gradient',0,RTDB_ERR)
+            endif
             if (oprint) 
      >        write(*,'(A,I3,A,F18.6)') 
      >        " string: finished bead ",i," energy=",energy(i)
@@ -1898,6 +1927,16 @@ C> @}
           end do
         end do
       end if
+
+      if (.not.optimize) then
+        do i = 1, nbeads
+          do j = 1, natoms
+            do k = 1, 3
+              dVdx(k,j,i) = 0.0d0
+            end do
+          end do
+        end do
+      endif
 
       !**** Projection of gradient onto perpedicular to path? ****
       if (projection1) then

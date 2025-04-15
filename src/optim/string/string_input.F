@@ -20,6 +20,7 @@ c
       real*8 tol, temp, stepsize
       integer nbeads, maxit, interpol,ind,i
       logical frze
+      logical optimize
 
       logical  neb_setgeom_xyzfilename
       external neb_setgeom_xyzfilename
@@ -88,6 +89,11 @@ c
      $        interpol))
      $        call errquit('string_input: rtdb put failed',0, RTDB_ERR)
 
+      else if (inp_compare(.false.,'optimize', field)) then
+         if (.not. inp_l(optimize)) optimize = .true.
+         if (.not. rtdb_put(rtdb,'string:optimize',mt_log,1,optimize))
+     $      call errquit('string_input: rtdb put failed',0, RTDB_ERR)
+
       else if (inp_compare(.false.,'freeze1', field)) then
          if (.not. inp_l(frze)) frze = .false.
          if (.not. rtdb_put(rtdb,'string:freeze1',mt_log,1,frze))
@@ -143,7 +149,7 @@ c     ----------------------------
 
 
 c
-c    xyz_path
+c     xyz_path
 c     ----------------------------
       else if (inp_compare(.false.,'xyz_path', field)) then
          if (inp_a(test2)) then

@@ -18,6 +18,7 @@
 !> @param natoms      the number of atoms in the geometry
 !> @param nbeads      the number of beads in the string
 !> @param nstep       the number of the current step
+!> @param optimize    shall the string be optimized?
 !> @param freeze1     shall the structure of the 1st bead be frozen?
 !> @param freezeN     shall the structure of the last bead be frozen?
 !> @param projection1 shall the gradient be projected on the
@@ -28,11 +29,13 @@
 !>
       subroutine zts_runall_parallel(
      >                      rtdb,geom,natoms,nbeads,nstep,
+     >                      optimize,
      >                      freeze1,freezeN,projection1,
      >                      coords,energy,dVdx)
       implicit none
       integer rtdb,geom
       integer natoms,nbeads,nstep
+      logical optimize
       logical freeze1,freezeN,projection1,tmpVar
       real*8 coords(3,natoms,nbeads)
       real*8 energy(nbeads)
@@ -81,6 +84,8 @@
       integer, allocatable :: mygrpprocs(:)
 
 *     **** external functions ****
+      logical  task_energy
+      external task_energy
       logical  task_gradient
       external task_gradient
       character*7 bead_index_name
@@ -374,7 +379,11 @@
 
       if (bead_iproc.eq.0) write(LuOut,*)"string: running bead ",mybead
       call ga_sync()
-      tmpVar = task_gradient(rtdb)
+      if (optimize) then
+        tmpVar = task_gradient(rtdb)
+      else
+        tmpVar = task_energy(rtdb)
+      endif
       if (.not.(tmpVar.or.ignore))
      &  call errquit("zts_runall_parallel: gradient failed",0,UERR)
 
@@ -391,9 +400,13 @@
         if (.not. rtdb_get(rtdb,'task:energy',mt_dbl,1,tmp_energy))
      &      call errquit('zts_runall_parallel: failed getting energy',0,
      &      RTDB_ERR)
-        if (.not. rtdb_get(rtdb, 'task:gradient', mt_dbl, 3*natoms,
-     &      tmp_dVdx)) call errquit(
-     &      'zts_runall_parallel: failed getting gradient',0,RTDB_ERR)
+        if (optimize) then
+          if (.not. rtdb_get(rtdb, 'task:gradient', mt_dbl, 3*natoms,
+     &        tmp_dVdx)) call errquit(
+     &        'zts_runall_parallel: failed getting gradient',0,RTDB_ERR)
+        else
+          tmp_dVdx = 0.0d0
+        endif
       endif
 
       !*** Need to go from processor group to global
@@ -461,6 +474,10 @@
           end do
         end do
       end if
+
+      if (.not.optimize) then
+        dVdx = 0.0d0
+      endif
 
       !**** Projection of gradient onto perpedicular to path? ****
       if (projection1) then
