@@ -1,0 +1,28 @@
+echo
+start noft_h2_dat
+
+scratch_dir .
+permanent_dir .
+
+geometry units angstrom noautosym
+  h 0.0 0.0 -0.38044621
+  h 0.0 0.0  0.38044621
+end
+
+basis spherical
+  * library cc-pvdz
+end
+
+scf
+  vectors input atomic output noft_h2_dat.movecs
+end
+
+noft
+  temperature 0.0
+  restricted
+  pairrotation
+  vectors input noft_h2_dat.movecs output noft_h2_dat.movecs
+end
+
+task scf  energy
+task noft energy

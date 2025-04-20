@@ -1,0 +1,24 @@
+echo
+start mcscf_h2_dat
+
+scratch_dir .
+permanent_dir .
+
+geometry units angstrom
+  symmetry d2h
+  h 0.0 0.0 -0.38044621
+  h 0.0 0.0  0.38044621
+end
+
+basis spherical
+  * library cc-pvdz
+end
+
+mcscf
+  active 10
+  actelec 2
+  multiplicity 1
+end
+
+task scf energy
+task mcscf optimize
