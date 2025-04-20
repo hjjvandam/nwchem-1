@@ -15,7 +15,7 @@
       !> Scale factor so that the maximum value is 1.0
       real(kind=dp), parameter :: dnorm = 4.0_dp
 !
-      wght = dnorm*(occ*(1.0_dp-occ))
+      wght = max(0.0_dp,dnorm*(occ*(1.0_dp-occ)))
 !
       end function noft_2el_weight_occ
 !

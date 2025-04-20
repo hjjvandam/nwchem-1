@@ -50,8 +50,8 @@
       call noft_initialize_integrals(rtdb,noft_instances)
       call noft_compute_operators(noft_instances,noft_oper)
       call noft_create_wavefunction(noft_params,noft_wavefunction)
-      call noft_orthogonalizing_transformation(noft_params,noft_oper,
-     &                                         noft_wavefunction)
+      call noft_orthogonalizing_transformation(noft_instances,
+     &          noft_params,noft_oper,noft_wavefunction)
       call noft_adjust_wavefunction(noft_params,noft_wavefunction)
       if (noft_vectors%movecs_in.eq."atomic") then
         call noft_guess_wavefunction(rtdb,noft_instances,noft_params,
@@ -59,8 +59,9 @@
       else if (noft_vectors%movecs_in(
      &         inp_strlen(noft_vectors%movecs_in)-6:
      &         inp_strlen(noft_vectors%movecs_in)).eq.".movecs") then
-        call noft_load_wavefunction(noft_vectors,noft_params,
-     &                              noft_oper,noft_wavefunction)
+        call noft_load_wavefunction(noft_instances,noft_vectors,
+     &                              noft_params,noft_oper,
+     &                              noft_wavefunction)
       else
         call errquit("invalid initial wavefunction",10,CAPMIS_ERR)
       endif

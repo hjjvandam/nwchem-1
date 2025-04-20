@@ -2,7 +2,7 @@
 !> \brief Data type to hold wavefunctions
 !>
 !> The key component of a wavefunction are
-!> - The orthogonalizing transformation 
+!> - The orthogonalizing transformation
 !> - The molecular orbitals for alpha and beta electrons
 !> - The tilde orbitals for alpha and beta electrons
 !> Each of these components will be stored in a global array. This data
@@ -19,5 +19,9 @@
         integer :: to_a
         !> The beta tilde orbitals
         integer :: to_b
+        !> The irreducible representations of the alpha orbitals
+        integer, allocatable :: irrep_a(:)
+        !> The irreducible representations of the beta orbitals
+        integer, allocatable :: irrep_b(:)
       end type noft_wavefunction_tp
 !-----------------------------------------------------------------------

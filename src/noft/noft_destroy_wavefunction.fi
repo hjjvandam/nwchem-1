@@ -31,6 +31,8 @@
      &  call errquit(pname//" failed to destroy alpha TOs",0,GA_ERR)
       if (.not.nga_destroy(noft_wavefunction%to_b))
      &  call errquit(pname//" failed to destroy beta TOs",0,GA_ERR)
+      deallocate(noft_wavefunction%irrep_a)
+      deallocate(noft_wavefunction%irrep_b)
 !
       end subroutine noft_destroy_wavefunction
 !-----------------------------------------------------------------------

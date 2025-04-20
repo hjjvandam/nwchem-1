@@ -2,7 +2,7 @@
 !> \brief Calculate the orthogonalizing transformation
 !>
 !> Diagonalize the overlap matrix and find how many linearly independent
-!> vectors there are. In addition calculate the orthogonalizing 
+!> vectors there are. In addition calculate the orthogonalizing
 !> transformation from the eigenvectors.
 !>
       subroutine noft_lindep(g_s,g_s12,nindep,tol)
@@ -14,9 +14,9 @@
 !>    The GA handle for the overlap matrix
       integer, intent(in)    :: g_s
 !>    The GA handle for the S^{-1/2} matrix
-      integer, intent(inout) :: g_s12 
+      integer, intent(inout) :: g_s12
 !
-      integer, intent(out)      :: nindep ! the number of linearly 
+      integer, intent(out)      :: nindep ! the number of linearly
                                           ! independent vectors
       real(kind=dp), intent(in) :: tol    ! the eigenvalue cutoff
 !

@@ -38,6 +38,7 @@
       integer       :: itype
       integer       :: nopen
       integer       :: functional
+      logical       :: symmetrize
 !
 !     Fix the SCF type for the atomic guess
 !
@@ -227,6 +228,18 @@
      &                       .false.))
      &      call errquit("noft_input: rtdb_put failed", 110, RTDB_ERR)
 !
+!       Symmetrize
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "symmetrize"))
+     &  then
+          if (.not.inp_l(symmetrize))
+     &      call errquit("noft_input: invalid symmetrize option",
+     &                   120, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:symmetrize", mt_log, 1,
+     &                       symmetrize))
+     &      call errquit("noft_input: rtdb_put failed", 130, RTDB_ERR)
+!
 !       MonteCarlo
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
@@ -241,7 +254,7 @@
      &  then
           if (.not. rtdb_put(rtdb, "noft:solver", mt_int, 1,
      &                       pair_rotation))
-     &      call errquit("noft_input: rtdb_put failed", 120, RTDB_ERR)
+     &      call errquit("noft_input: rtdb_put failed", 140, RTDB_ERR)
 !
 !       Functional
 !
@@ -249,7 +262,7 @@
      &                       "functional"))
      &  then
           if (.not. inp_a(test))
-     &      call errquit("noft_input: failed to read functional",130,
+     &      call errquit("noft_input: failed to read functional",150,
      &                   INPUT_ERR)
           if (inp_compare(.false.,test(1:inp_strlen(test)),"same"))
      &    then
@@ -263,11 +276,11 @@
             functional = both
           else
             call errquit("noft_input: invalid functional: "//test,
-     &                   140, INPUT_ERR)
+     &                   160, INPUT_ERR)
           endif
           if (.not. rtdb_put(rtdb, "noft:functional", mt_int, 1,
      &                       functional))
-     &      call errquit("noft_input: rtdb_put failed", 150, RTDB_ERR)
+     &      call errquit("noft_input: rtdb_put failed", 170, RTDB_ERR)
 !
 !       End
 !

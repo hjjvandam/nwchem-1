@@ -45,6 +45,10 @@
       if (.not.nga_create(mt_dbl,2,dims,"beta tos",chunk,
      &                    noft_wavefunction%to_b))
      &  call errquit(pname//" failed to create beta TOs",0,GA_ERR)
+      allocate(noft_wavefunction%irrep_a(1:noft_params%nmo))
+      allocate(noft_wavefunction%irrep_b(1:noft_params%nmo))
+      noft_wavefunction%irrep_a = 1
+      noft_wavefunction%irrep_b = 1
 !
       end subroutine noft_create_wavefunction
 !-----------------------------------------------------------------------

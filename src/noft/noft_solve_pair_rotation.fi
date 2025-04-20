@@ -136,6 +136,17 @@
           do jj = 1, noft_params%nmo
             do ii = 1, min(jj-1,nocc)
 !
+!             If ii and jj are of different irreps then don't mix them
+!
+              if (ifield.eq.2.and.noft_wavefunction%irrep_a(ii)
+     &                        .ne.noft_wavefunction%irrep_a(jj)) then
+                cycle
+              endif
+              if (ifield.eq.4.and.noft_wavefunction%irrep_b(ii)
+     &                        .ne.noft_wavefunction%irrep_b(jj)) then
+                cycle
+              endif
+!
               iteration = iteration + 1
               call noft_monte_carlo_range_get_elm(noft_range,
      &             fields(ifield),ii,jj,step_now)

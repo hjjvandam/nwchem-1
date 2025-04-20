@@ -105,6 +105,14 @@
         noft_params%restricted = .false.
       endif
 !
+!     Load the symmetrize setting
+!
+      if (rtdb_get(rtdb,"noft:symmetrize", MT_LOG, 1,
+     &             noft_params%symmetry_adapt)) then
+      else
+        noft_params%symmetry_adapt = .false.
+      endif
+!
 !     Load the solver selection
 !
       if (rtdb_get(rtdb,"noft:solver", MT_INT, 1,

@@ -29,6 +29,8 @@
         real(kind=dp) :: temperature
         !> Is this a spin restricted calculation?
         logical :: restricted
+        !> Do we use symmetry?
+        logical :: symmetry_adapt
         !> The number of open shell orbitals
         integer :: no_open
         !> The number of alpha-electrons

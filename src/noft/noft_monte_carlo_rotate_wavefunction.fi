@@ -48,5 +48,8 @@
       irot = noft_rotation%to_b
       call ga_dgemm(tn,tn,mm,nn,kk,alpha,in,irot,beta,iout)
 !
+      noft_wavefunction_step%irrep_a = noft_wavefunction%irrep_a
+      noft_wavefunction_step%irrep_b = noft_wavefunction%irrep_b
+!
       end subroutine noft_monte_carlo_rotate_wavefunction
 !-----------------------------------------------------------------------

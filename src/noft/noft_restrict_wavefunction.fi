@@ -18,6 +18,7 @@
         call ga_copy(noft_wavefunction%mo_a,noft_wavefunction%mo_b)
         call ga_copy(noft_wavefunction%to_a,noft_wavefunction%to_b)
       endif
+      noft_wavefunction%irrep_b = noft_wavefunction%irrep_a
 !
       end subroutine noft_restrict_wavefunction
 !

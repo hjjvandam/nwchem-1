@@ -8,11 +8,14 @@
 !> the wavefunction as we use it here. To maintain compatibilits with
 !> the rest of NWChem we need to adapt our storage format.
 !>
-      subroutine noft_load_wavefunction(noft_files,noft_params,
-     &           noft_operators,noft_wavefunction)
+      subroutine noft_load_wavefunction(noft_instances,noft_files,
+     &           noft_params,noft_operators,noft_wavefunction)
       implicit none
 #include "errquit.fh"
 #include "global.fh"
+#include "mafdecls.fh"
+      !> The calculation's key objects
+      type(noft_instances_tp),    intent(in)    :: noft_instances
       !> The vectors specification
       type(noft_files_tp),        intent(in)    :: noft_files
       !> The parameters of the calculation
@@ -28,6 +31,10 @@
       integer, parameter :: ndim = 2
       integer :: ldnmo
       integer :: nmo(ndim)
+      integer :: idim(ndim)
+      integer :: ichk(ndim)
+      integer :: nnao, nnmo, nnso
+      integer :: g_vec
       integer :: nbf
       integer :: nsets
       character(len=256) :: title
@@ -35,6 +42,9 @@
       character(len=256) :: basis
       real(kind=dp), allocatable :: occ(:)
       real(kind=dp), allocatable :: evals(:)
+      real(kind=dp), parameter :: one = 1.0_dp
+      real(kind=dp), parameter :: zero = 0.0_dp
+      character(len=1), parameter :: tn = "N"
       character(len=24), parameter :: pname =
      &  "noft_load_wavefunction: "
       logical :: onoft_mos
@@ -42,7 +52,7 @@
       onoft_mos = .false.
       call ga_norm_infinity(noft_wavefunction%so,dnorm)
       if (dnorm.gt.0.0_dp) then
-!       The orthogonalizing transformation is already set and will 
+!       The orthogonalizing transformation is already set and will
 !       correspond to the current geometry. In this case we should not
 !       load the transformation that might correspond to a previous
 !       geometry.
@@ -95,14 +105,45 @@
               call errquit(pname//"failed to read beta MO vecs",
      &                     30, UERR)
             endif
-            onoft_mos = .true.
+            if (noft_params%symmetry_adapt) then
+              onoft_mos = .false.
+              idim(1) = noft_params%nao
+              idim(2) = noft_params%nmo
+              nnao = noft_params%nao
+              nnmo = noft_params%nmo
+              nnso = noft_params%nso
+              if (.not.nga_create(mt_dbl,ndim,idim,"vec",ichk,g_vec))
+     &          call errquit(pname//"failed to create vec", 40, UERR)
+              call ga_dgemm(tn,tn,nnao,nnmo,nnso,one,
+     &                      noft_wavefunction%so,noft_wavefunction%mo_a,
+     &                      zero,g_vec)
+              call ga_copy(g_vec,noft_wavefunction%mo_a)
+              call ga_dgemm(tn,tn,nnao,nnmo,nnso,one,
+     &                      noft_wavefunction%so,noft_wavefunction%mo_b,
+     &                      zero,g_vec)
+              call ga_copy(g_vec,noft_wavefunction%mo_b)
+              if (.not.ga_destroy(g_vec))
+     &          call errquit(pname//"failed to destroy vec", 50, UERR)
+            else
+              onoft_mos = .true.
+            endif
           endif
         else
-          call errquit(pname//"unknown scftype: "//scftype, 35, UERR)
+          call errquit(pname//"unknown scftype: "//scftype, 60, UERR)
         endif
         deallocate(evals)
         deallocate(occ)
         if (.not.onoft_mos) then
+          if (noft_params%symmetry_adapt) then
+            call scf_movecs_sym_adapt(noft_instances%basis,
+     &                                noft_wavefunction%mo_a,.false.,0,
+     &                                "mo_a",.true.,
+     &                                noft_wavefunction%irrep_a)
+            call scf_movecs_sym_adapt(noft_instances%basis,
+     &                                noft_wavefunction%mo_b,.false.,0,
+     &                                "mo_b",.true.,
+     &                                noft_wavefunction%irrep_b)
+          endif
           call noft_orthogonal_basis_mos(noft_params,noft_operators,
      &                                   noft_wavefunction)
         endif

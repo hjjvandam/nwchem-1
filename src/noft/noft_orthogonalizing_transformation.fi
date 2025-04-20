@@ -1,22 +1,76 @@
 !-----------------------------------------------------------------------
 !> \brief Find the orthogonalizing transformation
 !>
-!> Basically we calculate $S^{1/2}$ where S is the overlap matrix
+!> Basically we calculate $S^{-1/2}$ where S is the overlap matrix
 !>
-      subroutine noft_orthogonalizing_transformation(
+!> If symmetry adaption is requested  also symmetry adapt the
+!> orthogonalizing transformation.
+!>
+      subroutine noft_orthogonalizing_transformation(noft_instances,
      &           noft_params,noft_operators,noft_wavefunction)
       implicit none
 #include "errquit.fh"
 #include "global.fh"
 #include "mafdecls.fh"
+      type(noft_instances_tp),    intent(in)    :: noft_instances
       type(noft_parameter_tp),    intent(inout) :: noft_params
       type(noft_operators_tp),    intent(in)    :: noft_operators
       type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
       integer, parameter :: mxdim = 2
       integer :: dims(mxdim)
       integer :: chunk(mxdim)
+      integer :: nao
+      integer :: nso
+      integer :: irs(2)
+      integer :: ii
+!
+      nso = noft_params%nso
+      nao = noft_params%nao
       call noft_lindep(noft_operators%ao_s,noft_wavefunction%so,
      &                 noft_params%nso,1.0d-6)
+      if (noft_params%symmetry_adapt) then
+!
+!       The symmetry adaption assumes MOs, i.e. an orthonormal set of
+!       vectors with the overlap matrix as the metric. The
+!       orthogonalizing transformation is such a set of vectors so we
+!       can just use the regular symmetry adaption to symmetrize those
+!       vectors.
+!
+        call scf_movecs_sym_adapt(noft_instances%basis,
+     &                            noft_wavefunction%so,.false.,0,
+     &                            "s_12",.false.,irs)
+      endif
       end subroutine noft_orthogonalizing_transformation
+!
+!-----------------------------------------------------------------------
+!
+!> \brief Scale vectors by given factors
+!>
+!> In some cases we need to scale eigen vectors of some operator by
+!> some factors. Examples include calculating \f$S^{-1/2}\f$. This
+!> subroutine applies the scaling in a distributed manor.
+!>
+      subroutine noft_scale_vectors(g_vec,factors,nfac)
+      implicit none
+      !> The global array holding the vectors
+      integer, intent(inout) :: g_vec
+      !> The number of factors (or equivalently the number of vectors)
+      integer, intent(in) :: nfac
+      !> The scaling factors
+      real(kind=dp), intent(in) :: factors(nfac)
+!
+      real(kind=dp), pointer :: vec(:,:)
+      integer :: ilo(2), ihi(2)
+      integer :: i1,  i2
+!
+      call noft_access(g_vec,vec,ilo,ihi)
+      do i2 = ilo(2), ihi(2)
+        do i1 = ilo(1), ihi(1)
+          vec(i1,i2) = vec(i1,i2) * factors(i2)
+        enddo
+      enddo
+      call noft_release(g_vec,vec,ilo,ihi)
+!
+      end subroutine noft_scale_vectors
 !
 !-----------------------------------------------------------------------
