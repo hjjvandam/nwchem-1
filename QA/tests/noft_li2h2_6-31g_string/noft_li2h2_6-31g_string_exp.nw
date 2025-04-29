@@ -1,0 +1,77 @@
+echo
+start mcscf_li2h2_dat
+
+scratch_dir   .
+permanent_dir .
+
+geometry units angstrom noautoz
+li     0.000000      1.38  -4.00
+li     0.000000     -1.38  -4.00
+h      0.000000      0.37   4.00
+h      0.000000     -0.37   4.00
+end
+
+geometry endgeom units angstrom noautosym noautoz
+li     0.000000      4.00  -0.8354
+li     0.000000     -4.00  -0.8354
+h      0.000000      4.00   0.8354
+h      0.000000     -4.00   0.8354
+end
+
+basis
+  * library 6-31g
+end
+
+#print low
+
+mcscf
+  active 20
+  actelec 4
+  multiplicity 1
+end
+
+string
+  optimize no
+  stepsize 0.04
+  nbeads 50
+  maxiter 50
+  freeze1 .true.
+  freezeN .true.
+  nhist 5
+  reset
+end
+
+task scf string ignore
+
+string
+  stepsize 0.04
+  nbeads 50
+  maxiter 100
+  freeze1 .true.
+  freezeN .true.
+  nhist 5
+  optimize yes
+end
+
+task mcscf string ignore
+
+string
+  optimize no
+end
+
+noft
+  temperature 0.0
+  restricted
+  pairrotation
+  symmetrize yes
+  #c_aa 0.25
+  c_aa 0.0
+  p_aa 0.5
+  c_ab 0.25
+  p_ab 0.5233
+  maxiter 1000
+end
+
+task scf  string ignore
+task noft string ignore
+
