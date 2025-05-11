@@ -37,6 +37,8 @@
       real(kind=dp) :: cindep ! Cutoff to determine independ vectors
       integer       :: itype
       integer       :: nopen
+      integer       :: ncore
+      integer       :: nvirtual
       integer       :: functional
       logical       :: symmetrize
 !
@@ -79,6 +81,27 @@
      &                   INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:nopen", mt_int, 1, nopen))
      &      call errquit("noft_input: rtdb_put failed", 15, RTDB_ERR)
+!
+!       Ncore
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"ncore"))
+     &  then
+          if (.not. inp_i(ncore))
+     &      call errquit("noft_input: read ncore failed", 0,
+     &                   INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:ncore", mt_int, 1, ncore))
+     &      call errquit("noft_input: rtdb_put failed", 16, RTDB_ERR)
+!
+!       Nvirtual
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "nvirtual"))
+     &  then
+          if (.not. inp_i(nvirtual))
+     &      call errquit("noft_input: read nvirtual failed", 0,
+     &                   INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:nvirtual",mt_int, 1, nvirtual))
+     &      call errquit("noft_input: rtdb_put failed", 17, RTDB_ERR)
 !
 !       Threshold
 !
@@ -422,10 +445,10 @@
 !> \brief Optimize the energy
 !>
 !> This function provides the interface between the NWChem tasks and
-!> the NOFT energy solver. 
+!> the NOFT energy solver.
 !>
 !> If the calculation converged the energy will be stored on the RTDB
-!> with the key "noft:energy" and the corresponding wavefunction 
+!> with the key "noft:energy" and the corresponding wavefunction
 !> will be stored in multiple files:
 !>   - "*.movecs" the molecular orbitals expressed in terms of AOs.
 !>     This can be used by other NWChem modules.
@@ -435,13 +458,13 @@
 !>   - "*.mvecs" the molecular orbitals (MOs) given in terms of SOs.
 !>   - "*.tvecs" the tilde functions (TOs) given in terms of the MOs.
 !>
-!> The SOs, MOs and TOs only make sense in the context of the NOFT 
+!> The SOs, MOs and TOs only make sense in the context of the NOFT
 !> code. Only the molecular orbitals as stored in the "*.movecs"
 !> file make sense to the rest of NWChem.
 !>
 !> \return Returns .TRUE. if the calculation converged successfully and
 !>         returns .FALSE. otherwise.
-!>         
+!>
 !>
       function noft_task_energy(rtdb) result(noft_success)
       use noft

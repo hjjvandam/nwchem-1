@@ -1,7 +1,7 @@
 !-----------------------------------------------------------------------
 !> \brief The parameters data type
 !>
-!> This data type stores various parameters of the calculation. 
+!> This data type stores various parameters of the calculation.
 !> These parameters are entities that do not change throughout the
 !> calculation, but that are also simple quantities.
 !>

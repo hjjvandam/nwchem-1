@@ -3,9 +3,9 @@
 !> \brief Minimize the energy by rotating pair of 1-electron states
 !>
 !> In this function we use the effect on the energy of mixing a pair
-!> of states to minimize the total energy. 
+!> of states to minimize the total energy.
 !> The method we use is similar to bisection. We bracket the initial
-!> with points on the left and right. Next we find the minimum 
+!> with points on the left and right. Next we find the minimum
 !> energy among these points. If the minimal energy point has a point
 !> to the left and the right then we half the largest distance and
 !> at that point. If the minimal energy is at the end of the list of
@@ -60,6 +60,8 @@
       integer :: nlower
       integer :: imacro
       integer :: nocc, nocc_a, nocc_b
+      integer :: ncore, ncore_a, ncore_b
+      integer :: nvirt, nvirt_a, nvirt_b
       real(kind=dp) :: pi = dacos(-1.0_dp)
       real(kind=dp) :: step
       real(kind=dp) :: ediff
@@ -80,6 +82,10 @@
       thresh = noft_params%threshold
       nocc_a = noft_params%ne_a
       nocc_b = noft_params%ne_b
+      ncore_a = noft_params%ncore_a
+      ncore_b = noft_params%ncore_b
+      nvirt_a = noft_params%nvirtual_a
+      nvirt_b = noft_params%nvirtual_b
       call noft_create_wavefunction(noft_params,noft_wavefunction_step)
       call noft_monte_carlo_rotation_create(noft_params,noft_rotation)
       call noft_monte_carlo_range_create(noft_params, noft_range)
@@ -126,15 +132,23 @@
         do ifield = 1, nfields
           if      (ifield.eq.1) then
             nocc = nocc_a
+            ncore = ncore_a
+            nvirt = nvirt_a
           else if (ifield.eq.2) then
             nocc = noft_params%nmo
+            ncore = 0
+            nvirt = 0
           else if (ifield.eq.3) then
             nocc = nocc_b
+            ncore = ncore_b
+            nvirt = nvirt_b
           else if (ifield.eq.4) then
             nocc = noft_params%nmo
+            ncore = 0
+            nvirt = 0
           endif
-          do jj = 1, noft_params%nmo
-            do ii = 1, min(jj-1,nocc)
+          do jj = ncore+1, noft_params%nmo-nvirt
+            do ii = ncore+1, min(jj-1,nocc)
 !
 !             If ii and jj are of different irreps then don't mix them
 !

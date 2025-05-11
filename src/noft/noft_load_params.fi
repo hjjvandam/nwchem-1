@@ -42,6 +42,26 @@
          noft_params%no_open = 0
       endif
 !
+!     Load the number of core orbitals (ncore)
+!
+      if (rtdb_get(rtdb,"noft:ncore", MT_INT, 1,
+     &             noft_params%ncore_a)) then
+         noft_params%ncore_b = noft_params%ncore_a
+      else
+         noft_params%ncore_a = 0
+         noft_params%ncore_b = 0
+      endif
+!
+!     Load the number of virtual orbitals (nvirtual)
+!
+      if (rtdb_get(rtdb,"noft:nvirtual", MT_INT, 1,
+     &             noft_params%nvirtual_a)) then
+         noft_params%nvirtual_b = noft_params%nvirtual_a
+      else
+         noft_params%nvirtual_a = 0
+         noft_params%nvirtual_b = 0
+      endif
+!
 !     Load the convergence threshold
 !
       if (rtdb_get(rtdb,"noft:threshold", MT_DBL, 1,
