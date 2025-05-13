@@ -63,6 +63,16 @@
       call rhf_dens_to_mo(rtdb,geometry,basis,nelec,nao,nmo,1.0d-7,
      &                    g_ao_ao,mo_a,.false.,eigval)
 !
+      if (noft_params%symmetry_adapt) then
+        call scf_movecs_sym_adapt(noft_instances%basis,
+     &                            noft_wavefunction%mo_a,.false.,0,
+     &                            "mo_a",.true.,
+     &                            noft_wavefunction%irrep_a)
+      else
+        noft_wavefunction%irrep_a = 1
+      endif
+      noft_wavefunction%irrep_b = noft_wavefunction%irrep_a
+!
       call ga_copy(noft_wavefunction%mo_a,noft_wavefunction%mo_b)
       if (.not.ga_destroy(g_ao_ao)) then
         call errquit(pname//" destroy g_ao_ao failed",20,GA_ERR)

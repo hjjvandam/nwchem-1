@@ -1,0 +1,86 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Print MOs in the orthogonal basis in terms of orthog
+!>
+!> To check whether the symmtry code is working properly we need to
+!> be able to see whether the symmetry label for an MO in the orthogonal
+!> basis matches the symmetry labels for the orthogonal basis vectors.
+!> For this purpose this print routines prints the MO vectors with
+!> their associated labels in terms of the orthogonal basis functions
+!> and their labels.
+!>
+      subroutine noft_print_symmos(noft_params,noft_wavefunction)
+      implicit none
+      !> The job parameters
+      type(noft_parameter_tp),    intent(in) :: noft_params
+      !> The wavefunction
+      type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
+!
+      call noft_print_symmos_1(noft_wavefunction%mo_a,
+     &     noft_wavefunction%irrep_a,noft_wavefunction%irrep_so,
+     &     noft_params%nmo)
+      call noft_print_symmos_1(noft_wavefunction%mo_b,
+     &     noft_wavefunction%irrep_b,noft_wavefunction%irrep_so,
+     &     noft_params%nmo)
+!
+      end subroutine noft_print_symmos
+!
+!-----------------------------------------------------------------------
+!
+      subroutine noft_print_symmos_1(g_mo,irrep_mo,irrep_so,nmo)
+      implicit none
+#include "global.fh"
+#include "stdio.fh"
+      !> The MOs in orthogonal basis
+      integer, intent(in) :: g_mo
+      !> The number of MOs
+      integer, intent(in) :: nmo
+      !> The irreps off the orthogonal basis
+      integer, intent(in) :: irrep_so(nmo)
+      !> The irreps off the MOs
+      integer, intent(in) :: irrep_mo(nmo)
+!
+      logical :: oroot
+      real(kind=dp), allocatable :: data(:,:)
+      integer :: ilo, ihi
+      integer, parameter :: maxcol = 6
+      integer :: ii, jj
+!
+      oroot = ga_nodeid().eq.0
+      call ga_sync()
+!
+      if (oroot) then
+        ilo = 1
+        ihi = min(nmo,ilo+maxcol-1)
+        do while (ilo.lt.nmo)
+          allocate(data(1:nmo,ilo:ihi))
+          call ga_get(g_mo,1,nmo,ilo,ihi,data,nmo)
+          write(luout,*)
+          write(luout,'("        ",$)')
+          do ii = ilo, ihi
+            write(luout,'(i11,$)')irrep_mo(ii)
+          enddo
+          write(luout,*)
+          write(luout,'("        ",$)')
+          do ii = ilo, ihi
+            write(luout,'(i11,$)')ii
+          enddo
+          write(luout,*)
+          do jj = 1, nmo
+            write(luout,'(i3,i5,$)')irrep_so(jj),jj
+            do ii = ilo, ihi
+              write(luout,'(f11.5,$)')data(jj,ii)
+            enddo
+            write(luout,*)
+          enddo
+          deallocate(data)
+          ilo = ilo + maxcol
+          ihi = ihi + maxcol
+          ihi = min(nmo,ilo+maxcol-1)
+        enddo
+      endif
+!
+      call ga_sync()
+      end subroutine noft_print_symmos_1
+!
+!-----------------------------------------------------------------------

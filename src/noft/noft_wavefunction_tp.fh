@@ -19,6 +19,8 @@
         integer :: to_a
         !> The beta tilde orbitals
         integer :: to_b
+        !> The irreducible representations of the orthogonal basis
+        integer, allocatable :: irrep_so(:)
         !> The irreducible representations of the alpha orbitals
         integer, allocatable :: irrep_a(:)
         !> The irreducible representations of the beta orbitals

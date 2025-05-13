@@ -66,6 +66,9 @@
       else
         call errquit("invalid initial wavefunction",10,CAPMIS_ERR)
       endif
+!DEBUG
+!     call noft_print_symmos(noft_params,noft_wavefunction)
+!DEBUG
       call noft_restrict_wavefunction(noft_params,noft_wavefunction)
       call noft_ortho_operators(noft_wavefunction,noft_oper)
       if (noft_params%solver.eq.monte_carlo) then

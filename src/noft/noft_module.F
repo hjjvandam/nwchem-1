@@ -89,6 +89,7 @@ c-----------------------------------------------------------------------
 #include "noft_print_geometry.fi"
 #include "noft_print_header.fi"
 #include "noft_print_parameters.fi"
+#include "noft_print_symmos.fi"
 #include "noft_replace_data.fi"
 #include "noft_restrict_wavefunction.fi"
 #include "noft_save_convergence.fi"

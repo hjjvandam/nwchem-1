@@ -143,9 +143,15 @@
      &                                noft_wavefunction%mo_b,.false.,0,
      &                                "mo_b",.true.,
      &                                noft_wavefunction%irrep_b)
+          else
+            noft_wavefunction%irrep_a = 1
+            noft_wavefunction%irrep_b = 1
           endif
           call noft_orthogonal_basis_mos(noft_params,noft_operators,
      &                                   noft_wavefunction)
+        else
+          call errquit(pname//"missing code to assign symmetry",0,
+     &                 CAPMIS_ERR)
         endif
       endif
 !

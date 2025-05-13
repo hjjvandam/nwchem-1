@@ -38,7 +38,10 @@
 !
         call scf_movecs_sym_adapt(noft_instances%basis,
      &                            noft_wavefunction%so,.false.,0,
-     &                            "s_12",.false.,irs)
+     &                            "s_12",.true.,
+     &                            noft_wavefunction%irrep_so)
+      else
+        noft_wavefunction%irrep_so = 1
       endif
       end subroutine noft_orthogonalizing_transformation
 !
