@@ -55,13 +55,13 @@
 !> we introduce occupations that connect the same side of the energy
 !> expression, i.e. the bra orbital of electron 1 with the bra orbital
 !> of electron 2. and the ket orbital of electron 1 with the ket orbital
-!> of electron 2. 
+!> of electron 2.
 !>
 !> In the bottom expression we connect the bra orbital of electron 1
 !> with the ket orbital of electron 2, and vice versa the ket orbital
 !> of electron 1 with the bra orbital of electron 2.
 !>
-!> Either choice is arbitrary except that they produce different 
+!> Either choice is arbitrary except that they produce different
 !> results.
 !>
 !> Option 3: Of course if we don't want to have to justify a particular
@@ -109,6 +109,7 @@
       real(kind=dp), allocatable :: oj(:)
       real(kind=dp), allocatable :: ok(:)
       real(kind=dp), allocatable :: ol(:)
+      real(kind=dp) :: fac
       integer, parameter :: ndim = 4
       integer, parameter :: mdim = 2
       integer :: ilo(ndim)
@@ -130,6 +131,7 @@
 !
       call nga_inquire(moaa_el_2,itype,ndm,ild)
       ilo = -1
+      fac = 1.0_dp/max(1,(ild(1)-1)*(ild(1)-2))
       if (.not.nga_create(itype,ndim,ild,"moaa_as",ilo,moaa_el_2_as))
      &  call errquit(pname//"failed to create moaa_as",10,GA_ERR)
       call noft_2e_anti_symmetry(moaa_el_2,moaa_el_2_as)
@@ -171,7 +173,8 @@
               if (ii.eq.jj.and.kk.eq.ll) then
                 e_2e_aa = e_2e_aa + half*moaa_as(ii,jj,kk,ll)*oik(ii,kk)
               else if (ii.ne.jj.and.ii.ne.kk.and.ii.ne.ll.and.
-     &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll) then
+     &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll.and.
+     &                 c_aa.gt.0.0) then
                 e_2e_aa_corr = e_2e_aa_corr
      &            + half*half*abs(moaa_as(ii,jj,kk,ll))*
      &              noft_2el_weight_aa(c_aa,p_aa,oik(ii,kk),ojl(jj,ll))*
@@ -189,6 +192,7 @@
       deallocate(oj)
       deallocate(oi)
       call noft_release(moaa_el_2_as,moaa_as,ilo,ihi)
+      e_2e_aa_corr = fac*e_2e_aa_corr
 !
       if (.not.nga_destroy(moaa_el_2_as))
      &  call errquit(pname//"failed to create moaa_as",20,GA_ERR)
@@ -225,6 +229,7 @@
       real(kind=dp), allocatable :: oj(:)
       real(kind=dp), allocatable :: ok(:)
       real(kind=dp), allocatable :: ol(:)
+      real(kind=dp) :: fac
       integer, parameter :: ndim = 4
       integer, parameter :: mdim = 2
       integer :: ilo(ndim)
@@ -246,6 +251,7 @@
 !
       call nga_inquire(moaa_el_2,itype,ndm,ild)
       ilo = -1
+      fac = 1.0_dp/max(1,(ild(1)-1)*(ild(1)-2))
       if (.not.nga_create(itype,ndim,ild,"moaa_as",ilo,moaa_el_2_as))
      &  call errquit(pname//"failed to create moaa_as",10,GA_ERR)
       call noft_2e_anti_symmetry(moaa_el_2,moaa_el_2_as)
@@ -287,7 +293,8 @@
               if (ii.eq.jj.and.kk.eq.ll) then
                 e_2e_aa = e_2e_aa + half*moaa_as(ii,jj,kk,ll)*oil(ii,ll)
               else if (ii.ne.jj.and.ii.ne.kk.and.ii.ne.ll.and.
-     &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll) then
+     &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll.and.
+     &                 c_aa.gt.0.0) then
                 e_2e_aa_corr = e_2e_aa_corr
      &            + half*half*abs(moaa_as(ii,jj,kk,ll))*
      &              noft_2el_weight_aa(c_aa,p_aa,oil(ii,ll),ojk(jj,kk))*
@@ -305,6 +312,7 @@
       deallocate(oj)
       deallocate(oi)
       call noft_release(moaa_el_2_as,moaa_as,ilo,ihi)
+      e_2e_aa_corr = fac*e_2e_aa_corr
 !
       if (.not.nga_destroy(moaa_el_2_as))
      &  call errquit(pname//"failed to create moaa_as",20,GA_ERR)
@@ -343,6 +351,7 @@
       real(kind=dp), allocatable :: oj(:)
       real(kind=dp), allocatable :: ok(:)
       real(kind=dp), allocatable :: ol(:)
+      real(kind=dp) :: fac
       integer, parameter :: ndim = 4
       integer, parameter :: mdim = 2
       integer :: ilo(ndim)
@@ -370,6 +379,7 @@
 !
       call nga_inquire(moaa_el_2,itype,ndm,ild)
       ilo = -1
+      fac = 1.0_dp/max(1,(ild(1)-1)*(ild(1)-2))
       if (.not.nga_create(itype,ndim,ild,"moaa_as",ilo,moaa_el_2_as))
      &  call errquit(pname//"failed to create moaa_as",10,GA_ERR)
       call noft_2e_anti_symmetry(moaa_el_2,moaa_el_2_as)
@@ -427,7 +437,8 @@
               if (ii.eq.jj.and.kk.eq.ll) then
                 e_2e_aa = e_2e_aa + half*moaa_as(ii,jj,kk,ll)*oil(ii,ll)
               else if (ii.ne.jj.and.ii.ne.kk.and.ii.ne.ll.and.
-     &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll) then
+     &                 jj.ne.kk.and.jj.ne.ll.and.kk.ne.ll.and.
+     &                 c_aa.gt.0.0) then
                 e_2e_aa_corr = e_2e_aa_corr
      &            + half*half*abs(moaa_as(ii,jj,kk,ll))*
      &              noft_2el_weight_ab(c_aa,p_aa,
@@ -447,6 +458,7 @@
       deallocate(oj)
       deallocate(oi)
       call noft_release(moaa_el_2_as,moaa_as,ilo,ihi)
+      e_2e_aa_corr = fac*e_2e_aa_corr
 !
       if (.not.nga_destroy(moaa_el_2_as))
      &  call errquit(pname//"failed to create moaa_as",20,GA_ERR)

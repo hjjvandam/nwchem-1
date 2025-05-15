@@ -88,7 +88,12 @@
       if (rtdb_get(rtdb,"noft:c_aa", MT_DBL, 1,
      &             noft_params%c_aa)) then
       else
-        noft_params%c_aa = 0.5
+!
+!       Same spin correlation is unclear.
+!       What is in the code right now pretty clearly doesn't work.
+!       Fixing it is non-trivial and needs a rethink.
+!
+        noft_params%c_aa = 0.0
       endif
       if (rtdb_get(rtdb,"noft:c_ab", MT_DBL, 1,
      &             noft_params%c_ab)) then
