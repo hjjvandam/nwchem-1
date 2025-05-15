@@ -56,6 +56,10 @@
 !     Local variables
 !
       character(len=32)  :: tag
+      character(len=32)  :: tag_noft
+      character(len=32)  :: tag_scf
+      character(len=32)  :: tag_dft
+      character(len=32)  :: tag_mcscf
       character(len=256) :: movecs_in
       character(len=256) :: movecs_out
       character(len=256) :: svecs_in
@@ -67,11 +71,18 @@
 !
 !     Figure out input vectors
 !
-      tag = "noft:input vectors"
+      tag_noft  = "noft:input vectors"
+      tag_scf   = "scf:input vectors"
+      tag_dft   = "dft:input vectors"
+      tag_mcscf = "mcscf:input vectors"
       mvecs_in  = ' '
       tvecs_in  = ' '
       svecs_in  = ' '
-      if (.not. rtdb_cget(rtdb, tag, 1, movecs_in)) then
+      if      (rtdb_cget(rtdb, tag_noft,  1, movecs_in)) then
+      else if (rtdb_cget(rtdb, tag_scf,   1, movecs_in)) then
+      else if (rtdb_cget(rtdb, tag_dft,   1, movecs_in)) then
+      else if (rtdb_cget(rtdb, tag_mcscf, 1, movecs_in)) then
+      else
         movecs_in = 'atomic'
       endif
 !
@@ -134,13 +145,13 @@
 !     - mvecs_out: the molecular orbitals in an orthogonal basis
 !     - tvecs_out: the tilde orbitals in an orthogonal basis
 !     - movecs_out: S*M, i.e. the molecular orbitals in the AO basis
-!     The input side is more complicated. 
+!     The input side is more complicated.
 !     - if movecs_in.eq.'atomic' ect. then everything should be
 !          initialized from scratch
 !     - else if the corresponding input file is set then use the name
 !          from the RTDB
 !     - else construct the name from the movecs filename
-!    
+!
 !     Input filenames
 !
       if (movecs_in.eq.'atomic' .or. movecs_in.eq.'hcore' .or.
@@ -153,13 +164,13 @@
           noft_vectors%tvecs_in  = movecs_in
       else
           tag = "noft:input s-vectors"
-          if (.not. rtdb_cget(rtdb, tag, 1, svecs_in)) 
+          if (.not. rtdb_cget(rtdb, tag, 1, svecs_in))
      &        svecs_in = replace_extension(movecs_in,"svecs")
           tag = "noft:input m-vectors"
-          if (.not. rtdb_cget(rtdb, tag, 1, mvecs_in)) 
+          if (.not. rtdb_cget(rtdb, tag, 1, mvecs_in))
      &        mvecs_in = replace_extension(movecs_in,"mvecs")
           tag = "noft:input t-vectors"
-          if (.not. rtdb_cget(rtdb, tag, 1, tvecs_in)) 
+          if (.not. rtdb_cget(rtdb, tag, 1, tvecs_in))
      &        tvecs_in = replace_extension(movecs_in,"tvecs")
           noft_vectors%movecs_in = movecs_in
           noft_vectors%svecs_in  = svecs_in
