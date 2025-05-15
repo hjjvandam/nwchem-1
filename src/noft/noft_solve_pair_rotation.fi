@@ -77,6 +77,7 @@
       real(kind=dp) :: etst ! energy for testing
       real(kind=dp) :: step_now ! the step size for this macro iteration
       real(kind=dp) :: step_new ! the step size for the next iteration
+      real(kind=dp) :: step_max ! the maximum step size
 !
       oconv = .false.
       thresh = noft_params%threshold
@@ -110,7 +111,8 @@
       imacro = 0
       jj = 0
       ii = 0
-      step_now = 0.5_dp*pi
+      step_max = 0.25_dp*pi
+      step_now = step_max
       if (noft_ionode()) then
         write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,iteration,
      &                                  fields(nfields_all+1),
@@ -230,7 +232,7 @@
      &                                        ihi-ilo+1,dd)
                 if (dd.lt.thresh) then
                   step = xx(imn)
-                  step_new = max(abs(step),thresh)
+                  step_new = max(abs(step),16*thresh)
                   call noft_monte_carlo_range_init_elm(noft_range,
      &                 fields(ifield),step_new,0.0_dp,0.0_dp,ii,jj)
                   if (ee(imn).ge.noft_energy%e_total) then
@@ -266,8 +268,14 @@
                   if (imn.ne.1) then
                     call errquit("assumption failed A", 10, UERR)
                   endif
-!                 Extend the points to the left
-                  step = xx(imn)-step_now
+                  if (xx(imn).le.-step_max) then
+!                   We have reached the maximum step, so just take it
+!                   and move on.
+                    step = xx(imn)
+                  else
+!                   Extend the points to the left
+                    step = max(xx(imn)-step_now,-step_max)
+                  endif
                   iteration = iteration + 1
                   call noft_monte_carlo_step_zero(noft_step)
                   call noft_monte_carlo_step_set(noft_step,
@@ -283,6 +291,22 @@
                   call noft_eval_energy(noft_params,noft_operators,
      &                 noft_wavefunction_step,noft_energy_step)
                   en = noft_energy_step%e_total
+                  if (step.le.-step_max) then
+!                   Take this step
+                    nlower = nlower + 1
+                    call noft_swap_wavefunctions(noft_wavefunction,
+     &                                           noft_wavefunction_step)
+                    noft_energy = noft_energy_step
+                    step_new = max(abs(step),thresh)
+                    call noft_monte_carlo_range_init_elm(noft_range,
+     &                   fields(ifield),step_new,0.0_dp,0.0_dp,ii,jj)
+                    if (noft_ionode()) then
+                      write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,
+     &                     iteration,fields(ifield),step_now,step_new
+                      call noft_print_energy(noft_energy,luout,.true.)
+                    endif
+                    exit
+                  endif
                   call noft_pair_rotation_sort(xx,ee,mpoints,npoints,
      &                 step,en)
                   cycle
@@ -292,8 +316,13 @@
                   if (imn.ne.npoints) then
                     call errquit("assumption failed B", 20, UERR)
                   endif
-!                 Extend the points to the left
-                  step = xx(imn)+step_now
+                  if (xx(imn).ge.step_max) then
+!                   We have reached the maximum step, so just take it
+                    step = step_max
+                  else
+!                   Extend the points to the left
+                    step = min(xx(imn)+step_now,step_max)
+                  endif
                   iteration = iteration + 1
                   call noft_monte_carlo_step_zero(noft_step)
                   call noft_monte_carlo_step_set(noft_step,
@@ -309,6 +338,22 @@
                   call noft_eval_energy(noft_params,noft_operators,
      &                 noft_wavefunction_step,noft_energy_step)
                   en = noft_energy_step%e_total
+                  if (step.ge.step_max) then
+!                   Take this step
+                    nlower = nlower + 1
+                    call noft_swap_wavefunctions(noft_wavefunction,
+     &                                           noft_wavefunction_step)
+                    noft_energy = noft_energy_step
+                    step_new = max(abs(step),thresh)
+                    call noft_monte_carlo_range_init_elm(noft_range,
+     &                   fields(ifield),step_new,0.0_dp,0.0_dp,ii,jj)
+                    if (noft_ionode()) then
+                      write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,
+     &                     iteration,fields(ifield),step_now,step_new
+                      call noft_print_energy(noft_energy,luout,.true.)
+                    endif
+                    exit
+                  endif
                   call noft_pair_rotation_sort(xx,ee,mpoints,npoints,
      &                 step,en)
                   cycle
