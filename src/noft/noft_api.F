@@ -297,6 +297,10 @@
           else if (inp_compare(.false.,test(1:inp_strlen(test)),"both"))
      &    then
             functional = both
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "weakstrong"))
+     &    then
+            functional = weakstrong
           else
             call errquit("noft_input: invalid functional: "//test,
      &                   160, INPUT_ERR)

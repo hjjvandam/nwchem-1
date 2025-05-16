@@ -1,0 +1,72 @@
+!-----------------------------------------------------------------------
+!
+!> \brief Correlation splitting, weak part
+!>
+!> The regular model for alpha-beta electron correlation is based on
+!> the assumption that the system is weakly correlated. This model
+!> breaks down when an orbital occupation number passes 1/2, as a sign
+!> change happens at that point. This leads to discontinuities in the
+!> potential energy surface.
+!>
+!> Obviously this problem should not come as a surprise as at an
+!> occupation of 1/2 the orbital is maximally strongly correlated and
+!> weakly correlated at all. A strongly correlated model can easily be
+!> derived for H2 in a minimal basis set. But this model is clearly
+!> in general when the occupation numbers are close to 0 and 1.
+!>
+!> Therefore we need something that smoothly combines the strong and
+!> weak correlation models. It should ensure that the weak correlation
+!> model vanishes at occupation numbers of 1/2. The strong correlation
+!> model should vanish when the occupation numbers are 0 or 1. Here
+!> we implement such partition functions. Obviously the sum of both
+!> parts should alway be 1.
+!>
+!> In principle various such partitionings are possible. If \f$p\f$ is
+!> the orbital occupation number then one possibility would be
+!> \f{eqnarray}{
+!>   1 &=& \cos^2(\pi p) + \sin^2(\pi p)
+!> \f}
+!> where the cosine part is the weak correlation prefactor. This
+!> partitioning would preserve the weak correlation model almost exactly
+!> close to occupations of 0 and 1.
+!>
+!> Unfortunately we have at least one case (LiH)2 where the weak
+!> correlation model underestimates the correlation effects. So maybe
+!> we need a larger fraction of strong correlation close to occupations
+!> of 0 and 1. The following partitioning would go in that direction
+!> \f{eqnarray}{
+!>    s &=& 4 p (1-p) \\
+!>    w &=& 1 - s \\
+!>    1 &=& w + s
+!> \f}
+!>
+      function noft_part_strong(p) result(s)
+      implicit none
+      !> The orbital occupation number
+      real(kind=dp), intent(in) :: p
+      !> The fraction corresponding to the strong correlation model
+      real(kind=dp) :: s
+!
+      s = 4.0_dp * p * (1.0_dp - p)
+!
+      end function noft_part_strong
+!
+!-----------------------------------------------------------------------
+!
+!> \brief the weak correlation part
+!>
+!> This definition is universal as the weak plus the strong part
+!> must be 1.
+!>
+      function noft_part_weak(p) result(w)
+      implicit none
+      !> The orbital occupation number
+      real(kind=dp), intent(in) :: p
+      !> The fraction corresponding to the weak correlation model
+      real(kind=dp) :: w
+!
+      w = 1.0_dp - noft_part_strong(p)
+!
+      end function noft_part_weak
+!
+!-----------------------------------------------------------------------

@@ -33,11 +33,16 @@
         endif
         write(luout,'(" functional                  : ",$)')
         if (noft_params%functional.eq.same) then
-          write(luout,'("bracket same side")')
+          write(luout,'("bracket same side, and weak correlation")')
         else if (noft_params%functional.eq.conjugate) then
-          write(luout,'("bracket conjugate side")')
+          write(luout,'("bracket conjugate side, and weak correlation")'
+     &          )
         else if (noft_params%functional.eq.both) then
-          write(luout,'("bracket both same and conjugate sides")')
+          write(luout,'("bracket both same and conjugate sides, "//
+     &                  "and weak correlation")')
+        else if (noft_params%functional.eq.weakstrong) then
+          write(luout,'("bracket conjugate side, and "//
+     &                  "combined weak and strong correlation")')
         else
           write(luout,'(" ERROR: unknown functional")')
           call errquit("unknown functional option",

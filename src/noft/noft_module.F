@@ -42,6 +42,7 @@ c-----------------------------------------------------------------------
 #include "noft_compute_2electron.fi"
 #include "noft_compute_operators.fi"
 #include "noft_compute_overlap.fi"
+#include "noft_correlation_splitting.fi"
 #include "noft_create_operators.fi"
 #include "noft_create_wavefunction.fi"
 #include "noft_destroy_operators.fi"
