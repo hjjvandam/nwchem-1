@@ -118,3 +118,71 @@
       end function noft_2el_sign_2el_occ
 !
 !-----------------------------------------------------------------------
+!
+      function noft_2el_sign_w3s(occ1,occ2,occ3) result(sw)
+      implicit none
+      real(kind=dp), intent(in) :: occ1
+      real(kind=dp), intent(in) :: occ2
+      real(kind=dp), intent(in) :: occ3
+      real(kind=dp) :: sw
+      real(kind=dp), parameter :: half = 0.5_dp
+      integer :: nhigh
+      integer :: nlow
+      nlow = 0
+      nhigh = 0
+      if (occ1.le.half) then
+        nlow = nlow +1
+      else
+        nhigh = nhigh + 1
+      endif
+      if (occ2.le.half) then
+        nlow = nlow +1
+      else
+        nhigh = nhigh + 1
+      endif
+      if (occ3.le.half) then
+        nlow = nlow +1
+      else
+        nhigh = nhigh + 1
+      endif
+      sw = 0.0_dp
+      if (nlow.eq.2.and.nhigh.eq.1) then
+        sw = -1.0_dp
+      endif
+      if (nlow.eq.1.and.nhigh.eq.2) then
+        sw = -1.0_dp
+      endif
+      end function noft_2el_sign_w3s
+!
+!-----------------------------------------------------------------------
+!
+      function noft_2el_sign_w2s2(occ1,occ2) result(sw)
+      implicit none
+      real(kind=dp), intent(in) :: occ1
+      real(kind=dp), intent(in) :: occ2
+      real(kind=dp) :: sw
+      real(kind=dp), parameter :: half = 0.5_dp
+      integer :: nhigh
+      integer :: nlow
+      nlow = 0
+      nhigh = 0
+      if (occ1.le.half) then
+        nlow = nlow +1
+      else
+        nhigh = nhigh + 1
+      endif
+      if (occ2.le.half) then
+        nlow = nlow +1
+      else
+        nhigh = nhigh + 1
+      endif
+      sw = 0.0_dp
+      if (nlow.eq.2.and.nhigh.eq.0) then
+        sw = -1.0_dp
+      endif
+      if (nlow.eq.0.and.nhigh.eq.2) then
+        sw = -1.0_dp
+      endif
+      end function noft_2el_sign_w2s2
+!
+!-----------------------------------------------------------------------

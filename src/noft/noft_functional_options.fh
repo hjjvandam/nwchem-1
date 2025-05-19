@@ -6,5 +6,6 @@
       integer, parameter :: conjugate = 12
       integer, parameter :: both = 13
       integer, parameter :: weakstrong = 14
+      integer, parameter :: weakstrong_ii = 15
 !
 !-----------------------------------------------------------------------

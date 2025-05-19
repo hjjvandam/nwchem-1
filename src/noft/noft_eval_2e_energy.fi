@@ -56,6 +56,12 @@
 !
         call noft_eval_2e_energy_ab_ws(c_ab,p_ab,occ_1e_a,occ_1e_b,
      &                                 moab_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.weakstrong_ii) then
+!
+!       the combined weak-strong correlation model II
+!
+        call noft_eval_2e_energy_ab_ws2(c_ab,p_ab,occ_1e_a,occ_1e_b,
+     &                                  moab_el_2,en_2el,en_2el_corr)
       else
 !
 !       the weak correlation model
@@ -70,7 +76,8 @@
         call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_1e_a,occ_2e_aa,
      &                                moaa_el_2,en_2el,en_2el_corr)
       else if (functional.eq.conjugate.or.
-     &         functional.eq.weakstrong) then
+     &         functional.eq.weakstrong.or.
+     &         functional.eq.weakstrong_ii) then
         call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_1e_a,occ_2e_aa,
      &                                moaa_el_2,en_2el,en_2el_corr)
       else if (functional.eq.both) then
@@ -88,7 +95,8 @@
         call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_1e_b,occ_2e_bb,
      &                                mobb_el_2,en_2el,en_2el_corr)
       else if (functional.eq.conjugate.or.
-     &         functional.eq.weakstrong) then
+     &         functional.eq.weakstrong.or.
+     &         functional.eq.weakstrong_ii) then
         call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_1e_b,occ_2e_bb,
      &                                mobb_el_2,en_2el,en_2el_corr)
       else if (functional.eq.both) then
