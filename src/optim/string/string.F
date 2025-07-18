@@ -12,8 +12,8 @@ C> @{
 ! W. E, W. Ren, and E. Vanden-Eijnden, J. Chem. Phys.: 126, 164103 (2007).
 ! http://www.math.princeton.edu/string/index.html (existed in 2011)
 !
-!   It should be noted that the end points will go downhill because of 
-!   this evolution in "time".  The non-end points also slip downhill, but 
+!   It should be noted that the end points will go downhill because of
+!   this evolution in "time".  The non-end points also slip downhill, but
 !   the reparameterization forces them to still form a curve between
 !   the two end points.  With that in mind, they should eventually
 !   form a minimum energy path.
@@ -40,7 +40,7 @@ C> @{
 ! "midgeom"   Optional transition state
 ! At this point the code does not verify that the geometries are the same atoms
 ! in the same order, but they need to be for the code to work right.
-! The main routine can handle having all geometries specified, but the 
+! The main routine can handle having all geometries specified, but the
 ! driver does support reading them in yet.
 
       logical function task_string(rtdb)
@@ -216,7 +216,7 @@ c        **** impose ****
             value= MA_push_get(mt_int,(2*natoms),'ifit',ifit(2),ifit(1))
             value = value.and.
      >               MA_push_get(mt_dbl,(natoms),'wfit',wfit(2),wfit(1))
-            if(.not.value) 
+            if(.not.value)
      >        call errquit('string_initial_path failed',3,MA_ERR)
 
             if (hasmiddle) then
@@ -253,11 +253,11 @@ c        **** impose ****
 
             value =           MA_pop_stack(wfit(2))
             value = value.and.MA_pop_stack(ifit(2))
-            if(.not.value) 
+            if(.not.value)
      >         call errquit('string_initial_path failed',4,MA_ERR)
          end if
 
-         
+
 
 
 *     **** restart - read in old bead list ****
@@ -268,7 +268,7 @@ c        **** impose ****
      >                     mt_int,1,nbeads_exist))
      >     call errquit('getting string:nbeads_exist failed',4,RTDB_ERR)
 
-         if (oprint) 
+         if (oprint)
      >   write(luout,*) "nbeads,nbeads_exist=",nbeads,nbeads_exist
 
          if (.not. geom_create(geom2, 'geom2'))
@@ -326,7 +326,7 @@ c        **** impose ****
                size = k_coords + (i-1)*3*natoms
                geom_name   = 'bead'//bead_index_name(i)//':geom'
                geom_len = inp_strlen(geom_name)
-               if (oprint) 
+               if (oprint)
      >            write(luout,*) "loading geom2=",geom_name(1:geom_len)
                if (.not.geom_rtdb_load(rtdb,geom2,
      >             geom_name(1:geom_len)))
@@ -412,7 +412,7 @@ C> @}
      &    optimize,
      &    interpol,freeze1,freezeN,converged,mode)
       implicit none
-      
+
 ! External stuff
       real*8 zts_distance
       external zts_distance
@@ -445,7 +445,7 @@ C> @}
       real*8  coords(3,natoms,nbeads)
       integer geom   ! A geometry record, should match molecule of interest
       logical converged  ! Did we converge
-      
+
 ! Variables used locally, but not passed in or out
       real*8 dg(nbeads) ! 0,.5,1 for three, 0,1/3,2/3,1 for four
       real*8 energy(nbeads)
@@ -503,7 +503,7 @@ C> @}
       do i = 1, nbeads
         dg(i) = dble(i-1)/dble(nbeads-1)
       enddo
-      
+
       if (middle .eq. 0) then  ! Flexible linear interpolation to get TS
         print_count = 0
         call zts_guessall(natoms,nbeads,coords,geom)
@@ -541,8 +541,9 @@ C> @}
         else if (string_algorithm.eq.1) then
            write(luout,'(a)') '@zts algorithm            = 1'//
      >                        ' (Damped Verlet)'
-        else 
-           write(luout,'(a)') '@zts algorithm            = 3'//
+        else
+           write(luout,'(a,i1,a)') '@zts algorithm            = ',
+     >                        string_algorithm,
      >                        ' (QN Fixed Point - Damped Verlet)'
         end if
         write(luout,'(a,i9)')  '@zts String Interpolator  = ', interpol
@@ -598,7 +599,7 @@ C> @}
       stepsize0 = 1.0d0
       stepsize1 = stepsize
       stepsizem = stepsize/16.0d0
-      
+
       algorithm = string_algorithm
       gmax = 0.0d0
       grms = 0.0d0
@@ -672,7 +673,7 @@ C> @}
           do while ((.not.finishedstep).and.(jj.lt.2))
              jj = jj + 1
 
-             sum  = ddot(ng,dVdx,1,HdVdx,1) 
+             sum  = ddot(ng,dVdx,1,HdVdx,1)
              if ((sum.le.0).or.(sum0.gt.sum0_old)) then
                 call dcopy(ng,dVdx,1,HdVdx,1)
                 !itm = 0
@@ -705,7 +706,7 @@ C> @}
                    stepsize = 0.5d0*stepsize
                    if (stepsize.lt.stepsizem) stepsize = stepsizem
                    manyjj = 0
-                   if (oprint) 
+                   if (oprint)
      >             write(luout,*) "string: reducing stepsize=",stepsize
                 end if
              end if
@@ -781,7 +782,7 @@ C> @}
 
          !*** neb algorithm 3 - switch between fixed point and damped Verlet ***
          if (string_algorithm.ge.3) then
-      
+
             !*** switch to fixed point if Xmax less than 1.0 ***
             if ((gmax.lt.0.5d0).and.
      >          (gmax.lt.gmax0).and.
@@ -900,8 +901,8 @@ C> @}
 
  747  continue
       if (nstep .ge. maxit) then
-         if (oprint) 
-     >   write(luout,'(a)') 
+         if (oprint)
+     >   write(luout,'(a)')
      >     '@zts The string calculation failed to converge'
          converged = .false.
       else
@@ -960,9 +961,9 @@ C> @}
       endif
 
       if (ga_nodeid() .eq. 0) write(luout,*)
-      
+
       end
-      
+
       subroutine zts_linear_fit(nvar,nbeads,Y,Xin,wrk)
       implicit none
       ! This will return Y evenly spaced in X, instead of spaced Xin
@@ -996,17 +997,17 @@ C> @}
         do ivar = 1, nvar
           wrk(ivar,ibead) = (1.0d0-frac)*Y(ivar,point)+
      &                      frac*Y(ivar,point+1)
-        enddo 
+        enddo
       enddo
       do ibead = 2, nbeads-1 ! end points do not change
         do ivar = 1, nvar
           Y(ivar,ibead) = wrk(ivar,ibead)
         enddo
       enddo
-      
+
       return
       end
-      
+
       subroutine zts_spline_fit(nvar,nbeads,Y,Xin,dg)
       implicit none
       ! This will return Y evenly spaced in X, instead of spaced Xin
@@ -1022,7 +1023,7 @@ C> @}
       ! local variables
       integer ivar, ibead
       real*8 X
-      
+
       integer MAX_N
       PARAMETER (MAX_N=750)
       real*8 Y_tmp(MAX_N),fit(MAX_N)
@@ -1043,7 +1044,7 @@ C> @}
       enddo
       return
       end
-      
+
       subroutine zts_spline_Setup(x,y,n,fit)
       ! Input
       integer n
@@ -1058,7 +1059,7 @@ C> @}
 ! This routine solves the tri-diagonal problem of a natural spline
       fit(1)=0.0d0
       u(1)=0.0d0
-      
+
       if (n .gt. MAX_N)
      &     call errquit('zts_meps: MAX_N exceeded', 0, 0)
 
@@ -1122,7 +1123,7 @@ C> @}
 
       if (.not. geom_systype_get(geom, isystype))
      $     call errquit('zts_min_motion: isystype?',0, GEOM_ERR)
-      
+
       improve = 1.0d10
       do while (improve .gt. 0.001d0)
          improve = 0.0d0
@@ -1149,7 +1150,7 @@ C> @}
       integer natoms
       real*8 new(3,natoms), old(3,natoms)
       real*8 improve
-      
+
       real*8 tmp(3,natoms)
       real*8  left,  right,  try, middle
       real*8 xleft, xright, xtry
@@ -1239,7 +1240,7 @@ C> @}
       zts_distance = tmp
       return
       end
-      
+
 ! By abstracting this out, we can treat angles and distances the same above
 
       subroutine zts_copy_coords(n,in,out,which,shift)
@@ -1248,11 +1249,11 @@ C> @}
       real*8 in(3,n),out(3,n)
       integer which
       real*8 shift
-      
+
       integer i,j,k
       real*8 tmp1, tmp2
-      
-      
+
+
       do i = 1, n
           out(1,i) = in(1,i)
           out(2,i) = in(2,i)
@@ -1306,7 +1307,7 @@ C> @}
        real*8 min_h_h, min_x_h, min_x_x, min_dist
        integer trys
        integer num_bad
-       real*8 siner, coser, cosed, sined 
+       real*8 siner, coser, cosed, sined
        real*8 r
        integer i,j,try,ij
        real*8 charges(nw_max_atom)
@@ -1324,7 +1325,7 @@ C> @}
 
        do try = 1, trys
         stillbad=.false.
-       
+
         num_bad=0
 
 !       Find the bad ones
@@ -1387,7 +1388,7 @@ C> @}
              min_dist = min_dist / 1.5d0
           endif
           ! What we have now
-          r = sqrt((coords(1,i)-coords(1,j))**2 + 
+          r = sqrt((coords(1,i)-coords(1,j))**2 +
      1             (coords(2,i)-coords(2,j))**2 +
      2             (coords(3,i)-coords(3,j))**2)
           if (r .lt. 0.0001d0) then
@@ -1447,7 +1448,7 @@ C> @}
       ! local variables
       integer ivar, ibead
       real*8 X
-      
+
       integer MAX_N
       PARAMETER (MAX_N=750)
       real*8 Y_tmp(MAX_N)
@@ -1466,7 +1467,7 @@ C> @}
       enddo
       return
       end
-      
+
 
 !
 ! Akima cubic spline interpolation - This style avoids oscillations
@@ -1549,7 +1550,7 @@ C> @}
      1      + (dx)   *(t(1))
      2      + (dx**2)*(3.0d0*dydx(3)-2.0d0*t(1)-t(2))/h
      3      + (dx**3)*(t(1)+t(2)-2.0d0*dydx(3))      /(h**2)
-    
+
       return
       end
 
@@ -1596,7 +1597,7 @@ C> @}
             a=coords(k,j,1)
             b=((coords(k,j,middle)-coords(k,j,1))-
      &         (coords(k,j,nbeads)-coords(k,j,1))*dgg**2) /
-     &        (dgg-dgg**2) 
+     &        (dgg-dgg**2)
             c=(coords(k,j,nbeads)-coords(k,j,1)) - b
             do i = 2, nbeads-1
               dgg = dble(i-1)/dble(nbeads-1)
@@ -1726,9 +1727,9 @@ C> @}
       bmat(2,2) = amat(3,3)*amat(1,1) - amat(1,3)*amat(3,1)
       bmat(3,2) = amat(1,3)*amat(2,1) - amat(2,3)*amat(2,1)
 
-      bmat(1,3) = amat(2,1)*amat(3,2) - amat(3,1)*amat(2,2) 
-      bmat(2,3) = amat(3,1)*amat(1,2) - amat(1,1)*amat(3,2) 
-      bmat(3,3) = amat(1,1)*amat(2,2) - amat(2,1)*amat(1,2) 
+      bmat(1,3) = amat(2,1)*amat(3,2) - amat(3,1)*amat(2,2)
+      bmat(2,3) = amat(3,1)*amat(1,2) - amat(1,1)*amat(3,2)
+      bmat(3,3) = amat(1,1)*amat(2,2) - amat(2,1)*amat(1,2)
       vol=amat(1,1)*bmat(1,1)+amat(2,1)*bmat(2,1)+amat(3,1)*bmat(3,1)
       call dscal(9,1.0d0/vol,bmat,1)
 
@@ -1756,7 +1757,7 @@ C> @}
  626    continue
         i = (iix+ix)/2
         dgg = dble(i-ix)/dble(iix-ix)
-       
+
         do j = 1, natoms
           dx = coords(1,j,iix) - coords(1,j,ix )
           dy = coords(2,j,iix) - coords(2,j,ix )
@@ -1767,11 +1768,11 @@ C> @}
           f1 = f1 - DNINT(f1)
           f2 = f2 - DNINT(f2)
           f3 = f3 - DNINT(f3)
-          dx = coords(1,j,ix ) 
+          dx = coords(1,j,ix )
      >       + dgg*(amat(1,1)*f1+amat(1,2)*f2+amat(1,3)*f3)
-          dy = coords(2,j,ix ) 
+          dy = coords(2,j,ix )
      >       + dgg*(amat(2,1)*f1+amat(2,2)*f2+amat(2,3)*f3)
-          dz = coords(3,j,ix ) 
+          dz = coords(3,j,ix )
      >       + dgg*(amat(3,1)*f1+amat(3,2)*f2+amat(3,3)*f3)
 
           coords(1,j,i) = dx
@@ -1790,7 +1791,66 @@ C> @}
 
 
 
+      subroutine zts_copy_bead_vecs_to_task(ext,i,perm_name,
+     &                                      movecs_name)
+      implicit none
+#include "global.fh"
+#include "inp.fh"
+      !> The file name extension
+      character(len=*), intent(in) :: ext
+      !> The bead number
+      integer, intent(in) :: i
+      !> The task specific vector file name
+      character(len=*), intent(out) :: perm_name
+      !> The bead specific vector file name
+      character(len=*), intent(out) :: movecs_name
+!
+      integer :: permlen, movecslen
+      logical :: status
+      character*7 bead_index_name
+      external    bead_index_name
+!
+*     *** copy bead movecs to taskmovecs ***
+      call util_file_prefix(ext,perm_name)
+      movecs_name = 'bead'//bead_index_name(i)//'.'//ext
+      call util_file_name_resolve(perm_name, .false.)
+      call util_file_name_resolve(movecs_name, .false.)
+      if (ga_nodeid().eq.0) then
+        permlen = inp_strlen(perm_name)
+        movecslen = inp_strlen(movecs_name)
+        inquire(file=movecs_name,exist=status)
+        if (status) then
+           call util_file_copy(movecs_name(1:movecslen),
+     >                         perm_name(1:permlen))
+        end if
+      end if
+      end subroutine zts_copy_bead_vecs_to_task
 
+
+
+      subroutine zts_copy_task_vecs_to_bead(perm_name,movecs_name)
+      implicit none
+#include "global.fh"
+#include "inp.fh"
+      !> The task specific vector file name
+      character(len=*), intent(in) :: perm_name
+      !> The bead specific vector file name
+      character(len=*), intent(in) :: movecs_name
+!
+      integer :: permlen, movecslen
+      logical :: status
+!
+*     *** copy taskmovecs to bead movecs ****
+      if (ga_nodeid().eq.0) then
+        permlen = inp_strlen(perm_name)
+        movecslen = inp_strlen(movecs_name)
+        inquire(file=perm_name,exist=status)
+        if (status) then
+          call util_file_copy(perm_name(1:permlen),
+     >                        movecs_name(1:movecslen))
+        end if
+      end if
+      end subroutine zts_copy_task_vecs_to_bead
 
 
 
@@ -1825,6 +1885,9 @@ C> @}
       integer i,j,k
       integer permlen,movecslen
       character*255 movecs_name,perm_name
+      character*255 mvecs_name,perm_mvecs_name
+      character*255 svecs_name,perm_svecs_name
+      character*255 tvecs_name,perm_tvecs_name
       real*8 g1(3),g2(3),g3(3),tmp
 
 *     **** external functions ****
@@ -1832,8 +1895,6 @@ C> @}
       external task_energy
       logical  task_gradient
       external task_gradient
-      character*7 bead_index_name
-      external    bead_index_name
 
       oprint = (ga_nodeid().eq.0)
 
@@ -1854,19 +1915,15 @@ C> @}
          if (.not.(skip1.or.skip2)) then
 
 *           *** copy bead movecs to taskmovecs ***
-            call util_file_prefix('movecs',perm_name)
-            movecs_name = 'bead'//bead_index_name(i)//'.movecs'
-            call util_file_name_resolve(perm_name, .false.)
-            call util_file_name_resolve(movecs_name, .false.)
-            permlen = inp_strlen(perm_name)
-            movecslen = inp_strlen(movecs_name)
-            if (ga_nodeid().eq.0) then
-              inquire(file=movecs_name,exist=status)
-              if (status) then
-                 call util_file_copy(movecs_name(1:movecslen),
-     >                               perm_name(1:permlen))
-              end if
-            end if
+            call zts_copy_bead_vecs_to_task('movecs',i,perm_name,
+     &                                       movecs_name)
+*           * The next 3 sets of vectors only exist in NOFT calculations
+            call zts_copy_bead_vecs_to_task('mvecs',i,perm_mvecs_name,
+     &                                       mvecs_name)
+            call zts_copy_bead_vecs_to_task('svecs',i,perm_svecs_name,
+     &                                       svecs_name)
+            call zts_copy_bead_vecs_to_task('tvecs',i,perm_tvecs_name,
+     &                                       tvecs_name)
 
 *           *** run gradient task ***
             if (.not.rtdb_get(rtdb,"task:ignore",mt_log,1,ignore))
@@ -1889,13 +1946,11 @@ C> @}
 
 
 *           *** copy taskmovecs to bead movecs ****
-            if (ga_nodeid().eq.0) then
-               inquire(file=perm_name,exist=status)
-               if (status) then
-                  call util_file_copy(perm_name(1:permlen),
-     >                                movecs_name(1:movecslen))
-               end if
-            end if
+            call zts_copy_task_vecs_to_bead(perm_name,movecs_name)
+*           * The next 3 sets of vectors only exist in NOFT calculations
+            call zts_copy_task_vecs_to_bead(perm_mvecs_name,mvecs_name)
+            call zts_copy_task_vecs_to_bead(perm_svecs_name,svecs_name)
+            call zts_copy_task_vecs_to_bead(perm_tvecs_name,tvecs_name)
 
             if (.not. rtdb_get(rtdb,'task:energy',mt_dbl,1,energy(i)))
      &         call errquit('zts_meps: failed getting energy',0,
@@ -2010,7 +2065,7 @@ C> @}
       !*** reparameterize - This is where the magic happens ****
       dcoords(1) = 0.0d0
       do i=2,nbeads
-        dcoords(i) = 
+        dcoords(i) =
      &     zts_distance(natoms,coords2(1,1,i),coords2(1,1,i-1))
       end do
       do i=2,nbeads
@@ -2057,10 +2112,10 @@ c      do i=2,nbeads
 c        call zts_min_motion(natoms,coords2(1,1,i),coords2(1,1,i-1),
 c     >                      geom)
 c      end do
-      return 
+      return
       end
 
-      
+
 
 
 *     ************************************************
@@ -2112,7 +2167,7 @@ c      end do
       !*** reparameterize - This is where the magic happens ****
       dcoords(1) = 0.0d0
       do i=2,nbeads
-        dcoords(i) = 
+        dcoords(i) =
      &     zts_distance(natoms,coords2(1,1,i),coords2(1,1,i-1))
       end do
       do i=2,nbeads
@@ -2159,9 +2214,9 @@ c      do i=2,nbeads
 c        call zts_min_motion(natoms,coords2(1,1,i),coords2(1,1,i-1),
 c     >                      geom)
 c      end do
-      return 
+      return
       end
 
-      
+
 
 
