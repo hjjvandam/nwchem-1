@@ -23,7 +23,7 @@
 !
 !> \brief Correlation weight of 2-alpha and 2-beta orbitals
 !>
-!> This correlation weight is applied to the alpha-beta correlation 
+!> This correlation weight is applied to the alpha-beta correlation
 !> effects.
 !>
       function noft_2el_weight_ab(c_ab,p_ab,o1a,o2a,o1b,o2b)
@@ -61,7 +61,7 @@
 !
 !> \brief Correlation weight of two same spin orbital pairs
 !>
-!> This correlation weight is applied to the same spin correlation 
+!> This correlation weight is applied to the same spin correlation
 !> effects.
 !>
       function noft_2el_weight_aa(c_aa,p_aa,o12,o34)
