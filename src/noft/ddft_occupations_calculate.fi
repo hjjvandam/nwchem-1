@@ -1,0 +1,102 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Calculate the DDFT occupation numbers
+!>
+!> In DDFT we calculate the correlation energy as a functional of the
+!> redistribution of the electrons density due to electron correlation.
+!> We assume an idem-potent density matrix as the uncorrelated
+!> reference state. Here we calculate the actual occupation numbers are
+!> different.
+!>
+!> 1. Sort the occupation numbers in decreasing order (value and index)
+!> 2. For the Ne highest occupied orbitals calculate occ-1
+!>    The other occupation numbers remain the same
+!> 3. Check that the trace is zero
+!>
+      subroutine ddft_occupations_calculate(noft_parameters,
+     &           noft_occupations,ddft_occupations)
+      implicit none
+      !> The parameters for the calculation
+      type(noft_parameter_tp),    intent(in)    :: noft_parameters
+      !> The actual occupation numbers
+      type(noft_occupations_tp)   intent(in)    :: noft_occupations
+      !> The difference density occupation numbers
+      type(noft_occupations_tp)   intent(inout) :: ddft_occupations
+      !
+      ! Local
+      !
+      integer :: norb
+      integer :: nel
+      real(kind=dp), allocatable :: ddft_occ(:)
+      integer,       allocatable :: ddft_ind(:)
+      !
+      norb = noft_parameters%nmo
+      allocate(ddft_occ(1:norb))
+      allocate(ddft_ind(1:norb))
+      !
+      nel = noft_parameters%ne_a
+      call ddft_sort_occ(norb,occ_1e_a,ddft_occ,ddft_ind)
+      ddft_occupations%occ_1e_a = noft_occupations%occ_1e_a
+      do ii = 1, nel
+        noft_occupations%occ_1e_a(ddft_ind(ii)) =
+     &      noft_occupations%occ_1e_a(ddft_ind(ii)) - 1.0_dp
+      enddo
+      !
+      nel = noft_parameters%ne_b
+      call ddft_sort_occ(norb,occ_1e_b,ddft_occ,ddft_ind)
+      do ii = 1, nel
+        noft_occupations%occ_1e_b(ddft_ind(ii)) =
+     &      noft_occupations%occ_1e_b(ddft_ind(ii)) - 1.0_dp
+      enddo
+      !
+      deallocate(ddft_occ)
+      deallocate(ddft_ind)
+      !
+      end subroutine ddft_occupations_calculate
+!
+!-----------------------------------------------------------------------
+!
+      subroutine ddft_sort_occ(norb,occ,vals,indxs)
+      implicit none
+      !> The number of orbitals
+      integer,       intent(in) :: norb
+      !> The actual occupation numbers
+      real(kind=dp), intent(in) :: occ(:)
+      !> The occupation numbers in decreasing order
+      real(kind=dp), intent(out) :: vals(:)
+      !> The indeces of the sorted occupation numbers
+      integer,       intent(out) :: indxs(:)
+      !
+      ! Local
+      !
+      integer :: nvals
+      integer :: ii, jj, kk
+      real(kind=dp) :: val
+      integer :: indx
+      !
+      vals(1) = occ(1)
+      indx(1) = 1
+      nvals = 1
+      do while (nvals < norb)
+        ii = nvals+1
+        if vals(nvals) > occ(ii) then
+          nvals = nvals + 1
+          vals(nvals) = occ(ii)
+          indxs(nvals) = ii
+        else
+          jj = nvals
+          do while (jj >= 1 .and. vals(jj) < occ(ii))
+            jj = jj - 1
+          enddo
+          do kk = nvals, jj+1, -1
+            vals(kk+1) = vals(kk)
+            indxs(kk+1) = indxs(kk)
+          enddo
+          vals(jj+1) = occ(ii)
+          indxs(jj+1) = ii
+          nvals = nvals + 1
+        endif
+      enddo
+      end subroutine ddft_sort_occ
+!
+!-----------------------------------------------------------------------

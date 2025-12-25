@@ -19,6 +19,7 @@
         write(luout,"(' ',f12.4,$)")noft_energy%e_correlation_aa
         write(luout,"(' ',f12.4,$)")noft_energy%e_correlation_ab
         write(luout,"(' ',f12.4,$)")noft_energy%e_correlation_bb
+        write(luout,"(' ',f12.4,$)")noft_energy%e_correlation_ddft
       endif
       write(luout,*)
 !

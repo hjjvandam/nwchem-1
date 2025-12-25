@@ -10,7 +10,7 @@
 !>
       type noft_energy_tp
         !> The total energy
-        real(kind=dp) :: e_total 
+        real(kind=dp) :: e_total
         !> The 1-electron energy
         real(kind=dp) :: e_1electron
         !> The 2-electron meanfield energy
@@ -19,6 +19,7 @@
         real(kind=dp) :: e_correlation_aa
         real(kind=dp) :: e_correlation_ab
         real(kind=dp) :: e_correlation_bb
+        real(kind=dp) :: e_correlation_ddft
         !> The nuclear repulsion energy
         real(kind=dp) :: e_nuclear
       end type noft_energy_tp

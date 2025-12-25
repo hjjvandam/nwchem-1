@@ -1,0 +1,85 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Evaluate the delta density functional energy
+!>
+!> Considering that in post-Hartree-Fock methods electron correlation
+!> corresponds one-to-one with orbital occupations deviating from
+!> integer values we attempt a new way to think about DFT.
+!>
+!> With the TFD energy expression we have an N-representable
+!> uncorrelated energy even when we have fractional occupation numbers.
+!> We calculate the difference density resulting from changes in the
+!> occupation numbers. Then we formulate the correlation energy as a
+!> functional of that difference density.
+!>
+!> This subroutine evaluates this difference density functional
+!> to obtain the correlation energy.
+!>
+      subroutine noft_eval_ddft_energy(rtdb,noft_parameters,
+     &           noft_occupations,noft_wavefunction,noft_energy)
+      implicit none
+#include "mafdecls.fh"
+#include "global.fh"
+      !> The handle for the runtime database
+      integer,                    intent(in)    :: rtdb
+      !> The parameters for the calculation
+      type(noft_parameter_tp),    intent(in)    :: noft_parameters
+      !> The wavefunction
+      type(noft_wavefunction_tp), intent(in)    :: noft_wavefunction
+      !> The occupation numbers
+      type(noft_occupations_tp)   intent(in)    :: noft_occupations
+      !> The energy terms and total
+      type(noft_energy_tp),       intent(inout) :: noft_energy
+      !
+      ! Local
+      !
+      type(noft_occupations_tp) :: ddft_occupations
+      integer                   :: g_dens(2)
+      integer                   :: g_vxc(4)
+      integer, parameter        :: ndim = 2
+      integer                   :: dims(ndim)
+      integer                   :: chunk(ndim)
+      integer                   :: luout
+      real(kind=dp)             :: exc
+      real(kind=dp)             :: rho_n
+      real(kind=dp)             :: dume
+      real(kind=dp)             :: dum1
+      real(kind=dp)             :: dum2
+      real(kind=dp)             :: dum3
+      !
+      luout = 6
+      call noft_occupations_create(noft_parameters,ddft_occupations)
+      call ddft_occupations_calculate(noft_parameters,noft_occupations,
+     &                                ddft_occupations)
+      chunk = -1
+      dims  = noft_parameters%nao
+      if (.not.nga_create(MT_DBL,ndim,dims,"dens_a",chunk,g_dens(1)))
+        call ga_error("Could not create dens_a")
+      if (.not.nga_create(MT_DBL,ndim,dims,"dens_b",chunk,g_dens(2)))
+        call ga_error("Could not create dens_b")
+      if (.not.nga_create(MT_DBL,ndim,dims,"vxc_a",chunk,g_vxc(1)))
+        call ga_error("Could not create vxc_a")
+      if (.not.nga_create(MT_DBL,ndim,dims,"vxc_b",chunk,g_vxc(2)))
+        call ga_error("Could not create vxc_b")
+!
+      call noft_eval_density_matrix_ao(noft_parameters,
+     &     noft_occupations,noft_wavefunction,g_dens)
+      call xc_getv(rtdb,exc,dume,1,0,0,g_dens,g_vxc,
+     &     .false.,0,0,0,.false.,rho_n,dum1,dum2,0,dum3)
+      if (ga_nodeid().eq.0.and.abs(rho_n).gt.1.0d-3)
+     &    write(luout,*)"Integrate difference density: ",rho_n
+      noft_energy%e_correlation_ddft = ga_ddot(g_dens(1),g_vxc(1))
+     &                               + ga_ddot(g_dens(2),g_vxc(2))
+!
+      if (.not.ga_destroy(g_vxc(2)))
+        call ga_error("Could not destroy vxc_b")
+      if (.not.ga_destroy(g_vxc(1)))
+        call ga_error("Could not destroy vxc_a")
+      if (.not.ga_destroy(g_dens(2)))
+        call ga_error("Could not destroy dens_b")
+      if (.not.ga_destroy(g_dens(1)))
+        call ga_error("Could not destroy dens_a")
+      call noft_occupations_destroy(ddft_occupations)
+      end subroutine noft_eval_ddft_energy
+!
+!-----------------------------------------------------------------------

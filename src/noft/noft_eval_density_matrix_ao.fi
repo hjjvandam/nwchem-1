@@ -1,0 +1,85 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Compute the 1-electron density matrices from occupations
+!>
+!> Compute the 1-electron density matrix in the AO basis. We expect
+!> that the occupation numbers and the molecular orbitals are given.
+!> This subroutine focusses on 1-spin component.
+!>
+!> @param[in] occx The occupation numbers
+!> @param[in] g_mo The global array holding the molecular orbitals
+!> @param[out] g_dens The density matrix
+!> @param[in] nbf The number of basis functions (AOs)
+!> @param[in] nmo The number of molecular orbitals
+!>
+      subroutine noft_eval_density_matrix_ao_1(occx,g_mo,g_dens,nbf,nmo)
+      implicit none
+      integer,       intent(in)    :: nbf
+      integer,       intent(in)    :: nmo
+      real(kind=dp), intent(in)    :: occx(nmo)
+      integer,       intent(in)    :: g_mo
+      integer,       intent(inout) :: g_dens
+!
+!     Local
+!
+      integer,       parameter   :: ndim = 2
+      real(kind=dp), pointer     :: l_dens(:,:)
+      real(kind_dp), allocatable :: l_mo(:,:)
+      real(kind_dp), allocatable :: l_mos(:,:)
+      integer                    :: ilo(ndim)
+      integer                    :: ihi(ndim)
+      integer                    :: ii, jj, nn
+      integer                    :: ns
+      integer                    :: nt
+!
+      call ga_zero(g_dens)
+      noft_access(g_dens,l_dens,ilo,ihi)
+      nn = ihi(1) - ilo(1) + 1
+      ns = ihi(2) - ilo(2) + 1
+      allocate(l_mo(ilo(1):ihi(1),1:nmo))
+      allocate(l_mos(ilo(2):ihi(2),1:nmo))
+      call ga_get(g_mo,ilo(1),ihi(1),1,nmo,l_mo,nn)
+      call ga_get(g_mo,ilo(2),ihi(2),1,nmo,l_mos,nn)
+      do jj = ilo(2), ihi(2)
+        do ii = ilo(1), ihi(1)
+          do nn = 1, nmo
+            l_dens(ii,jj) = l_dens(ii,jj)
+                          + l_mo(ii,nn)*l_mos(jj,nn)*occx(nn)
+          enddo
+        enddo
+      enddo
+      deallocate(l_mos)
+      deallocate(l_mo)
+      noft_release(g_dens,l_dens,ilo,ihi)
+!
+      end subroutine noft_eval_density_matrix_ao_1
+!
+!-----------------------------------------------------------------------
+!>
+!> \brief Evaluate the density matrices
+!>
+!> Evaluate the 1-electron density matrices
+!>
+!> @param[in]  noft_parameters   The parameters for this calculation
+!> @param[in]  noft_occupations  The occupation numbers
+!> @param[in]  noft_wavefunction The wavefunction
+!> @param[out] g_dens            The density matrices for the DFT module
+!>
+      subroutine noft_eval_density_matrix_ao(noft_parameters,
+     &           noft_occupations,noft_wavefunction,g_dens)
+      implicit none
+      type(noft_parameter_tp),    intent(in)    :: noft_parameters
+      type(noft_occupations_tp),  intent(in)    :: noft_occupations
+      type(noft_wavefunction_tp), intent(in)    :: noft_wavefunction
+      integer,                    intent(inout) :: g_dens(2)
+!
+      call noft_eval_density_matrix_ao_1(noft_occupations%occ_1e_a,
+     &     noft_wavefunction%mo_a,g_dens(1),noft_parameters%nao,
+     &     noft_parameters%nmo)
+      call noft_eval_density_matrix_ao_1(noft_occupations%occ_1e_b,
+     &     noft_wavefunction%mo_b,g_dens(2),noft_parameters%nao,
+     &     noft_parameters%nmo)
+!
+      end subroutine noft_eval_density_matrix_ao
+!
+!-----------------------------------------------------------------------
