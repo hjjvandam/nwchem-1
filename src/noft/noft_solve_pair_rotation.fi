@@ -12,12 +12,14 @@
 !> then we extend the list with an extra point. We keep repeating this
 !> until the minimum is bracketed by points at a short distance.
 !>
-      subroutine noft_solve_pair_rotation(noft_params,noft_instances,
-     &           noft_operators,
-     &           noft_wavefunction,noft_energy,oconv)
+      subroutine noft_solve_pair_rotation(rtdb,noft_params,
+     &           noft_instances,noft_operators,noft_wavefunction,
+     &           noft_energy,oconv)
       implicit none
 #include "errquit.fh"
 #include "stdio.fh"
+      !> The runtime database handle
+      integer,                    intent(in)    :: rtdb
       !> The calculation parameters
       type(noft_parameter_tp),    intent(in)    :: noft_params
       !> The calculation instances
@@ -91,7 +93,7 @@
       call noft_monte_carlo_rotation_create(noft_params,noft_rotation)
       call noft_monte_carlo_range_create(noft_params, noft_range)
       call noft_monte_carlo_step_create(noft_params,noft_step)
-      call noft_eval_energy(noft_params,noft_operators,
+      call noft_eval_energy(rtdb,noft_params,noft_operators,
      &                      noft_wavefunction,noft_energy)
       fields = (/"to_a","mo_a","to_b","mo_b","    "/)
       nfields = nfields_all
@@ -119,6 +121,9 @@
      &                                  step_now,step_now
         call noft_print_energy(noft_energy,luout,.true.)
       endif
+!DEBUG
+!     nfields = 1
+!DEBUG
       call noft_monte_carlo_range_zero(noft_range)
       do ifield = 1, nfields
         do jj = 1, noft_params%nmo
@@ -179,7 +184,7 @@
               call noft_orthogonalize(noft_wavefunction_step)
               call noft_restrict_wavefunction(noft_params,
      &             noft_wavefunction_step)
-              call noft_eval_energy(noft_params,noft_operators,
+              call noft_eval_energy(rtdb,noft_params,noft_operators,
      &             noft_wavefunction_step,noft_energy_step)
               npoints = 1
               xx(npoints) = step
@@ -202,7 +207,7 @@
               call noft_orthogonalize(noft_wavefunction_step)
               call noft_restrict_wavefunction(noft_params,
      &             noft_wavefunction_step)
-              call noft_eval_energy(noft_params,noft_operators,
+              call noft_eval_energy(rtdb,noft_params,noft_operators,
      &             noft_wavefunction_step,noft_energy_step)
               npoints = npoints + 1
               xx(npoints) = step
@@ -251,7 +256,7 @@
                   call noft_orthogonalize(noft_wavefunction_step)
                   call noft_restrict_wavefunction(noft_params,
      &                 noft_wavefunction_step)
-                  call noft_eval_energy(noft_params,noft_operators,
+                  call noft_eval_energy(rtdb,noft_params,noft_operators,
      &                 noft_wavefunction_step,noft_energy_step)
                   call noft_swap_wavefunctions(noft_wavefunction,
      &                                         noft_wavefunction_step)
@@ -288,7 +293,7 @@
                   call noft_orthogonalize(noft_wavefunction_step)
                   call noft_restrict_wavefunction(noft_params,
      &                 noft_wavefunction_step)
-                  call noft_eval_energy(noft_params,noft_operators,
+                  call noft_eval_energy(rtdb,noft_params,noft_operators,
      &                 noft_wavefunction_step,noft_energy_step)
                   en = noft_energy_step%e_total
                   if (step.le.-step_max) then
@@ -335,7 +340,7 @@
                   call noft_orthogonalize(noft_wavefunction_step)
                   call noft_restrict_wavefunction(noft_params,
      &                 noft_wavefunction_step)
-                  call noft_eval_energy(noft_params,noft_operators,
+                  call noft_eval_energy(rtdb,noft_params,noft_operators,
      &                 noft_wavefunction_step,noft_energy_step)
                   en = noft_energy_step%e_total
                   if (step.ge.step_max) then
@@ -376,7 +381,7 @@
                 call noft_orthogonalize(noft_wavefunction_step)
                 call noft_restrict_wavefunction(noft_params,
      &               noft_wavefunction_step)
-                call noft_eval_energy(noft_params,noft_operators,
+                call noft_eval_energy(rtdb,noft_params,noft_operators,
      &               noft_wavefunction_step,noft_energy_step)
                 en = noft_energy_step%e_total
                 call noft_pair_rotation_sort(xx,ee,mpoints,npoints,
@@ -399,12 +404,14 @@
         write(luout,*)"======================"
         write(luout,*)"Calculation converged!"
         write(luout,*)"======================"
+        write(luout,*)"iteration = ",iteration
         write(luout,*)
       else
         write(luout,*)"**************************************"
         write(luout,*)"ERROR: calculation failed to converge!"
         write(luout,*)"**************************************"
-        write(luout,*)"nlower = ",nlower
+        write(luout,*)"nlower    = ",nlower
+        write(luout,*)"iteration = ",iteration
       endif
 !
       call noft_monte_carlo_step_destroy(noft_step)

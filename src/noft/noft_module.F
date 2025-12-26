@@ -30,6 +30,7 @@ c-----------------------------------------------------------------------
 #include "noft_parameter_tp.fh"
 #include "noft_wavefunction_tp.fh"
       contains
+#include "ddft_occupations_calculate.fi"
 #include "noft_1e_occupation.fi"
 #include "noft_2e_occupation.fi"
 #include "noft_2e_anti_symmetry.fi"
@@ -51,6 +52,8 @@ c-----------------------------------------------------------------------
 #include "noft_eval_2e_energy.fi"
 #include "noft_eval_2e_energy_aa.fi"
 #include "noft_eval_2e_energy_ab.fi"
+#include "noft_eval_ddft_energy.fi"
+#include "noft_eval_density_matrix_ao.fi"
 #include "noft_eval_energy.fi"
 #include "noft_eval_nuc_energy.fi"
 #include "noft_eval_tot_energy.fi"

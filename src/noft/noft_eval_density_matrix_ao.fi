@@ -24,8 +24,8 @@
 !
       integer,       parameter   :: ndim = 2
       real(kind=dp), pointer     :: l_dens(:,:)
-      real(kind_dp), allocatable :: l_mo(:,:)
-      real(kind_dp), allocatable :: l_mos(:,:)
+      real(kind=dp), allocatable :: l_mo(:,:)
+      real(kind=dp), allocatable :: l_mos(:,:)
       integer                    :: ilo(ndim)
       integer                    :: ihi(ndim)
       integer                    :: ii, jj, nn
@@ -33,7 +33,7 @@
       integer                    :: nt
 !
       call ga_zero(g_dens)
-      noft_access(g_dens,l_dens,ilo,ihi)
+      call noft_access(g_dens,l_dens,ilo,ihi)
       nn = ihi(1) - ilo(1) + 1
       ns = ihi(2) - ilo(2) + 1
       allocate(l_mo(ilo(1):ihi(1),1:nmo))
@@ -44,13 +44,13 @@
         do ii = ilo(1), ihi(1)
           do nn = 1, nmo
             l_dens(ii,jj) = l_dens(ii,jj)
-                          + l_mo(ii,nn)*l_mos(jj,nn)*occx(nn)
+     &                    + l_mo(ii,nn)*l_mos(jj,nn)*occx(nn)
           enddo
         enddo
       enddo
       deallocate(l_mos)
       deallocate(l_mo)
-      noft_release(g_dens,l_dens,ilo,ihi)
+      call noft_release(g_dens,l_dens,ilo,ihi)
 !
       end subroutine noft_eval_density_matrix_ao_1
 !
@@ -73,12 +73,21 @@
       type(noft_wavefunction_tp), intent(in)    :: noft_wavefunction
       integer,                    intent(inout) :: g_dens(2)
 !
-      call noft_eval_density_matrix_ao_1(noft_occupations%occ_1e_a,
-     &     noft_wavefunction%mo_a,g_dens(1),noft_parameters%nao,
-     &     noft_parameters%nmo)
-      call noft_eval_density_matrix_ao_1(noft_occupations%occ_1e_b,
-     &     noft_wavefunction%mo_b,g_dens(2),noft_parameters%nao,
-     &     noft_parameters%nmo)
+      real(kind=dp), allocatable :: occx(:)
+      integer                    :: nmo
+!
+      nmo = noft_parameters%nmo
+      allocate(occx(1:nmo))
+!
+      call ga_get(noft_occupations%occ_1e_a,1,nmo,1,1,occx,nmo)
+      call noft_eval_density_matrix_ao_1(occx,noft_wavefunction%mo_a,
+     &     g_dens(1),noft_parameters%nao,nmo)
+!
+      call ga_get(noft_occupations%occ_1e_b,1,nmo,1,1,occx,nmo)
+      call noft_eval_density_matrix_ao_1(occx,noft_wavefunction%mo_b,
+     &     g_dens(2),noft_parameters%nao,nmo)
+!
+      deallocate(occx)
 !
       end subroutine noft_eval_density_matrix_ao
 !

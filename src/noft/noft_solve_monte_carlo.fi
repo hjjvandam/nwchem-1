@@ -18,7 +18,7 @@
 !> over many draws is 0, but the average absolute value of the step
 !> is \f$p_{ij}/2\f$.
 !>
-!> We need an algorithm that ensures we choose the largest step to 
+!> We need an algorithm that ensures we choose the largest step to
 !> make progress quickly. But the algorithm also needs to shrink the
 !> step size if the goal is reached. When the goal is reached the step
 !> size for a successful step is 0. In that case the step range should
@@ -28,14 +28,14 @@
 !> \f$s\f$ is around \f$p_{ij}/2\f$ then the range should grow.
 !> If the state is close to the goal and therefore the average step
 !> size for successful steps is smaller than \f$p_{ij}/2\f$ then
-!> the range should shrink. 
+!> the range should shrink.
 !> In MonteCarlo.py we have used this expression to update the range:
 !> \f{eqnarray*}{
 !>   p^{i+1} &=& p^i \cdot a + [ b (2 |s| - p^i) + c \cdot p^i ] (1-a)
 !> \f}
-!> with the parameters: a=0.9; b=2.0; c=1.5. 
+!> with the parameters: a=0.9; b=2.0; c=1.5.
 !> In addition we maintain a minimum value of the range. This value is
-!> smaller than the convergence criterion but larger than 0. 
+!> smaller than the convergence criterion but larger than 0.
 !>
 !> Yet, because Monte Carlo is a probablistic optimizer these
 !> considerations are not enough. In a real Monte Carlo simulation you
@@ -43,26 +43,27 @@
 !> This leaves no option to find an improvement but the range is still
 !> large. Hence we need an additional criterion, one that says that
 !> if we have many failed attempts to find a step that improves the
-!> state then we must be closer to the answer than we thought, and 
-!> based on that shrink the range. In MonteCarlo.py this notion is 
+!> state then we must be closer to the answer than we thought, and
+!> based on that shrink the range. In MonteCarlo.py this notion is
 !> implemented scaling the range down every 10 consecutive attempts at
 !> guessing a successful step.
 !>
 !> The final consideration is that MonteCarlo.py minimizes a parabolic
 !> energy expression and therefore a valid range runs from \f$-\infty\f$
 !> to \f$+\infty\f$. As stated above the case that is considered here
-!> involves rotations, and therefore sensible ranges are limited to 
+!> involves rotations, and therefore sensible ranges are limited to
 !> the range from \f$-\pi\f$ to \f$+\pi\f$. In fact a rotation by
 !> \f$\pi\f$ corresponds to an interchange of two states rather than an
-!> update of those states. So more realistically the ranges should be 
+!> update of those states. So more realistically the ranges should be
 !> limited to \f$\[-\pi/2,+\pi/2\]\f$.
 !>
-      subroutine noft_solve_monte_carlo(noft_params,noft_instances,
+      subroutine noft_solve_monte_carlo(rtdb,noft_params,noft_instances,
      &           noft_operators,noft_wavefunction,noft_energy,oconv)
       implicit none
 #include "errquit.fh"
 #include "mafdecls.fh"
 #include "stdio.fh"
+      integer,                    intent(in)    :: rtdb
       type(noft_parameter_tp),    intent(in)    :: noft_params
       type(noft_instances_tp),    intent(in)    :: noft_instances
       type(noft_operators_tp),    intent(inout) :: noft_operators
@@ -96,10 +97,11 @@
       call noft_monte_carlo_range_create(noft_params,noft_range)
       call noft_monte_carlo_rotation_create(noft_params,noft_rotation)
       call noft_monte_carlo_step_create(noft_params,noft_step)
-      call noft_eval_energy(noft_params,noft_operators,
+      call noft_eval_energy(rtdb,noft_params,noft_operators,
      &                      noft_wavefunction,noft_energy)
       !call noft_monte_carlo_range_init(noft_range,range_init)
-      call noft_monte_carlo_initialize_range(noft_params,noft_operators,
+      call noft_monte_carlo_initialize_range(rtdb,noft_params,
+     &     noft_operators,
      &     noft_wavefunction,noft_energy,
      &     noft_wavefunction_step,noft_energy_step,
      &     noft_step,noft_rotation,noft_range)
@@ -120,7 +122,7 @@
         call noft_orthogonalize(noft_wavefunction_step)
         call noft_restrict_wavefunction(noft_params,
      &           noft_wavefunction_step)
-        call noft_eval_energy(noft_params,noft_operators,
+        call noft_eval_energy(rtdb,noft_params,noft_operators,
      &           noft_wavefunction_step,noft_energy_step)
         if (noft_energy_step%e_total.lt.noft_energy%e_total) then
           !
