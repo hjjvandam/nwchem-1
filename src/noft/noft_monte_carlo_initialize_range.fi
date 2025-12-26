@@ -12,12 +12,14 @@
 !> them by a constant amount and see what the effect on the energy is.
 !> Then we set that corresponding range based on that.
 !>
-      subroutine noft_monte_carlo_initialize_range(noft_params,
+      subroutine noft_monte_carlo_initialize_range(rtdb,noft_params,
      &           noft_operators,
      &           noft_wavefunction,noft_energy,
      &           noft_wavefunction_step,noft_energy_step,noft_step,
      &           noft_rotation,noft_range)
       implicit none
+      !> The runtime database handle
+      integer, intent(in) :: rtdb
       !> The calculation parameters
       type(noft_parameter_tp), intent(in) :: noft_params
       !> The operators
@@ -91,7 +93,7 @@
             call noft_orthogonalize(noft_wavefunction_step)
             call noft_restrict_wavefunction(noft_params,
      &           noft_wavefunction_step)
-            call noft_eval_energy(noft_params,noft_operators,
+            call noft_eval_energy(rtdb,noft_params,noft_operators,
      &           noft_wavefunction_step,noft_energy_step)
             e1 = noft_energy_step%e_total
 !
@@ -105,7 +107,7 @@
             call noft_orthogonalize(noft_wavefunction_step)
             call noft_restrict_wavefunction(noft_params,
      &           noft_wavefunction_step)
-            call noft_eval_energy(noft_params,noft_operators,
+            call noft_eval_energy(rtdb,noft_params,noft_operators,
      &           noft_wavefunction_step,noft_energy_step)
             e3 = noft_energy_step%e_total
 !
