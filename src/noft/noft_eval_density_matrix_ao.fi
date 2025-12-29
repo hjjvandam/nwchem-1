@@ -68,24 +68,53 @@
       subroutine noft_eval_density_matrix_ao(noft_parameters,
      &           noft_occupations,noft_wavefunction,g_dens)
       implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
       type(noft_parameter_tp),    intent(in)    :: noft_parameters
       type(noft_occupations_tp),  intent(in)    :: noft_occupations
       type(noft_wavefunction_tp), intent(in)    :: noft_wavefunction
       integer,                    intent(inout) :: g_dens(2)
 !
-      real(kind=dp), allocatable :: occx(:)
-      integer                    :: nmo
+      real(kind=dp), allocatable   :: occx(:)
+      real(kind=dp), parameter     :: one  = 1.0_dp
+      real(kind=dp), parameter     :: zero = 0.0_dp
+      integer, parameter           :: ndim = 2
+      integer                      :: idim(ndim)
+      integer                      :: chk(ndim)
+      integer                      :: nao
+      integer                      :: nmo
+      integer                      :: nso
+      integer                      :: g_tmp
+      character(len=1),  parameter :: tn = "N"
+      character(len=27), parameter :: pname =
+     &  "noft_eval_density_matrix_ao"
 !
+      nao = noft_parameters%nao
       nmo = noft_parameters%nmo
+      nso = noft_parameters%nso
+      chk = -1
+      idim(1) = nao
+      idim(2) = nmo
       allocate(occx(1:nmo))
 !
-      call ga_get(noft_occupations%occ_1e_a,1,nmo,1,1,occx,nmo)
-      call noft_eval_density_matrix_ao_1(occx,noft_wavefunction%mo_a,
-     &     g_dens(1),noft_parameters%nao,nmo)
+      if (.not.nga_create(MT_DBL,ndim,idim,"mo tmp",chk,g_tmp))
+     &  call errquit(pname//"failed to create mo_tmp",10,GA_ERR)
 !
+      call ga_dgemm(tn,tn,nao,nmo,nso,one,
+     &              noft_wavefunction%so,noft_wavefunction%mo_a,
+     &              zero,g_tmp)
+      call ga_get(noft_occupations%occ_1e_a,1,nmo,1,1,occx,nmo)
+      call noft_eval_density_matrix_ao_1(occx,g_tmp,g_dens(1),nao,nmo)
+!
+      call ga_dgemm(tn,tn,nao,nmo,nso,one,
+     &              noft_wavefunction%so,noft_wavefunction%mo_b,
+     &              zero,g_tmp)
       call ga_get(noft_occupations%occ_1e_b,1,nmo,1,1,occx,nmo)
-      call noft_eval_density_matrix_ao_1(occx,noft_wavefunction%mo_b,
-     &     g_dens(2),noft_parameters%nao,nmo)
+      call noft_eval_density_matrix_ao_1(occx,g_tmp,g_dens(2),nao,nmo)
+!
+      if (.not.ga_destroy(g_tmp))
+     &  call errquit(pname//"failed to destroy mo_tmp",20,GA_ERR)
 !
       deallocate(occx)
 !
