@@ -1,0 +1,17 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief print the density functional specification
+!>
+!> For the DDFT functionality we use a density functional as it appears
+!> in the regular DFT code. This routine will print the specification
+!> of that functional. This routine will be implemented following
+!> $NWCHEM_TOP/src/nwdft/input_dft/dft_inpana.F
+!>
+       subroutine noft_print_xc()
+       implicit none
+#include "cdft.fh"
+#include "stdio.fh"
+       write(luout,'("Coming soon to a theater near you!!!")')
+       end subroutine noft_print_xc
+!
+!-----------------------------------------------------------------------
