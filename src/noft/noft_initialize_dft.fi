@@ -1,0 +1,26 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Initialize DFT capabilities
+!>
+!> Set various pieces for the DFT module up:
+!> - define the grid parameters
+!>
+!> @param[in] rtdb           The runtime database handle
+!> @param[in] noft_params    The calculation parameters
+!> @param[in] noft_instances The calculation instances
+!>
+      subroutine noft_initialize_dft(rtdb,noft_params,noft_instances)
+      implicit none
+      integer,                 intent(in) :: rtdb
+      type(noft_parameter_tp), intent(in) :: noft_params
+      type(noft_instances_tp), intent(in) :: noft_instances
+!DEBUG
+      write(*,*)"HVD: noft_initialize_dft"
+!DEBUG
+!
+!     call grid_acc_def(rtdb)
+      call grid_setquad(rtdb)
+!
+      end subroutine noft_initialize_dft
+!
+!-----------------------------------------------------------------------

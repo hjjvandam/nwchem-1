@@ -26,6 +26,7 @@
       integer :: occ_1e_a,  occ_1e_b
       integer :: occ_2e_aa, occ_2e_bb
       integer :: functional
+      integer :: ne_a, ne_b
       character(len=21), parameter :: pname =
      &  "noft_eval_2e_energy: "
       character(len=4) :: func
@@ -34,6 +35,8 @@
       c_ab = noft_parameters%c_ab
       p_aa = noft_parameters%p_aa
       p_ab = noft_parameters%p_ab
+      ne_a = noft_parameters%ne_a
+      ne_b = noft_parameters%ne_b
       functional = noft_parameters%functional
 !
       moaa_el_2 = noft_operators%moaa_el_2
@@ -62,22 +65,55 @@
 !
         call noft_eval_2e_energy_ab_ws2(c_ab,p_ab,occ_1e_a,occ_1e_b,
      &                                  moab_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.weakstrong_iii) then
+!
+!       the combined weak-strong correlation model III
+!
+        call noft_eval_2e_energy_ab_ws3(c_ab,p_ab,occ_1e_a,occ_1e_b,
+     &                                  moab_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.weakstrong_iv) then
+!
+!       the combined weak-strong correlation model IV
+!
+        call noft_eval_2e_energy_ab_ws4(c_ab,p_ab,occ_1e_a,occ_1e_b,
+     &                                  moab_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.weakstrong_v) then
+!
+!       the combined weak-strong correlation model V
+!
+        call noft_eval_2e_energy_ab_ws5(c_ab,p_ab,occ_1e_a,occ_1e_b,
+     &                                  moab_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.average) then
+        call noft_eval_2e_energy_ab_avg(ne_a,ne_b,c_ab,p_ab,
+     &                                  occ_1e_a,occ_1e_b,
+     &                                  moab_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.ddft) then
+        call noft_eval_2e_energy_ab(0.0_dp,p_ab,occ_1e_a,occ_1e_b,
+     &                              moab_el_2,en_2el,en_2el_corr)
       else
 !
 !       the weak correlation model
 !
-        call noft_eval_2e_energy_ab(c_ab,p_ab,occ_1e_a,occ_1e_b,
-     &                              moab_el_2,en_2el,en_2el_corr)
+!       call noft_eval_2e_energy_ab(c_ab,p_ab,occ_1e_a,occ_1e_b,
+!    &                              moab_el_2,en_2el,en_2el_corr)
+        call noft_eval_2e_energy_ab_nel(ne_a,ne_b,c_ab,p_ab,
+     &                                  occ_1e_a,occ_1e_b,
+     &                                  moab_el_2,en_2el,en_2el_corr)
       endif
       noft_energy%e_2electron = noft_energy%e_2electron + en_2el
       noft_energy%e_correlation_ab = en_2el_corr
 !
-      if (functional.eq.same) then
+      if (functional.eq.same.or.
+     &    functional.eq.ddft) then
         call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_1e_a,occ_2e_aa,
      &                                moaa_el_2,en_2el,en_2el_corr)
       else if (functional.eq.conjugate.or.
      &         functional.eq.weakstrong.or.
-     &         functional.eq.weakstrong_ii) then
+     &         functional.eq.weakstrong_ii.or.
+     &         functional.eq.weakstrong_iii.or.
+     &         functional.eq.weakstrong_iv.or.
+     &         functional.eq.weakstrong_v.or.
+     &         functional.eq.average) then
         call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_1e_a,occ_2e_aa,
      &                                moaa_el_2,en_2el,en_2el_corr)
       else if (functional.eq.both) then
@@ -91,12 +127,17 @@
       noft_energy%e_2electron = noft_energy%e_2electron + en_2el
       noft_energy%e_correlation_aa = en_2el_corr
 !
-      if (functional.eq.same) then
+      if (functional.eq.same.or.
+     &    functional.eq.ddft) then
         call noft_eval_2e_energy_aa_1(c_aa,p_aa,occ_1e_b,occ_2e_bb,
      &                                mobb_el_2,en_2el,en_2el_corr)
       else if (functional.eq.conjugate.or.
      &         functional.eq.weakstrong.or.
-     &         functional.eq.weakstrong_ii) then
+     &         functional.eq.weakstrong_ii.or.
+     &         functional.eq.weakstrong_iii.or.
+     &         functional.eq.weakstrong_iv.or.
+     &         functional.eq.weakstrong_v.or.
+     &         functional.eq.average) then
         call noft_eval_2e_energy_aa_2(c_aa,p_aa,occ_1e_b,occ_2e_bb,
      &                                mobb_el_2,en_2el,en_2el_corr)
       else if (functional.eq.both) then

@@ -3,7 +3,7 @@
 !> \brief Calculate the 2-electron energy for same spin electrons
 !>
 !> For same spin electrons we do need to consider both the Coulomb
-!> and exchange terms. Also the \f$\alpha\f$-\f$\alpha\f$ and 
+!> and exchange terms. Also the \f$\alpha\f$-\f$\alpha\f$ and
 !> \f$\beta\f$-\f$\beta\f$ interaction expressions are the same
 !> (just different input variables).
 !>
@@ -20,7 +20,7 @@
 !> E_{corr} = \sum_{ijkl}\frac{1}{2}[(ij|kl)-(kj|il)/2-(il|kj)/2]
 !>                        w(o_{ik})w(o_{jl})s(o_{ik},o_{jl})
 !> \f}
-!> Note that \f$o_{ik} = o_{ki}\f$ and because we sum over all 
+!> Note that \f$o_{ik} = o_{ki}\f$ and because we sum over all
 !> orbitals we can do the following:
 !> \f{eqnarray}{
 !> \sum_{ijkl}(ij|kl)w(o_{ik})w(o_{jl})s(o_{ik},o_{jl}) && \\

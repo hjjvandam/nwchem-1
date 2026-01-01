@@ -1,4 +1,5 @@
 !-----------------------------------------------------------------------
+!>
 !> \brief The main driver for Natural Orbital Functional Theory
 !>
 !> This function is the main driver for Natural Orbital Functional
@@ -40,6 +41,7 @@
       call noft_load_params(rtdb,noft_params)
       call noft_load_vectors(rtdb,noft_vectors)
       call noft_load_geometry_basis(rtdb,noft_instances)
+      call noft_load_dft(rtdb,noft_params,noft_instances)
       call noft_set_nao(noft_instances,noft_params)
       call noft_set_nuclear_energy(noft_instances,noft_params)
       call noft_set_num_electrons(noft_instances,noft_params)
@@ -49,6 +51,7 @@
       call noft_print_files(noft_vectors)
       call noft_create_operators(noft_params,noft_oper)
       call noft_initialize_integrals(rtdb,noft_instances)
+      call noft_initialize_dft(rtdb,noft_params,noft_instances)
       call noft_compute_operators(noft_instances,noft_oper)
       call noft_create_wavefunction(noft_params,noft_wavefunction)
       call noft_orthogonalizing_transformation(noft_instances,
@@ -68,16 +71,18 @@
       endif
 !DEBUG
 !     call noft_print_symmos(noft_params,noft_wavefunction)
+      call noft_wavefunction_analysis(noft_params,noft_instances,
+     &                                noft_wavefunction)
 !DEBUG
       call noft_restrict_wavefunction(noft_params,noft_wavefunction)
       call noft_ortho_operators(noft_wavefunction,noft_oper)
       if (noft_params%solver.eq.monte_carlo) then
-        call noft_solve_monte_carlo(noft_params,noft_instances,
+        call noft_solve_monte_carlo(rtdb,noft_params,noft_instances,
      &                              noft_oper,noft_wavefunction,
      &                              noft_energy,oconv)
         noft_task_energy_doit = oconv
       else if (noft_params%solver.eq.pair_rotation) then
-        call noft_solve_pair_rotation(noft_params,noft_instances,
+        call noft_solve_pair_rotation(rtdb,noft_params,noft_instances,
      &                                noft_oper,noft_wavefunction,
      &                                noft_energy,oconv)
         noft_task_energy_doit = oconv

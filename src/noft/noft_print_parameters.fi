@@ -46,6 +46,20 @@
         else if (noft_params%functional.eq.weakstrong_ii) then
           write(luout,'("bracket conjugate side, and combined ",$)')
           write(luout,'("weak and strong correlation II")')
+        else if (noft_params%functional.eq.weakstrong_iii) then
+          write(luout,'("bracket conjugate side, and combined ",$)')
+          write(luout,'("weak and strong correlation III")')
+        else if (noft_params%functional.eq.weakstrong_iv) then
+          write(luout,'("bracket conjugate side, and combined ",$)')
+          write(luout,'("weak and strong correlation IV")')
+        else if (noft_params%functional.eq.weakstrong_v) then
+          write(luout,'("bracket conjugate side, and combined ",$)')
+          write(luout,'("weak and strong correlation V")')
+        else if (noft_params%functional.eq.average) then
+          write(luout,'("bracket conjugate side, and combined ",$)')
+          write(luout,'("average correlation")')
+        else if (noft_params%functional.eq.ddft) then
+          write(luout,'("difference density functional (ddft)")')
         else
           write(luout,'(" ERROR: unknown functional")')
           call errquit("unknown functional option",
@@ -78,6 +92,9 @@
         write(luout,'(i6)')noft_params%ncore_a
         write(luout,'(" number of virtual orbitals  : ",$)')
         write(luout,'(i6)')noft_params%nvirtual_a
+        if (noft_params%functional.eq.ddft) then
+          call noft_print_xc()
+        endif
         write(luout,*)
       endif
 !

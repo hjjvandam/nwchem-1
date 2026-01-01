@@ -7,5 +7,10 @@
       integer, parameter :: both = 13
       integer, parameter :: weakstrong = 14
       integer, parameter :: weakstrong_ii = 15
+      integer, parameter :: weakstrong_iii = 16
+      integer, parameter :: weakstrong_iv = 17
+      integer, parameter :: weakstrong_v = 18
+      integer, parameter :: average = 19
+      integer, parameter :: ddft = 20
 !
 !-----------------------------------------------------------------------

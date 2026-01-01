@@ -305,6 +305,36 @@
      &                         "weakstrong_ii"))
      &    then
             functional = weakstrong_ii
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "weakstrong_iii"))
+     &    then
+            functional = weakstrong_iii
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "weakstrong_iv"))
+     &    then
+            functional = weakstrong_iv
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "weakstrong_v"))
+     &    then
+            functional = weakstrong_v
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "average"))
+     &    then
+            functional = average
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"ddft"))
+     &    then
+!
+!           ddft xc <exchange-correlation functional specification>
+!
+!           this module always uses 100% exact exchange so functionals
+!           should be selected accordingly
+!
+!           "xc" must be present on the input line but xc_input cannot
+!           process it so we have to skip it.
+!
+            functional = ddft
+            call inp_set_field(inp_cur_field()+1)
+            call xc_input(rtdb, 'dft')
           else
             call errquit("noft_input: invalid functional: "//test,
      &                   160, INPUT_ERR)

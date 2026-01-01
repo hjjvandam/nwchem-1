@@ -17,7 +17,7 @@
 !
 !     Local
 !
-      character(len=20), parameter :: pname 
+      character(len=20), parameter :: pname
      &  = "noft_occupations_create: "
       integer, parameter :: ndm1 = 1
       integer, parameter :: ndm2 = 2

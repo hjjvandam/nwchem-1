@@ -4,9 +4,11 @@
 !>
 !> A subroutine to evaluate the energy for a given wave function,
 !>
-      subroutine noft_eval_energy(noft_parameters,noft_operators,
+      subroutine noft_eval_energy(rtdb,noft_parameters,noft_operators,
      &                            noft_wavefunction,noft_energy)
       implicit none
+      !> The runtime database handle
+      integer,                    intent(in)    :: rtdb
       !> The parameters for the calculation
       type(noft_parameter_tp),    intent(in)    :: noft_parameters
       !> The various operators
@@ -62,6 +64,8 @@
      &                         noft_occupations,noft_energy)
       call noft_eval_2e_energy(noft_parameters,noft_operators,
      &                         noft_occupations,noft_energy)
+      call noft_eval_ddft_energy(rtdb,noft_parameters,noft_occupations,
+     &                           noft_wavefunction,noft_energy)
       call noft_eval_tot_energy(noft_energy)
 !
 !     Clean occupartion number up
