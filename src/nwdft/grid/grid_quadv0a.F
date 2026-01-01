@@ -93,7 +93,7 @@ c
 c     becke charges
 c
       oprint_qbecke = util_print('becke charges', print_high)
-      if(oprint_qbecke) 
+      if(oprint_qbecke)
      R    call dft_initqbecke(natoms,k_becke,l_becke)
 c
 c     rewind grid pts file
@@ -241,7 +241,7 @@ c
      &     call errquit('grid_quadv0a: pop stack failed.',1, MA_ERR)
  100  continue
       if(oprint_qbecke) then
-         call dft_printqbecke(geom,basis,ncenters,dbl_mb(k_becke))
+         call dft_printqbecke(geom,basis,natoms,dbl_mb(k_becke))
          if (.not.ma_pop_stack(l_becke)) 
      Z        call errquit('grid_loop: pop stack failed.',0, MA_ERR)
       endif
