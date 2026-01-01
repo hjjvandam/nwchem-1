@@ -100,6 +100,7 @@
       call noft_destroy_wavefunction(noft_wavefunction)
       call noft_finalize_integrals()
       call noft_finalize_instances(noft_instances)
+      call noft_finalize_dft(noft_params)
       call util_print_pop
       end function noft_task_energy_doit
 c

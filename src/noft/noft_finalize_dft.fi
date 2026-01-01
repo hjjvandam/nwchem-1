@@ -1,0 +1,32 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Finalize everything we set up for the DFT module
+!>
+!> For the DFT module that we use underneath the DDFT approach we had
+!> to initialize such things as the quadrature. Here we release all
+!> resources that we had reserved for that.
+!>
+!> @params[in] noft_params The calculation parameters
+!>
+      subroutine noft_finalize_dft(noft_params)
+      implicit none
+#include "noft_functional_options.fh"
+!
+      type(noft_parameter_tp), intent(in) :: noft_params
+!
+      logical :: okeep
+!
+      if (noft_params%functional.ne.ddft) then
+!
+!       For this functionality we haven't used the DFT module so there
+!       is nothing to cleanup
+!
+        return
+      endif
+!
+      okeep = .false.
+      call grid_cleanup(okeep)
+!
+      end subroutine noft_finalize_dft
+!
+!-----------------------------------------------------------------------
