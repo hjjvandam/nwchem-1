@@ -9,6 +9,45 @@
 !> an array descriptor. This descriptor is returned. The indices
 !> correspond to the indices in the whole global array.
 !>
+      subroutine noft_access_1d(ga,data,ilo,ihi)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      integer, parameter :: ndim = 1
+      !> The global array handle
+      integer,       intent(in)             :: ga
+      !> The array descriptor
+      real(kind=dp), intent(inout), pointer :: data(:)
+      !> The lower limits
+      integer, intent(out) :: ilo(ndim)
+      !> The upper limits
+      integer, intent(out) :: ihi(ndim)
+!
+!     Local
+!
+      target :: dbl_mb
+      integer :: idim
+      integer :: ild(ndim)
+      integer :: indx_lo, indx_hi
+      integer :: iproc
+      integer :: nelem
+!
+      iproc = ga_nodeid()
+      call nga_distribution(ga,iproc,ilo,ihi)
+      call nga_access(ga,ilo,ihi,indx_lo,ild)
+      nelem = 1
+      do idim = 1, ndim
+        nelem = nelem * (ihi(idim)-ilo(idim)+1)
+      enddo
+      indx_hi = indx_lo + nelem - 1
+      data(ilo(1):ihi(1)) => dbl_mb(indx_lo:indx_hi)
+      call ga_sync()
+!
+      end subroutine noft_access_1d
+!
+!-----------------------------------------------------------------------
+!
       subroutine noft_access_2d(ga,data,ilo,ihi)
       implicit none
 #include "errquit.fh"
@@ -144,6 +183,32 @@
 !> have completed their local access operations before the program
 !> continues.
 !>
+      subroutine noft_release_1d(ga,data,ilo,ihi)
+      implicit none
+#include "errquit.fh"
+#include "global.fh"
+#include "mafdecls.fh"
+      integer, parameter :: ndim = 1
+      !> The global array handle
+      integer,       intent(in)             :: ga
+      !> The array descriptor
+      real(kind=dp), intent(inout), pointer :: data(:)
+      !> The lower limits
+      integer, intent(inout) :: ilo(ndim)
+      !> The upper limits
+      integer, intent(inout) :: ihi(ndim)
+!
+!     Local
+!
+      ilo = -1
+      ihi = -2
+      nullify(data)
+      call ga_sync()
+!
+      end subroutine noft_release_1d
+!
+!-----------------------------------------------------------------------
+!
       subroutine noft_release_2d(ga,data,ilo,ihi)
       implicit none
 #include "errquit.fh"

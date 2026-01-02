@@ -1,6 +1,7 @@
 !-----------------------------------------------------------------------
 !
       interface noft_access
+        procedure noft_access_1d
         procedure noft_access_2d
         procedure noft_access_3d
         procedure noft_access_4d
@@ -9,6 +10,7 @@
 !-----------------------------------------------------------------------
 !
       interface noft_release
+        procedure noft_release_1d
         procedure noft_release_2d
         procedure noft_release_3d
         procedure noft_release_4d
