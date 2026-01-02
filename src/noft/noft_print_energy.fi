@@ -26,3 +26,43 @@
       end subroutine noft_print_energy
 !
 !-----------------------------------------------------------------------
+!>
+!> \brief Print the energy contributions long form
+!>
+      subroutine noft_print_energy_long(noft_energy,luout,oall)
+      implicit none
+      !> The energy contributions
+      type(noft_energy_tp), intent(in) :: noft_energy
+      !> The output unit number
+      integer,              intent(in) :: luout
+      !> Print all contributions or not
+      logical,              intent(in) :: oall
+!
+      write(luout,"(' ============')")
+      write(luout,"(' Final energy')")
+      write(luout,"(' ============')")
+      write(luout,*)
+      write(luout,"(' total energy           : ',f16.8)")
+     &      noft_energy%e_total
+      if (oall) then
+        write(luout,*)
+        write(luout,"(' nuclear repulsion      : ',f16.8)")
+     &        noft_energy%e_nuclear
+        write(luout,"(' one-electron           : ',f16.8)")
+     &        noft_energy%e_1electron
+        write(luout,"(' two-electron           : ',f16.8)")
+     &        noft_energy%e_2electron
+        write(luout,"(' alpha-alpha correlation: ',f16.8)")
+     &        noft_energy%e_correlation_aa
+        write(luout,"(' alpha-beta  correlation: ',f16.8)")
+     &        noft_energy%e_correlation_ab
+        write(luout,"(' beta-beta   correlation: ',f16.8)")
+     &        noft_energy%e_correlation_bb
+        write(luout,"(' ddft correlation       : ',f16.8)")
+     &        noft_energy%e_correlation_ddft
+      endif
+      write(luout,*)
+!
+      end subroutine noft_print_energy_long
+!
+!-----------------------------------------------------------------------
