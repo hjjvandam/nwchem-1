@@ -47,8 +47,10 @@
       subroutine noft_eval_ddft_energy(rtdb,noft_parameters,
      &           noft_occupations,noft_wavefunction,noft_energy)
       implicit none
-#include "mafdecls.fh"
 #include "global.fh"
+#include "mafdecls.fh"
+#include "noft_functional_options.fh"
+#include "stdio.fh"
       !> The handle for the runtime database
       integer,                    intent(in)    :: rtdb
       !> The parameters for the calculation
@@ -63,12 +65,12 @@
 !     Local
 !
       type(noft_occupations_tp) :: dip_occupations
+      type(noft_occupations_tp) :: diff_occupations
       integer                   :: g_dens(2)
       integer                   :: g_vxc(4)
       integer, parameter        :: ndim = 2
       integer                   :: dims(ndim)
       integer                   :: chunk(ndim)
-      integer                   :: luout
       real(kind=dp)             :: exc
       real(kind=dp)             :: rho_n
       real(kind=dp)             :: dume
@@ -77,22 +79,37 @@
       real(kind=dp)             :: dum3
       real(kind=dp)             :: EFc
       real(kind=dp)             :: EFip
+      real(kind=dp)             :: EFdiff
 !
       logical, external         :: xc_gotxc
 !
-      if (.not.xc_gotxc()) then
+      noft_energy%e_correlation_ddft = 0.0_dp
+      if (noft_parameters%functional.ne.ddft) then
         !
-        ! No density functional has been specified
+        ! This is not a DDFT calculation
         !
         return
+      else
+        if (.not.xc_gotxc()) then
+          !
+          ! No density functional has been specified (weird though)
+          !
+          return
+        endif
       endif
 !
-      luout = 6
       call noft_occupations_create(noft_parameters,dip_occupations)
+      call noft_occupations_create(noft_parameters,diff_occupations)
       call ddft_occupations_calculate(noft_parameters,noft_occupations,
      &                                dip_occupations)
+      call diff_occupations_calculate(noft_parameters,noft_occupations,
+     &                                dip_occupations,diff_occupations)
       chunk = -1
       dims  = noft_parameters%nao
+!DEBUG
+      write(6,*)"HVD*in************************************************"
+!DEBUG
+      g_vxc = 0
       if (.not.nga_create(MT_DBL,ndim,dims,"dens_a",chunk,g_dens(1)))
      &  call ga_error("Could not create dens_a")
       if (.not.nga_create(MT_DBL,ndim,dims,"dens_b",chunk,g_dens(2)))
@@ -104,21 +121,46 @@
 !
       call noft_eval_density_matrix_ao(noft_parameters,
      &     noft_occupations,noft_wavefunction,g_dens)
+      call ga_zero(g_vxc(1))
+      call ga_zero(g_vxc(2))
       call xc_getv(rtdb,exc,dume,1,0,0,g_dens,g_vxc,
      &     .false.,0,0,0,.false.,rho_n,dum1,dum2,0,dum3)
       if (ga_nodeid().eq.0.and.abs(rho_n).gt.1.0d-3)
      &    write(luout,*)"Integrate difference density: ",rho_n
       EFc = ga_ddot(g_dens(1),g_vxc(1)) + ga_ddot(g_dens(2),g_vxc(2))
 !
-      call noft_eval_density_matrix_ao(noft_parameters,
-     &     dip_occupations,noft_wavefunction,g_dens)
-      call xc_getv(rtdb,exc,dume,1,0,0,g_dens,g_vxc,
-     &     .false.,0,0,0,.false.,rho_n,dum1,dum2,0,dum3)
-      if (ga_nodeid().eq.0.and.abs(rho_n).gt.1.0d-3)
-     &    write(luout,*)"Integrate difference density: ",rho_n
-      EFip = ga_ddot(g_dens(1),g_vxc(1)) + ga_ddot(g_dens(2),g_vxc(2))
+!     call noft_eval_density_matrix_ao(noft_parameters,
+!    &     dip_occupations,noft_wavefunction,g_dens)
+!     call ga_zero(g_vxc(1))
+!     call ga_zero(g_vxc(2))
+!     call xc_getv(rtdb,exc,dume,1,0,0,g_dens,g_vxc,
+!    &     .false.,0,0,0,.false.,rho_n,dum1,dum2,0,dum3)
+!     if (ga_nodeid().eq.0.and.abs(rho_n).gt.1.0d-3)
+!    &    write(luout,*)"Integrate difference density: ",rho_n
+!     EFip = ga_ddot(g_dens(1),g_vxc(1)) + ga_ddot(g_dens(2),g_vxc(2))
 !
-      noft_energy%e_correlation_ddft = EFc - EFip
+      call noft_eval_density_matrix_ao(noft_parameters,
+     &     diff_occupations,noft_wavefunction,g_dens)
+      EFdiff = ga_ddot(g_dens(1),g_vxc(1)) + ga_ddot(g_dens(2),g_vxc(2))
+!
+!DEBUG
+!     write(luout,*)"OCCip"
+!     call ga_print(dip_occupations%occ_1e_a)
+!     write(luout,*)"OCCc"
+!     call ga_print(noft_occupations%occ_1e_a)
+      write(luout,*)"EFdiff = ",EFdiff
+      write(luout,*)"EFc    = ",EFc
+!     write(luout,*)"Ecor   = ",EFc-EFip
+      write(6,*)"HVD*out***********************************************"
+!DEBUG
+!     noft_energy%e_correlation_ddft = (EFc - EFip)
+!     noft_energy%e_correlation_ddft = EFc
+!     noft_energy%e_correlation_ddft = - 1000.0_dp*(EFc - EFip)
+!     cc from xc_perdew91
+      noft_energy%e_correlation_ddft = 8.723d0*EFdiff
+!     factor of 6.74646 is needed to get h2 dissociation limit right
+!     in the sto-3g basis
+      noft_energy%e_correlation_ddft = 6.74646d0*EFdiff
 !
       if (.not.ga_destroy(g_vxc(2)))
      &  call ga_error("Could not destroy vxc_b")
@@ -128,6 +170,7 @@
      &  call ga_error("Could not destroy dens_b")
       if (.not.ga_destroy(g_dens(1)))
      &  call ga_error("Could not destroy dens_a")
+      call noft_occupations_destroy(diff_occupations)
       call noft_occupations_destroy(dip_occupations)
       end subroutine noft_eval_ddft_energy
 !

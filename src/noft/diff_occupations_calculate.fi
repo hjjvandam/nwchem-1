@@ -1,0 +1,74 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief calculate the absolute difference in occupation numbers
+!>
+!> Essentially this is like a daxpy followed by an abs.
+!> We use this quantity as a measure for how many electrons have been
+!> displaced due to correlation.
+!>
+!> @params[in]  noft_params      The calculation parameters
+!> @params[in]  noft_occupations The current occupation numbers
+!> @params[in]  dip_occupations  The nearest idem-potent occupation
+!>                               numbers
+!> @params[out] diff_occupations The absolute difference occupation
+!>                               numbers
+!>
+      subroutine diff_occupations_calculate(noft_params,
+     &           noft_occupations,dip_occupations,diff_occupations)
+      implicit none
+      type(noft_parameter_tp),   intent(in)    :: noft_params
+      type(noft_occupations_tp), intent(in)    :: noft_occupations
+      type(noft_occupations_tp), intent(in)    :: dip_occupations
+      type(noft_occupations_tp), intent(inout) :: diff_occupations
+!
+      real(kind=dp), pointer     :: diff(:)
+      real(kind=dp), allocatable :: doft(:)
+      real(kind=dp), allocatable :: dip(:)
+      integer,       parameter   :: ndim = 1
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      integer :: ild(ndim)
+!
+      call noft_access(diff_occupations%occ_1e_a,diff,ilo,ihi)
+      allocate(doft(ilo(1):ihi(1)))
+      allocate(dip(ilo(1):ihi(1)))
+      ild(1) = ihi(1)-ilo(1)+1
+      call nga_get(noft_occupations%occ_1e_a,ilo,ihi,doft,ild)
+      call nga_get(dip_occupations%occ_1e_a,ilo,ihi,dip,ild)
+      call diff_occupations_calculate_1(ilo,ihi,doft,dip,diff)
+      deallocate(doft)
+      deallocate(dip)
+      call noft_release(diff_occupations%occ_1e_a,diff,ilo,ihi)
+!
+      call noft_access(diff_occupations%occ_1e_b,diff,ilo,ihi)
+      allocate(doft(ilo(1):ihi(1)))
+      allocate(dip(ilo(1):ihi(1)))
+      ild(1) = ihi(1)-ilo(1)+1
+      call nga_get(noft_occupations%occ_1e_b,ilo,ihi,doft,ild)
+      call nga_get(dip_occupations%occ_1e_b,ilo,ihi,dip,ild)
+      call diff_occupations_calculate_1(ilo,ihi,doft,dip,diff)
+      deallocate(doft)
+      deallocate(dip)
+      call noft_release(diff_occupations%occ_1e_b,diff,ilo,ihi)
+!
+      end subroutine diff_occupations_calculate
+!
+!-----------------------------------------------------------------------
+!
+      subroutine diff_occupations_calculate_1(ilo,ihi,doft,dip,diff)
+      implicit none
+      integer,       intent(in)  :: ilo(:)
+      integer,       intent(in)  :: ihi(:)
+      real(kind=dp), intent(in)  :: doft(:)
+      real(kind=dp), intent(in)  :: dip(:)
+      real(kind=dp), intent(out) :: diff(:)
+!
+      integer :: ii
+!
+      do ii = ilo(1), ihi(1)
+        diff(ii) = abs(dip(ii)-doft(ii))
+      enddo
+!
+      end subroutine diff_occupations_calculate_1
+!
+!-----------------------------------------------------------------------

@@ -11,9 +11,6 @@
 !> all parameters of the DFT code are relevant here. What we do not
 !> use is simply not retrieved.
 !>
-!> In particular we currently always use 100% exact exchange, and so
-!> exchange functionals are suppressed.
-!>
       subroutine noft_load_dft(rtdb,noft_params,noft_instances)
       implicit none
 #include "bas.fh"
@@ -244,14 +241,24 @@
      &    call errquit(pname//'dft:nlcfac put failed', 10, RTDB_ERR)
       endif
 !
-      if (.not. rtdb_put(rtdb, 'dft:xfac', mt_dbl, numfunc, xfac))
-     &  call errquit(pname//'dft:xfac put failed', 211, RTDB_ERR)
-      if (.not. rtdb_put(rtdb, 'dft:lxfac', mt_log, numfunc, lxfac))
-     &  call errquit(pname//'dft:lxfac put failed', 11, RTDB_ERR)
-      if (.not. rtdb_put(rtdb, 'dft:nlxfac', mt_log, numfunc, nlxfac))
-     &  call errquit(pname//'dft:nlxfac put failed', 12, RTDB_ERR)
-      if (.not. rtdb_put(rtdb, 'dft:xccomb', mt_log, numfunc, xccomb))
-     &  call errquit(pname//'dft:xccomb put failed', 13, RTDB_ERR)
+      if (.not. rtdb_get(rtdb, 'dft:xfac', mt_dbl, numfunc, xfac))then
+        if (.not. rtdb_put(rtdb, 'dft:xfac', mt_dbl, numfunc, xfac))
+     &    call errquit(pname//'dft:xfac put failed', 211, RTDB_ERR)
+      endif
+      if (.not. rtdb_get(rtdb, 'dft:lxfac', mt_log, numfunc, lxfac))then
+        if (.not. rtdb_put(rtdb, 'dft:lxfac', mt_log, numfunc, lxfac))
+     &    call errquit(pname//'dft:lxfac put failed', 11, RTDB_ERR)
+      endif
+      if (.not. rtdb_get(rtdb, 'dft:nlxfac', mt_log, numfunc, nlxfac))
+     &then
+        if (.not. rtdb_put(rtdb, 'dft:nlxfac', mt_log, numfunc, nlxfac))
+     &    call errquit(pname//'dft:nlxfac put failed', 12, RTDB_ERR)
+      endif
+      if (.not. rtdb_get(rtdb, 'dft:xccomb', mt_log, numfunc, xccomb))
+     &then
+        if (.not. rtdb_put(rtdb, 'dft:xccomb', mt_log, numfunc, xccomb))
+     &    call errquit(pname//'dft:xccomb put failed', 13, RTDB_ERR)
+      endif
 !
       if (.not. rtdb_put(rtdb, 'dft:ipol', mt_int, 1, ipol))
      &  call errquit(pname//'dft:ipol put failed', 0, RTDB_ERR)

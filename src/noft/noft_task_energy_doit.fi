@@ -34,7 +34,7 @@
 !
       noft_task_energy_doit = .false.
       call util_print_push
-      call util_print_set_level(print_debug)
+      call util_print_set_level(print_default)
       call util_print_rtdb_load(rtdb,'noft')
       call noft_print_header(rtdb,luout)
       call noft_load_lindep(rtdb,noft_lindep)

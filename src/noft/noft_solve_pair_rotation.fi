@@ -12,6 +12,9 @@
 !> then we extend the list with an extra point. We keep repeating this
 !> until the minimum is bracketed by points at a short distance.
 !>
+!> This approach is slow but should work as long as the energy
+!> expression is convex.
+!>
       subroutine noft_solve_pair_rotation(rtdb,noft_params,
      &           noft_instances,noft_operators,noft_wavefunction,
      &           noft_energy,oconv)
@@ -113,7 +116,7 @@
       imacro = 0
       jj = 0
       ii = 0
-      step_max = 0.25_dp*pi
+      step_max = 0.124_dp*pi
       step_now = step_max
       if (noft_ionode()) then
         write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,iteration,
@@ -413,6 +416,7 @@
         write(luout,*)"nlower    = ",nlower
         write(luout,*)"iteration = ",iteration
       endif
+      call noft_print_energy_long(noft_energy,luout,.true.)
 !
       call noft_monte_carlo_step_destroy(noft_step)
       call noft_monte_carlo_range_destroy(noft_range)

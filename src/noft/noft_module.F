@@ -31,6 +31,7 @@ c-----------------------------------------------------------------------
 #include "noft_wavefunction_tp.fh"
       contains
 #include "ddft_occupations_calculate.fi"
+#include "diff_occupations_calculate.fi"
 #include "noft_1e_occupation.fi"
 #include "noft_2e_occupation.fi"
 #include "noft_2e_anti_symmetry.fi"
