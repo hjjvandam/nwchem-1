@@ -191,7 +191,7 @@
      &  then
           if (.not. inp_f(p_ddft))
      &      call errquit("noft_input: read p_ddft failed", 0, INPUT_ERR)
-          if (.not. rtdb_put(rtdb, "noft:p_ddft", mt_dbl, 1, p_ab))
+          if (.not. rtdb_put(rtdb, "noft:p_ddft", mt_dbl, 1, p_ddft))
      &      call errquit("noft_input: rtdb_put failed", 75, RTDB_ERR)
 !
 !       "Temperature"
