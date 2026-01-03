@@ -93,12 +93,17 @@
 !       What is in the code right now pretty clearly doesn't work.
 !       Fixing it is non-trivial and needs a rethink.
 !
-        noft_params%c_aa = 0.0
+        noft_params%c_aa = 0.0_dp
       endif
       if (rtdb_get(rtdb,"noft:c_ab", MT_DBL, 1,
      &             noft_params%c_ab)) then
       else
-        noft_params%c_ab = 0.25
+        noft_params%c_ab = 0.25_dp
+      endif
+      if (rtdb_get(rtdb,"noft:c_ddft", MT_DBL, 1,
+     &             noft_params%c_ddft)) then
+      else
+        noft_params%c_ddft = 8.723_dp
       endif
 !
 !     Load the off-diagonal powers
@@ -106,12 +111,17 @@
       if (rtdb_get(rtdb,"noft:p_aa", MT_DBL, 1,
      &             noft_params%p_aa)) then
       else
-        noft_params%p_aa = 0.5
+        noft_params%p_aa = 0.5_dp
       endif
       if (rtdb_get(rtdb,"noft:p_ab", MT_DBL, 1,
      &             noft_params%p_ab)) then
       else
-        noft_params%p_ab = 0.5233
+        noft_params%p_ab = 0.5233_dp
+      endif
+      if (rtdb_get(rtdb,"noft:p_ddft", MT_DBL, 1,
+     &             noft_params%p_ddft)) then
+      else
+        noft_params%p_ddft = 0.5_dp
       endif
 !
 !     Load the "temperature"

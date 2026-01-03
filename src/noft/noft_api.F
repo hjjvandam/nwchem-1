@@ -30,8 +30,10 @@
       real(kind=dp) :: levelshift_tildefuncs
       real(kind=dp) :: c_aa
       real(kind=dp) :: c_ab
+      real(kind=dp) :: c_ddft
       real(kind=dp) :: p_aa
       real(kind=dp) :: p_ab
+      real(kind=dp) :: p_ddft
       real(kind=dp) :: temperature
       integer       :: nindep ! Number of linearly independ vectors
       real(kind=dp) :: cindep ! Cutoff to determine independ vectors
@@ -156,6 +158,15 @@
           if (.not. rtdb_put(rtdb, "noft:c_ab", mt_dbl, 1, c_ab))
      &      call errquit("noft_input: rtdb_put failed", 50, RTDB_ERR)
 !
+!       C_ddft
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_ddft"))
+     &  then
+          if (.not. inp_f(c_ddft))
+     &      call errquit("noft_input: read c_ddft failed", 0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:c_ddft", mt_dbl, 1, c_ddft))
+     &      call errquit("noft_input: rtdb_put failed", 55, RTDB_ERR)
+!
 !       P_aa
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_aa"))
@@ -173,6 +184,15 @@
      &      call errquit("noft_input: read p_ab failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:p_ab", mt_dbl, 1, p_ab))
      &      call errquit("noft_input: rtdb_put failed", 70, RTDB_ERR)
+!
+!       P_ddft
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_ddft"))
+     &  then
+          if (.not. inp_f(p_ddft))
+     &      call errquit("noft_input: read p_ddft failed", 0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:p_ddft", mt_dbl, 1, p_ab))
+     &      call errquit("noft_input: rtdb_put failed", 75, RTDB_ERR)
 !
 !       "Temperature"
 !
@@ -331,6 +351,8 @@
 !
 !           "xc" must be present on the input line but xc_input cannot
 !           process it so we have to skip it.
+!           (Maybe if "xc" is not present we should pick a default
+!           functional.)
 !
             functional = ddft
             call inp_set_field(inp_cur_field()+1)

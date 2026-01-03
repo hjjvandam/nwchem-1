@@ -7,11 +7,45 @@
 !> of that functional. This routine will be implemented following
 !> $NWCHEM_TOP/src/nwdft/input_dft/dft_inpana.F
 !>
-       subroutine noft_print_xc()
-       implicit none
+      subroutine noft_print_xc()
+      implicit none
 #include "cdft.fh"
 #include "stdio.fh"
-       write(luout,'("Coming soon to a theater near you!!!")')
-       end subroutine noft_print_xc
+      character(len=5) :: local_c
+      character(len=9) :: nonlocal_c
+      integer          :: n
+      write(luout,*)
+      write(luout,*)"XC Information"
+      write(luout,*)"--------------"
+      write(luout,*)
+      local_c = 'local'
+      nonlocal_c = 'non-local'
+      do n = 1, numfunc
+        if (xccomb(n))write(LuOut,9223) xcname(n)
+      enddo
+      do n = 2, numfunc
+        if (lxfac(n).and.nlxfac(n))then
+          write(LuOut,9224) xname(n), xfac(n)
+        elseif (lxfac(n).and.(.not.nlxfac(n)))then
+          write(LuOut,9225) xname(n), xfac(n), local_c
+        elseif ((.not.lxfac(n)).and.nlxfac(n))then
+          write(LuOut,9224) xname(n), xfac(n), nonlocal_c
+        endif
+      enddo
+      do n = 1, numfunc
+        if (lcfac(n).and.nlcfac(n))then
+          write(LuOut,9224) cname(n), cfac(n)
+        elseif (lcfac(n).and.(.not.nlcfac(n)))then
+          write(LuOut,9225) cname(n), cfac(n), local_c
+        elseif ((.not.lcfac(n)).and.nlcfac(n))then
+          write(LuOut,9226) cname(n), cfac(n), nonlocal_c
+        endif
+      enddo
+      write(luout,*)
+ 9223 format(10x,a40)
+ 9224 format(10x,a40,1x,f6.3)
+ 9225 format(10x,a40,1x,f6.3,1x,a5)
+ 9226 format(10x,a40,1x,f6.3,1x,a9)
+      end subroutine noft_print_xc
 !
 !-----------------------------------------------------------------------

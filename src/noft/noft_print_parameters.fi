@@ -73,6 +73,10 @@
      &        noft_params%c_ab
         write(luout,'(" alpha-beta  power           : ",f12.6)')
      &        noft_params%p_ab
+        write(luout,'(" ddft        prefactor       : ",f12.6)')
+     &        noft_params%c_ddft
+        write(luout,'(" ddft        power           : ",f12.6)')
+     &        noft_params%p_ddft
         write(luout,'(" solver                      : ",$)')
         if (noft_params%solver.eq.monte_carlo) then
           write(luout,'(" Monte Carlo")')
