@@ -156,12 +156,7 @@
 !     noft_energy%e_correlation_ddft = (EFc - EFip)
 !     noft_energy%e_correlation_ddft = EFc
 !     noft_energy%e_correlation_ddft = - 1000.0_dp*(EFc - EFip)
-!     cc from xc_perdew91
-!     noft_energy%e_correlation_ddft = 8.723d0*EFdiff
       noft_energy%e_correlation_ddft = EFdiff
-!     factor of 6.74646 is needed to get h2 dissociation limit right
-!     in the sto-3g basis
-      noft_energy%e_correlation_ddft = 6.74646d0*EFdiff
 !
       if (.not.ga_destroy(g_vxc(2)))
      &  call ga_error("Could not destroy vxc_b")

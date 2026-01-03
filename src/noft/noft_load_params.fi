@@ -103,7 +103,8 @@
       if (rtdb_get(rtdb,"noft:c_ddft", MT_DBL, 1,
      &             noft_params%c_ddft)) then
       else
-        noft_params%c_ddft = 8.723_dp
+        ! based on H2 dissociation limit in sto-3g basis
+        noft_params%c_ddft = 6.74646_dp
       endif
 !
 !     Load the off-diagonal powers
