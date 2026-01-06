@@ -381,6 +381,9 @@
      &                         "average"))
      &    then
             functional = average
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "nocorrelation")) then
+            functional = nocorrelation
           else if (inp_compare(.false.,test(1:inp_strlen(test)),"ddft"))
      &    then
 !
@@ -398,8 +401,8 @@
             call inp_set_field(inp_cur_field()+1)
             call xc_input(rtdb, 'dft')
           else if (inp_compare(.false.,test(1:inp_strlen(test)),
-     &    "nocorrelation")) then
-            functional = nocorrelation
+     &                         "noft")) then
+            functional = noft
           else
             call errquit("noft_input: invalid functional: "//test,
      &                   160, INPUT_ERR)

@@ -58,10 +58,12 @@
         else if (noft_params%functional.eq.average) then
           write(luout,'("bracket conjugate side, and combined ",$)')
           write(luout,'("average correlation")')
-        else if (noft_params%functional.eq.ddft) then
-          write(luout,'("difference density functional (ddft)")')
         else if (noft_params%functional.eq.nocorrelation) then
           write(luout,'("no-correlation functional")')
+        else if (noft_params%functional.eq.ddft) then
+          write(luout,'("difference density functional (ddft)")')
+        else if (noft_params%functional.eq.noft) then
+          write(luout,'("natural orbital functional (noft)")')
         else
           write(luout,'(" ERROR: unknown functional")')
           call errquit("unknown functional option",

@@ -230,6 +230,116 @@
 !-----------------------------------------------------------------------
 !>
 !> \brief Calculate the 2-electron energy for opposite spin electrons
+!>        including the Löwdin-Shull terms and correlation
+!>
+!> For opposite spin electrons we don't need to worry about exchange
+!> as those terms integrate to zero because the spin functions are
+!> orthogonal.
+!>
+!> In this implementation we do incorporate the Löwdin-Shull terms that
+!> stem from multi-determinantal wavefunction. These terms not clearly
+!> separable from the regular Coulomb ones. Therefore they are lumped
+!> in with the correlation free terms.
+!>
+!> In addition we calculate the correlation contributions. The results
+!> in https://github.com/hjjvandam/2rdm-offdiag suggest that the
+!> correlation occurs only between pairs of orbitals such that the sum
+!> of their occupations is 1. Here we build that in.
+!>
+      subroutine noft_eval_2e_energy_ab_noft(c_ls,c_ols,p_ls,p_ols,
+     &           occ_1e_a,occ_1e_b,
+     &           moab_el_2,e_2e_ab,e_2e_ab_corr)
+      implicit none
+      !> The Löwdin-Shull coefficient
+      real(kind=dp), intent(in) :: c_ls
+      !> The off-Löwdin-Shull coefficient
+      real(kind=dp), intent(in) :: c_ols
+      !> The Löwdin-Shull power
+      real(kind=dp), intent(in) :: p_ls
+      !> The off-Löwdin-Shull power
+      real(kind=dp), intent(in) :: p_ols
+      !> The alpha orbital occupation numbers
+      integer, intent(in) :: occ_1e_a
+      !> The beta orbital occupation numbers
+      integer, intent(in) :: occ_1e_b
+      !> The alpha-beta 2-electron integrals in MO basis
+      integer, intent(in) :: moab_el_2
+      !> The opposite spin Coulomb energy
+      real(kind=dp), intent(out) :: e_2e_ab
+      !> The opposite spin correlation energy
+      real(kind=dp), intent(out) :: e_2e_ab_corr
+!
+      real(kind=dp), allocatable :: occ_i_a(:)
+      real(kind=dp), allocatable :: occ_j_a(:)
+      real(kind=dp), allocatable :: occ_i_b(:)
+      real(kind=dp), allocatable :: occ_j_b(:)
+      real(kind=dp), pointer :: moab(:,:,:,:)
+      real(kind=dp) :: o1a, o2a
+      real(kind=dp) :: o1b, o2b
+      real(kind=dp) :: e_2e_ab_ls
+      real(kind=dp) :: p_enoft
+      integer, parameter :: ndim = 4
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      integer :: ild(ndim)
+      integer :: i1, i2, i3, i4
+!
+      p_enoft = -250.0_dp
+!
+      e_2e_ab = 0.0_dp
+      e_2e_ab_ls = 0.0_dp
+      e_2e_ab_corr = 0.0_dp
+      do i1 = 1, ndim
+        ild(i1) = ihi(i1) - ilo(i1) + 1
+      enddo
+!
+      call noft_access(moab_el_2,moab,ilo,ihi)
+      allocate(occ_i_a(ilo(1):ihi(1)))
+      allocate(occ_j_a(ilo(2):ihi(2)))
+      allocate(occ_i_b(ilo(3):ihi(3)))
+      allocate(occ_j_b(ilo(4):ihi(4)))
+!
+      call nga_get(occ_1e_a,ilo(1),ihi(1),occ_i_a,ild(1))
+      call nga_get(occ_1e_a,ilo(2),ihi(2),occ_j_a,ild(2))
+      call nga_get(occ_1e_b,ilo(3),ihi(3),occ_i_b,ild(3))
+      call nga_get(occ_1e_b,ilo(4),ihi(4),occ_j_b,ild(4))
+!
+      do i4 = ilo(4), ihi(4)
+        do i3 = ilo(3), ihi(3)
+          do i2 = ilo(2), ihi(2)
+            do i1 = ilo(1), ihi(1)
+              if (i1.eq.i2.and.i3.eq.i4.and.i1.eq.i3) then
+                e_2e_ab_ls = e_2e_ab_ls
+     &                     + c_ls*((occ_i_a(i1)*occ_i_b(i3))**p_ls)
+     &                     * moab(i1,i2,i3,i4)
+              else if (i1.eq.i2.and.i3.eq.i4) then
+                e_2e_ab = e_2e_ab
+     &                  + c_ols*((occ_i_a(i1)*occ_i_b(i3))**p_ols)
+     &                  * moab(i1,i2,i3,i4)
+              else if (i1.eq.i3.and.i2.eq.i4) then
+                e_2e_ab_corr = e_2e_ab_corr
+     &              - exp(p_enoft*(occ_i_a(i1)+occ_i_b(i4)-1.0_dp)**2)
+     &              * sqrt(sqrt(occ_i_a(i1)*(1.0_dp-occ_i_a(i1))
+     &                         *occ_i_b(i4)*(1.0_dp-occ_i_b(i4))))
+     &              * moab(i1,i2,i3,i4)
+              endif
+            enddo
+          enddo
+        enddo
+      enddo
+      e_2e_ab = e_2e_ab + e_2e_ab_ls
+!
+      deallocate(occ_j_b)
+      deallocate(occ_i_b)
+      deallocate(occ_j_a)
+      deallocate(occ_i_a)
+      call noft_release(moab_el_2,moab,ilo,ihi)
+!
+      end subroutine noft_eval_2e_energy_ab_noft
+!
+!-----------------------------------------------------------------------
+!>
+!> \brief Calculate the 2-electron energy for opposite spin electrons
 !>        wthout correlation
 !>
 !> For opposite spin electrons we don't need to worry about exchange
