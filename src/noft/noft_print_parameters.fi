@@ -60,22 +60,32 @@
           write(luout,'("average correlation")')
         else if (noft_params%functional.eq.ddft) then
           write(luout,'("difference density functional (ddft)")')
+        else if (noft_params%functional.eq.nocorrelation) then
+          write(luout,'("no-correlation functional")')
         else
           write(luout,'(" ERROR: unknown functional")')
           call errquit("unknown functional option",
      &                 noft_params%functional,UERR)
         endif
-        write(luout,'(" sigma-sigma prefactor       : ",f12.6)')
+        write(luout,'(" sigma-sigma   prefactor       : ",f12.6)')
      &        noft_params%c_aa
-        write(luout,'(" sigma-sigma power           : ",f12.6)')
+        write(luout,'(" sigma-sigma   power           : ",f12.6)')
      &        noft_params%p_aa
-        write(luout,'(" alpha-beta  prefactor       : ",f12.6)')
+        write(luout,'(" alpha-beta    prefactor       : ",f12.6)')
      &        noft_params%c_ab
-        write(luout,'(" alpha-beta  power           : ",f12.6)')
+        write(luout,'(" Löwdin-Shull  prefactor       : ",f12.6)')
+     &        noft_params%c_ls
+        write(luout,'(" Löwdin-Shull2 prefactor       : ",f12.6)')
+     &        noft_params%c_ols
+        write(luout,'(" alpha-beta    power           : ",f12.6)')
      &        noft_params%p_ab
-        write(luout,'(" ddft        prefactor       : ",f12.6)')
+        write(luout,'(" Löwdin-Shull  power           : ",f12.6)')
+     &        noft_params%p_ls
+        write(luout,'(" Löwdin-Shull2 power           : ",f12.6)')
+     &        noft_params%p_ols
+        write(luout,'(" ddft          prefactor       : ",f12.6)')
      &        noft_params%c_ddft
-        write(luout,'(" ddft        power           : ",f12.6)')
+        write(luout,'(" ddft          power           : ",f12.6)')
      &        noft_params%p_ddft
         write(luout,'(" solver                      : ",$)')
         if (noft_params%solver.eq.monte_carlo) then

@@ -12,5 +12,6 @@
       integer, parameter :: weakstrong_v = 18
       integer, parameter :: average = 19
       integer, parameter :: ddft = 20
+      integer, parameter :: nocorrelation = 21
 !
 !-----------------------------------------------------------------------

@@ -31,9 +31,13 @@
       real(kind=dp) :: c_aa
       real(kind=dp) :: c_ab
       real(kind=dp) :: c_ddft
+      real(kind=dp) :: c_ls
+      real(kind=dp) :: c_ols
       real(kind=dp) :: p_aa
       real(kind=dp) :: p_ab
       real(kind=dp) :: p_ddft
+      real(kind=dp) :: p_ls
+      real(kind=dp) :: p_ols
       real(kind=dp) :: temperature
       integer       :: nindep ! Number of linearly independ vectors
       real(kind=dp) :: cindep ! Cutoff to determine independ vectors
@@ -167,6 +171,24 @@
           if (.not. rtdb_put(rtdb, "noft:c_ddft", mt_dbl, 1, c_ddft))
      &      call errquit("noft_input: rtdb_put failed", 55, RTDB_ERR)
 !
+!       C_ls
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_ls"))
+     &  then
+          if (.not. inp_f(c_ls))
+     &      call errquit("noft_input: read c_ls failed", 0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:c_ls", mt_dbl, 1, c_ls))
+     &      call errquit("noft_input: rtdb_put failed", 56, RTDB_ERR)
+!
+!       C_ols
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_ols"))
+     &  then
+          if (.not. inp_f(c_ols))
+     &      call errquit("noft_input: read c_ols failed", 0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:c_ols", mt_dbl, 1, c_ols))
+     &      call errquit("noft_input: rtdb_put failed", 57, RTDB_ERR)
+!
 !       P_aa
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_aa"))
@@ -193,6 +215,24 @@
      &      call errquit("noft_input: read p_ddft failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:p_ddft", mt_dbl, 1, p_ddft))
      &      call errquit("noft_input: rtdb_put failed", 75, RTDB_ERR)
+!
+!       P_ls
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_ls"))
+     &  then
+          if (.not. inp_f(p_ls))
+     &      call errquit("noft_input: read p_ls failed", 0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:p_ls", mt_dbl, 1, p_ls))
+     &      call errquit("noft_input: rtdb_put failed", 76, RTDB_ERR)
+!
+!       P_ols
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_ols"))
+     &  then
+          if (.not. inp_f(p_ols))
+     &      call errquit("noft_input: read p_ols failed", 0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:p_ols", mt_dbl, 1, p_ols))
+     &      call errquit("noft_input: rtdb_put failed", 77, RTDB_ERR)
 !
 !       "Temperature"
 !
@@ -357,6 +397,9 @@
             functional = ddft
             call inp_set_field(inp_cur_field()+1)
             call xc_input(rtdb, 'dft')
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &    "nocorrelation")) then
+            functional = nocorrelation
           else
             call errquit("noft_input: invalid functional: "//test,
      &                   160, INPUT_ERR)

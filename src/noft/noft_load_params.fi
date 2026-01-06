@@ -100,11 +100,34 @@
       else
         noft_params%c_ab = 0.25_dp
       endif
+!
+!     Load the DDFT coefficient
+!
       if (rtdb_get(rtdb,"noft:c_ddft", MT_DBL, 1,
      &             noft_params%c_ddft)) then
       else
         ! based on H2 dissociation limit in sto-3g basis
-        noft_params%c_ddft = 6.74646_dp
+        !noft_params%c_ddft = 6.74646_dp
+        ! based on H2 dissociation limit in sto-3g basis with Lowdin-Shull
+        noft_params%c_ddft = 11.50312_dp
+        ! based on H2 dissociation limit in sto-3g basis with Lowdin-Shull 1/4
+        !noft_params%c_ddft = 15.44531_dp
+      endif
+!
+!     Load the Löwdin-Shull coefficient
+!
+      if (rtdb_get(rtdb,"noft:c_ls", MT_DBL, 1,
+     &             noft_params%c_ls)) then
+      else
+        noft_params%c_ls = 1.0_dp
+      endif
+!
+!     Load the off-Löwdin-Shull coefficient
+!
+      if (rtdb_get(rtdb,"noft:c_ols", MT_DBL, 1,
+     &             noft_params%c_ols)) then
+      else
+        noft_params%c_ols = 1.0_dp
       endif
 !
 !     Load the off-diagonal powers
@@ -119,10 +142,32 @@
       else
         noft_params%p_ab = 0.5233_dp
       endif
+!
+!     Load the DDFT power
+!
       if (rtdb_get(rtdb,"noft:p_ddft", MT_DBL, 1,
      &             noft_params%p_ddft)) then
       else
-        noft_params%p_ddft = 0.5_dp
+        ! Based on H2 sto-3g DDFT with LS
+        noft_params%p_ddft = 0.84187_dp
+        ! Based on H2 sto-3g DDFT with LS 1/4
+        !noft_params%p_ddft = 0.64794_dp
+      endif
+!
+!     Load the Löwdin-Shull power
+!
+      if (rtdb_get(rtdb,"noft:p_ls", MT_DBL, 1,
+     &             noft_params%p_ls)) then
+      else
+        noft_params%p_ls = 0.5_dp
+      endif
+!
+!     Load the off-Löwdin-Shull power
+!
+      if (rtdb_get(rtdb,"noft:p_ols", MT_DBL, 1,
+     &             noft_params%p_ols)) then
+      else
+        noft_params%p_ols = 1.0_dp
       endif
 !
 !     Load the "temperature"
