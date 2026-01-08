@@ -19,19 +19,19 @@
         write(luout,'(" NOFT settings")')
         write(luout,'(" =============")')
         write(luout,*)
-        write(luout,'(" use symmetry                : ",$)')
+        write(luout,'(" use symmetry                  : ",$)')
         if (noft_params%symmetry_adapt) then
           write(luout,'("yes")')
         else
           write(luout,'(" no")')
         endif
-        write(luout,'(" spin restricted             : ",$)')
+        write(luout,'(" spin restricted               : ",$)')
         if (noft_params%restricted) then
           write(luout,'("yes")')
         else
           write(luout,'(" no")')
         endif
-        write(luout,'(" functional                  : ",$)')
+        write(luout,'(" functional                    : ",$)')
         if (noft_params%functional.eq.same) then
           write(luout,'("bracket same side, and weak correlation")')
         else if (noft_params%functional.eq.conjugate) then
@@ -71,25 +71,25 @@
         endif
         write(luout,'(" sigma-sigma   prefactor       : ",f12.6)')
      &        noft_params%c_aa
-        write(luout,'(" sigma-sigma   power           : ",f12.6)')
-     &        noft_params%p_aa
         write(luout,'(" alpha-beta    prefactor       : ",f12.6)')
      &        noft_params%c_ab
         write(luout,'(" Löwdin-Shull  prefactor       : ",f12.6)')
      &        noft_params%c_ls
         write(luout,'(" Löwdin-Shull2 prefactor       : ",f12.6)')
      &        noft_params%c_ols
+        write(luout,'(" ddft          prefactor       : ",f12.6)')
+     &        noft_params%c_ddft
+        write(luout,'(" sigma-sigma   power           : ",f12.6)')
+     &        noft_params%p_aa
         write(luout,'(" alpha-beta    power           : ",f12.6)')
      &        noft_params%p_ab
         write(luout,'(" Löwdin-Shull  power           : ",f12.6)')
      &        noft_params%p_ls
         write(luout,'(" Löwdin-Shull2 power           : ",f12.6)')
      &        noft_params%p_ols
-        write(luout,'(" ddft          prefactor       : ",f12.6)')
-     &        noft_params%c_ddft
         write(luout,'(" ddft          power           : ",f12.6)')
      &        noft_params%p_ddft
-        write(luout,'(" solver                      : ",$)')
+        write(luout,'(" solver                        : ",$)')
         if (noft_params%solver.eq.monte_carlo) then
           write(luout,'(" Monte Carlo")')
         else if (noft_params%solver.eq.pair_rotation) then
@@ -100,13 +100,13 @@
           write(luout,'(" ERROR: unknown solver")')
           call errquit("unknown solver option",noft_params%solver,UERR)
         endif
-        write(luout,'(" maximum number of iterations: ",$)')
+        write(luout,'(" maximum number of iterations  : ",$)')
         write(luout,'(i6)')noft_params%maxiter
-        write(luout,'(" number of open shells       : ",$)')
+        write(luout,'(" number of open shells         : ",$)')
         write(luout,'(i6)')noft_params%no_open
-        write(luout,'(" number of core orbitals     : ",$)')
+        write(luout,'(" number of core orbitals       : ",$)')
         write(luout,'(i6)')noft_params%ncore_a
-        write(luout,'(" number of virtual orbitals  : ",$)')
+        write(luout,'(" number of virtual orbitals    : ",$)')
         write(luout,'(i6)')noft_params%nvirtual_a
         if (noft_params%functional.eq.ddft) then
           call noft_print_xc()
