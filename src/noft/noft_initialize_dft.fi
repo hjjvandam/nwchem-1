@@ -11,9 +11,12 @@
 !>
       subroutine noft_initialize_dft(rtdb,noft_params,noft_instances)
       implicit none
+#include "noft_functional_options.fh"
       integer,                 intent(in) :: rtdb
       type(noft_parameter_tp), intent(in) :: noft_params
       type(noft_instances_tp), intent(in) :: noft_instances
+!
+      if (noft_params%functional.ne.ddft) return
 !
 !     call grid_acc_def(rtdb)
       call grid_setquad(rtdb)
