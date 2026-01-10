@@ -324,10 +324,10 @@
      &                  * moab(i1,i2,i3,i4)
               else if (i1.eq.i3.and.i2.eq.i4) then
                 e_2e_ab_corr = e_2e_ab_corr
-     &              - c_noft
+     &              - 0.5_dp*c_noft
      &              * exp(p_enoft*(occ_i_a(i1)+occ_i_b(i4)-1.0_dp)**2)
-     &              *((occ_i_a(i1)*(1.0_dp-occ_i_a(i1))*
-     &                 occ_i_b(i4)*(1.0_dp-occ_i_b(i4)))**p_noft)
+     &              * ((16.0_dp*occ_i_a(i1)*(1.0_dp-occ_i_a(i1))*
+     &                  occ_i_b(i4)*(1.0_dp-occ_i_b(i4)))**p_noft)
      &              * moab(i1,i2,i3,i4)
               endif
             enddo
