@@ -77,6 +77,8 @@
      &        noft_params%c_ls
         write(luout,'(" Löwdin-Shull2 prefactor       : ",f12.6)')
      &        noft_params%c_ols
+        write(luout,'(" NOFT          prefactor       : ",f12.6)')
+     &        noft_params%c_noft
         write(luout,'(" ddft          prefactor       : ",f12.6)')
      &        noft_params%c_ddft
         write(luout,'(" sigma-sigma   power           : ",f12.6)')
@@ -87,6 +89,10 @@
      &        noft_params%p_ls
         write(luout,'(" Löwdin-Shull2 power           : ",f12.6)')
      &        noft_params%p_ols
+        write(luout,'(" NOFT          power           : ",f12.6)')
+     &        noft_params%p_noft
+        write(luout,'(" NOFT          exponent        : ",f12.6)')
+     &        noft_params%p_enoft
         write(luout,'(" ddft          power           : ",f12.6)')
      &        noft_params%p_ddft
         write(luout,'(" solver                        : ",$)')

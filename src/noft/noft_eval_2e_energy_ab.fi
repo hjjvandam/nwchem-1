@@ -246,7 +246,8 @@
 !> correlation occurs only between pairs of orbitals such that the sum
 !> of their occupations is 1. Here we build that in.
 !>
-      subroutine noft_eval_2e_energy_ab_noft(c_ls,c_ols,p_ls,p_ols,
+      subroutine noft_eval_2e_energy_ab_noft(c_ls,c_ols,c_noft,
+     &           p_ls,p_ols,p_noft,p_enoft,
      &           occ_1e_a,occ_1e_b,
      &           moab_el_2,e_2e_ab,e_2e_ab_corr)
       implicit none
@@ -254,6 +255,12 @@
       real(kind=dp), intent(in) :: c_ls
       !> The off-Löwdin-Shull coefficient
       real(kind=dp), intent(in) :: c_ols
+      !> The NOFT term coefficient
+      real(kind=dp), intent(in) :: c_noft
+      !> The NOFT term power
+      real(kind=dp), intent(in) :: p_noft
+      !> The NOFT term exponent
+      real(kind=dp), intent(in) :: p_enoft
       !> The Löwdin-Shull power
       real(kind=dp), intent(in) :: p_ls
       !> The off-Löwdin-Shull power
@@ -277,14 +284,13 @@
       real(kind=dp) :: o1a, o2a
       real(kind=dp) :: o1b, o2b
       real(kind=dp) :: e_2e_ab_ls
-      real(kind=dp) :: p_enoft
       integer, parameter :: ndim = 4
       integer :: ilo(ndim)
       integer :: ihi(ndim)
       integer :: ild(ndim)
       integer :: i1, i2, i3, i4
 !
-      p_enoft = -250.0_dp
+!     p_enoft = -250.0_dp
 !
       e_2e_ab = 0.0_dp
       e_2e_ab_ls = 0.0_dp
@@ -318,9 +324,10 @@
      &                  * moab(i1,i2,i3,i4)
               else if (i1.eq.i3.and.i2.eq.i4) then
                 e_2e_ab_corr = e_2e_ab_corr
-     &              - exp(p_enoft*(occ_i_a(i1)+occ_i_b(i4)-1.0_dp)**2)
-     &              * sqrt(sqrt(occ_i_a(i1)*(1.0_dp-occ_i_a(i1))
-     &                         *occ_i_b(i4)*(1.0_dp-occ_i_b(i4))))
+     &              - c_noft
+     &              * exp(p_enoft*(occ_i_a(i1)+occ_i_b(i4)-1.0_dp)**2)
+     &              *((occ_i_a(i1)*(1.0_dp-occ_i_a(i1))*
+     &                 occ_i_b(i4)*(1.0_dp-occ_i_b(i4)))**p_noft)
      &              * moab(i1,i2,i3,i4)
               endif
             enddo

@@ -33,11 +33,14 @@
       real(kind=dp) :: c_ddft
       real(kind=dp) :: c_ls
       real(kind=dp) :: c_ols
+      real(kind=dp) :: c_noft
       real(kind=dp) :: p_aa
       real(kind=dp) :: p_ab
       real(kind=dp) :: p_ddft
       real(kind=dp) :: p_ls
       real(kind=dp) :: p_ols
+      real(kind=dp) :: p_noft
+      real(kind=dp) :: p_enoft
       real(kind=dp) :: temperature
       integer       :: nindep ! Number of linearly independ vectors
       real(kind=dp) :: cindep ! Cutoff to determine independ vectors
@@ -189,6 +192,15 @@
           if (.not. rtdb_put(rtdb, "noft:c_ols", mt_dbl, 1, c_ols))
      &      call errquit("noft_input: rtdb_put failed", 57, RTDB_ERR)
 !
+!       C_noft
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_noft"))
+     &  then
+          if (.not. inp_f(c_noft))
+     &      call errquit("noft_input: read c_noft failed", 0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:c_noft", mt_dbl, 1, c_noft))
+     &      call errquit("noft_input: rtdb_put failed", 58, RTDB_ERR)
+!
 !       P_aa
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_aa"))
@@ -233,6 +245,25 @@
      &      call errquit("noft_input: read p_ols failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:p_ols", mt_dbl, 1, p_ols))
      &      call errquit("noft_input: rtdb_put failed", 77, RTDB_ERR)
+!
+!       P_noft
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_noft"))
+     &  then
+          if (.not. inp_f(p_noft))
+     &      call errquit("noft_input: read p_noft failed", 0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:p_noft", mt_dbl, 1, p_noft))
+     &      call errquit("noft_input: rtdb_put failed", 78, RTDB_ERR)
+!
+!       P_enoft
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &           "p_enoft")) then
+          if (.not. inp_f(p_enoft))
+     &      call errquit("noft_input: read p_enoft failed",
+     &                   0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:p_enoft", mt_dbl, 1, p_enoft))
+     &      call errquit("noft_input: rtdb_put failed", 79, RTDB_ERR)
 !
 !       "Temperature"
 !

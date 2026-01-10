@@ -27,6 +27,8 @@
         real(kind=dp) :: c_ls
         !> The coefficient for the off-Löwdin-Shull terms
         real(kind=dp) :: c_ols
+        !> The coefficient for the NOFT term
+        real(kind=dp) :: c_noft
         !> The power for the same spin 2-electron off-diagonal
         real(kind=dp) :: p_aa
         !> The power for the opposite spin 2-electron off-diagonal
@@ -37,6 +39,10 @@
         real(kind=dp) :: p_ls
         !> The power for the off-Löwdin-Shull terms
         real(kind=dp) :: p_ols
+        !> The power for the NOFT terms
+        real(kind=dp) :: p_noft
+        !> The Gaussian exponent for the NOFT terms
+        real(kind=dp) :: p_enoft
         !> "Temperature"
         real(kind=dp) :: temperature
         !> Is this a spin restricted calculation?

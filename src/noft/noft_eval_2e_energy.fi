@@ -20,8 +20,8 @@
 !
       real(kind=dp) :: en_2el
       real(kind=dp) :: en_2el_corr
-      real(kind=dp) :: c_aa, c_ab, c_ls, c_ols
-      real(kind=dp) :: p_aa, p_ab, p_ls, p_ols
+      real(kind=dp) :: c_aa, c_ab, c_ls, c_ols, c_noft
+      real(kind=dp) :: p_aa, p_ab, p_ls, p_ols, p_noft, p_enoft
       integer :: moaa_el_2, moab_el_2, mobb_el_2
       integer :: occ_1e_a,  occ_1e_b
       integer :: occ_2e_aa, occ_2e_bb
@@ -31,16 +31,19 @@
      &  "noft_eval_2e_energy: "
       character(len=4) :: func
 !
-      c_aa  = noft_parameters%c_aa
-      c_ab  = noft_parameters%c_ab
-      c_ls  = noft_parameters%c_ls
-      c_ols = noft_parameters%c_ols
-      p_aa  = noft_parameters%p_aa
-      p_ab  = noft_parameters%p_ab
-      p_ls  = noft_parameters%p_ls
-      p_ols = noft_parameters%p_ols
-      ne_a  = noft_parameters%ne_a
-      ne_b  = noft_parameters%ne_b
+      c_aa    = noft_parameters%c_aa
+      c_ab    = noft_parameters%c_ab
+      c_ls    = noft_parameters%c_ls
+      c_ols   = noft_parameters%c_ols
+      c_noft  = noft_parameters%c_noft
+      p_aa    = noft_parameters%p_aa
+      p_ab    = noft_parameters%p_ab
+      p_ls    = noft_parameters%p_ls
+      p_ols   = noft_parameters%p_ols
+      p_noft  = noft_parameters%p_noft
+      p_enoft = noft_parameters%p_enoft
+      ne_a    = noft_parameters%ne_a
+      ne_b    = noft_parameters%ne_b
       functional = noft_parameters%functional
 !
       moaa_el_2 = noft_operators%moaa_el_2
@@ -99,7 +102,8 @@
      &                                 occ_1e_a,occ_1e_b,
      &                                 moab_el_2,en_2el,en_2el_corr)
       else if (functional.eq.noft) then
-        call noft_eval_2e_energy_ab_noft(c_ls,c_ols,p_ls,p_ols,
+        call noft_eval_2e_energy_ab_noft(c_ls,c_ols,c_noft,
+     &                                   p_ls,p_ols,p_noft,p_enoft,
      &                                   occ_1e_a,occ_1e_b,
      &                                   moab_el_2,en_2el,en_2el_corr)
       else

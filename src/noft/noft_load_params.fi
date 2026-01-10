@@ -130,6 +130,14 @@
         noft_params%c_ols = 1.0_dp
       endif
 !
+!     Load the NOFT coefficient
+!
+      if (rtdb_get(rtdb,"noft:c_noft", MT_DBL, 1,
+     &             noft_params%c_noft)) then
+      else
+        noft_params%c_noft = 1.0_dp
+      endif
+!
 !     Load the off-diagonal powers
 !
       if (rtdb_get(rtdb,"noft:p_aa", MT_DBL, 1,
@@ -168,6 +176,22 @@
      &             noft_params%p_ols)) then
       else
         noft_params%p_ols = 1.0_dp
+      endif
+!
+!     Load the NOFT power
+!
+      if (rtdb_get(rtdb,"noft:p_noft", MT_DBL, 1,
+     &             noft_params%p_noft)) then
+      else
+        noft_params%p_noft = 0.25_dp
+      endif
+!
+!     Load the NOFT Gaussian exponent
+!
+      if (rtdb_get(rtdb,"noft:p_enoft", MT_DBL, 1,
+     &             noft_params%p_enoft)) then
+      else
+        noft_params%p_enoft = -250.0_dp
       endif
 !
 !     Load the "temperature"
