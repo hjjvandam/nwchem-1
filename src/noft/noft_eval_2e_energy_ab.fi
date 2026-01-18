@@ -246,11 +246,16 @@
 !> correlation occurs only between pairs of orbitals such that the sum
 !> of their occupations is 1. Here we build that in.
 !>
-      subroutine noft_eval_2e_energy_ab_noft(c_ls,c_ols,c_noft,
+      subroutine noft_eval_2e_energy_ab_noft(ne_a,ne_b,
+     &           c_ls,c_ols,c_noft,
      &           p_ls,p_ols,p_noft,p_enoft,
      &           occ_1e_a,occ_1e_b,
      &           moab_el_2,e_2e_ab,e_2e_ab_corr)
       implicit none
+      !> The number of alpha electrons
+      integer,       intent(in) :: ne_a
+      !> The number of beta electrons
+      integer,       intent(in) :: ne_b
       !> The Löwdin-Shull coefficient
       real(kind=dp), intent(in) :: c_ls
       !> The off-Löwdin-Shull coefficient
@@ -284,6 +289,8 @@
       real(kind=dp) :: o1a, o2a
       real(kind=dp) :: o1b, o2b
       real(kind=dp) :: e_2e_ab_ls
+      real(kind=dp) :: fac
+      real(kind=dp) :: fac_ls
       integer, parameter :: ndim = 4
       integer :: ilo(ndim)
       integer :: ihi(ndim)
@@ -292,6 +299,8 @@
 !
 !     p_enoft = -250.0_dp
 !
+      fac = 0.0_dp
+      fac_ls = 0.0d0
       e_2e_ab = 0.0_dp
       e_2e_ab_ls = 0.0_dp
       e_2e_ab_corr = 0.0_dp
@@ -315,10 +324,12 @@
           do i2 = ilo(2), ihi(2)
             do i1 = ilo(1), ihi(1)
               if (i1.eq.i2.and.i3.eq.i4.and.i1.eq.i3) then
+                fac_ls = fac_ls + c_ls*((occ_i_a(i1)*occ_i_b(i3))**p_ls)
                 e_2e_ab_ls = e_2e_ab_ls
      &                     + c_ls*((occ_i_a(i1)*occ_i_b(i3))**p_ls)
      &                     * moab(i1,i2,i3,i4)
               else if (i1.eq.i2.and.i3.eq.i4) then
+                fac = fac + c_ols*((occ_i_a(i1)*occ_i_b(i3))**p_ols)
                 e_2e_ab = e_2e_ab
      &                  + c_ols*((occ_i_a(i1)*occ_i_b(i3))**p_ols)
      &                  * moab(i1,i2,i3,i4)
@@ -334,7 +345,18 @@
           enddo
         enddo
       enddo
-      e_2e_ab = e_2e_ab + e_2e_ab_ls
+!DEBUG
+!     write(*,*)"HVD1: ",ne_a*ne_b,fac_ls,fac
+!DEBUG
+      if (abs(fac).gt.1.0d-10) then
+        fac = (ne_a * ne_b - fac_ls) / fac
+      else
+        fac = 0.0_dp
+      endif
+!DEBUG
+!     write(*,*)"HVD2: ",ne_a*ne_b,fac_ls+fac,fac_ls,fac
+!DEBUG
+      e_2e_ab = e_2e_ab * fac + e_2e_ab_ls
 !
       deallocate(occ_j_b)
       deallocate(occ_i_b)

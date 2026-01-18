@@ -102,7 +102,7 @@
      &                                 occ_1e_a,occ_1e_b,
      &                                 moab_el_2,en_2el,en_2el_corr)
       else if (functional.eq.noft) then
-        call noft_eval_2e_energy_ab_noft(c_ls,c_ols,c_noft,
+        call noft_eval_2e_energy_ab_noft(ne_a,ne_b,c_ls,c_ols,c_noft,
      &                                   p_ls,p_ols,p_noft,p_enoft,
      &                                   occ_1e_a,occ_1e_b,
      &                                   moab_el_2,en_2el,en_2el_corr)
