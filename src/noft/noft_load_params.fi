@@ -191,7 +191,14 @@
       if (rtdb_get(rtdb,"noft:p_enoft", MT_DBL, 1,
      &             noft_params%p_enoft)) then
       else
-        noft_params%p_enoft = -250.0_dp
+!
+!       If p_enoft is large and negative the correlation energy is
+!       too small. If p_enoft is 0 the correlation energy is too large.
+!       For hydrogen atoms in sto3g -3.0 seems about right. Still need
+!       to test whether this result is transferable to other systems and
+!       basis sets.
+!
+        noft_params%p_enoft = -3.0_dp
       endif
 !
 !     Load the "temperature"

@@ -285,6 +285,9 @@
       real(kind=dp), allocatable :: occ_j_a(:)
       real(kind=dp), allocatable :: occ_i_b(:)
       real(kind=dp), allocatable :: occ_j_b(:)
+!     real(kind=dp), allocatable :: corr(:,:)
+!     real(kind=dp) :: result
+!     integer :: i1r, i4r
       real(kind=dp), pointer :: moab(:,:,:,:)
       real(kind=dp) :: o1a, o2a
       real(kind=dp) :: o1b, o2b
@@ -309,6 +312,10 @@
       enddo
 !
       call noft_access(moab_el_2,moab,ilo,ihi)
+!test
+!     allocate(corr(1:ihi(1),1:ihi(4)))
+!     corr = 0.0_dp
+!test
       allocate(occ_i_a(ilo(1):ihi(1)))
       allocate(occ_j_a(ilo(2):ihi(2)))
       allocate(occ_i_b(ilo(3):ihi(3)))
@@ -334,17 +341,44 @@
      &                  + c_ols*((occ_i_a(i1)*occ_i_b(i3))**p_ols)
      &                  * moab(i1,i2,i3,i4)
               else if (i1.eq.i3.and.i2.eq.i4) then
+                if (((i1.le.ne_a).and.(i3.le.ne_b).and.
+     &               (i2.gt.ne_a).and.(i4.gt.ne_b).and.
+     &               (occ_i_a(i1).ge.0.5_dp).and.
+     &               (occ_i_b(i3).ge.0.5_dp).and.
+     &               (occ_j_a(i2).lt.0.5_dp).and.
+     &               (occ_j_b(i4).lt.0.5_dp)).or.
+     &              ((i1.gt.ne_a).and.(i3.gt.ne_b).and.
+     &               (i2.le.ne_a).and.(i4.le.ne_b).and.
+     &               (occ_i_a(i1).lt.0.5_dp).and.
+     &               (occ_i_b(i3).lt.0.5_dp).and.
+     &               (occ_j_a(i2).ge.0.5_dp).and.
+     &               (occ_j_b(i4).ge.0.5_dp))) then
+!test
+!               corr(i1,i4) =
+!    &              exp(p_enoft*(occ_i_a(i1)+occ_j_b(i4)-1.0_dp)**2)
+!test
                 e_2e_ab_corr = e_2e_ab_corr
      &              - 0.5_dp*c_noft
      &              * exp(p_enoft*(occ_i_a(i1)+occ_j_b(i4)-1.0_dp)**2)
      &              * ((16.0_dp*occ_i_a(i1)*(1.0_dp-occ_i_a(i1))*
      &                  occ_j_b(i4)*(1.0_dp-occ_j_b(i4)))**p_noft)
      &              * moab(i1,i2,i3,i4)
+                endif
               endif
             enddo
           enddo
         enddo
       enddo
+!test
+!     do i1 = 1, ihi(1)
+!       do i4 = 1, ihi(4)
+!         write(10,'(2x,f12.6,$)')corr(i1,i4)
+!       enddo
+!       write(10,*)
+!     enddo
+!     close(10)
+!     deallocate(corr)
+!test
 !DEBUG
 !     write(*,*)"HVD1: ",ne_a*ne_b,fac_ls,fac
 !DEBUG
