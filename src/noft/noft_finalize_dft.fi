@@ -16,7 +16,8 @@
 !
       logical :: okeep
 !
-      if (noft_params%functional.ne.ddft) then
+      if (noft_params%functional.ne.ddft.and.
+     &    noft_params%functional.ne.dft) then
 !
 !       For this functionality we haven't used the DFT module so there
 !       is nothing to cleanup

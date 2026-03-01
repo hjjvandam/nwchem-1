@@ -83,6 +83,7 @@
       real(kind=dp) :: step_now ! the step size for this macro iteration
       real(kind=dp) :: step_new ! the step size for the next iteration
       real(kind=dp) :: step_max ! the maximum step size
+      integer, parameter :: print_rate = 100
 !
       oconv = .false.
       thresh = noft_params%threshold
@@ -264,7 +265,8 @@
                   call noft_swap_wavefunctions(noft_wavefunction,
      &                                         noft_wavefunction_step)
                   noft_energy = noft_energy_step
-                  if (noft_ionode()) then
+                  if (noft_ionode().and.
+     &                mod(imacro,print_rate).eq.0) then
                     write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,
      &                   iteration,fields(ifield),step_now,step_new
                     call noft_print_energy(noft_energy,luout,.true.)
@@ -308,7 +310,8 @@
                     step_new = max(abs(step),thresh)
                     call noft_monte_carlo_range_init_elm(noft_range,
      &                   fields(ifield),step_new,0.0_dp,0.0_dp,ii,jj)
-                    if (noft_ionode()) then
+                    if (noft_ionode().and.
+     &                  mod(imacro,print_rate).eq.0) then
                       write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,
      &                     iteration,fields(ifield),step_now,step_new
                       call noft_print_energy(noft_energy,luout,.true.)
@@ -355,7 +358,8 @@
                     step_new = max(abs(step),thresh)
                     call noft_monte_carlo_range_init_elm(noft_range,
      &                   fields(ifield),step_new,0.0_dp,0.0_dp,ii,jj)
-                    if (noft_ionode()) then
+                    if (noft_ionode().and.
+     &                  mod(imacro,print_rate).eq.0) then
                       write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,
      &                     iteration,fields(ifield),step_now,step_new
                       call noft_print_energy(noft_energy,luout,.true.)

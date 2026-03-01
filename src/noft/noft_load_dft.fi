@@ -50,7 +50,8 @@
       logical, external :: atom_tag_check
       logical, external :: xc_gotxc
 !
-      if (noft_params%functional.ne.ddft) then
+      if (noft_params%functional.ne.ddft.and.
+     &    noft_params%functional.ne.dft) then
 !       No DFT capabilities are used so leave
         return
       endif

@@ -23,6 +23,8 @@
         real(kind=dp) :: c_ab
         !> The coefficient for the DDFT approach
         real(kind=dp) :: c_ddft
+        !> The coefficient for the DFT approach
+        real(kind=dp) :: c_dft
         !> The coefficient for the Löwdin-Shull terms
         real(kind=dp) :: c_ls
         !> The coefficient for the off-Löwdin-Shull terms

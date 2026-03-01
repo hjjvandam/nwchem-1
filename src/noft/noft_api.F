@@ -30,6 +30,7 @@
       real(kind=dp) :: levelshift_tildefuncs
       real(kind=dp) :: c_aa
       real(kind=dp) :: c_ab
+      real(kind=dp) :: c_dft
       real(kind=dp) :: c_ddft
       real(kind=dp) :: c_ls
       real(kind=dp) :: c_ols
@@ -173,6 +174,15 @@
      &      call errquit("noft_input: read c_ddft failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:c_ddft", mt_dbl, 1, c_ddft))
      &      call errquit("noft_input: rtdb_put failed", 55, RTDB_ERR)
+!
+!       C_dft
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_dft"))
+     &  then
+          if (.not. inp_f(c_dft))
+     &      call errquit("noft_input: read c_dft failed", 0, INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:c_dft", mt_dbl, 1, c_dft))
+     &      call errquit("noft_input: rtdb_put failed", 57, RTDB_ERR)
 !
 !       C_ls
 !
@@ -429,6 +439,22 @@
 !           functional.)
 !
             functional = ddft
+            call inp_set_field(inp_cur_field()+1)
+            call xc_input(rtdb, 'dft')
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"dft"))
+     &    then
+!
+!           dft xc <exchange-correlation functional specification>
+!
+!           this module always uses 100% exact exchange so functionals
+!           should be selected accordingly
+!
+!           "xc" must be present on the input line but xc_input cannot
+!           process it so we have to skip it.
+!           (Maybe if "xc" is not present we should pick a default
+!           functional.)
+!
+            functional = dft
             call inp_set_field(inp_cur_field()+1)
             call xc_input(rtdb, 'dft')
           else if (inp_compare(.false.,test(1:inp_strlen(test)),

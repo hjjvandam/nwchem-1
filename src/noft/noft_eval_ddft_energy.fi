@@ -84,9 +84,11 @@
       logical, external         :: xc_gotxc
 !
       noft_energy%e_correlation_ddft = 0.0_dp
-      if (noft_parameters%functional.ne.ddft) then
+      noft_energy%e_correlation_dft = 0.0_dp
+      if (noft_parameters%functional.ne.ddft.and.
+     &    noft_parameters%functional.ne.dft) then
         !
-        ! This is not a DDFT calculation
+        ! This is not a DDFT nor a DFT calculation
         !
         return
       else
@@ -119,8 +121,15 @@
       if (.not.nga_create(MT_DBL,ndim,dims,"vxc_b",chunk,g_vxc(2)))
      &  call ga_error("Could not create vxc_b")
 !
-      call noft_eval_density_matrix_ao(noft_parameters,
-     &     noft_occupations,noft_wavefunction,g_dens)
+!     call noft_eval_density_matrix_ao(noft_parameters,
+!    &     noft_occupations,noft_wavefunction,g_dens)
+      if (noft_parameters%functional.eq.dft) then
+        call noft_eval_density_matrix_ao(noft_parameters,
+     &       noft_occupations,noft_wavefunction,g_dens)
+      else if (noft_parameters%functional.eq.ddft) then
+        call noft_eval_density_matrix_ao(noft_parameters,
+     &       diff_occupations,noft_wavefunction,g_dens)
+      endif
       call ga_zero(g_vxc(1))
       call ga_zero(g_vxc(2))
       call xc_getv(rtdb,exc,dume,1,0,0,g_dens,g_vxc,
@@ -139,9 +148,12 @@
 !    &    write(luout,*)"Integrate difference density: ",rho_n
 !     EFip = ga_ddot(g_dens(1),g_vxc(1)) + ga_ddot(g_dens(2),g_vxc(2))
 !
-      call noft_eval_density_matrix_ao(noft_parameters,
-     &     diff_occupations,noft_wavefunction,g_dens)
-      EFdiff = ga_ddot(g_dens(1),g_vxc(1)) + ga_ddot(g_dens(2),g_vxc(2))
+
+
+!     call noft_eval_density_matrix_ao(noft_parameters,
+!    &     diff_occupations,noft_wavefunction,g_dens)
+!     EFdiff = ga_ddot(g_dens(1),g_vxc(1)) + ga_ddot(g_dens(2),g_vxc(2))
+!     EFdiff = EFdiff*noft_parameters%c_ddft
 !
 !DEBUG
 !     write(luout,*)"OCCip"
@@ -156,7 +168,13 @@
 !     noft_energy%e_correlation_ddft = (EFc - EFip)
 !     noft_energy%e_correlation_ddft = EFc
 !     noft_energy%e_correlation_ddft = - 1000.0_dp*(EFc - EFip)
-      noft_energy%e_correlation_ddft = EFdiff
+      if (noft_parameters%functional.eq.ddft) then
+        noft_energy%e_correlation_ddft = EFc*noft_parameters%c_ddft
+        noft_energy%e_correlation_dft = 0.0_dp
+      else if (noft_parameters%functional.eq.dft) then
+        noft_energy%e_correlation_ddft = 0.0_dp
+        noft_energy%e_correlation_dft = EFc*noft_parameters%c_dft
+      endif
 !
       if (.not.ga_destroy(g_vxc(2)))
      &  call ga_error("Could not destroy vxc_b")

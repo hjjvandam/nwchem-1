@@ -101,6 +101,9 @@
         call noft_eval_2e_energy_ab_ls(c_ls,c_ols,p_ls,p_ols,
      &                                 occ_1e_a,occ_1e_b,
      &                                 moab_el_2,en_2el,en_2el_corr)
+      else if (functional.eq.dft) then
+        call noft_eval_2e_energy_ab_nc(occ_1e_a,occ_1e_b,
+     &                                 moab_el_2,en_2el,en_2el_corr)
       else if (functional.eq.noft) then
         call noft_eval_2e_energy_ab_noft(ne_a,ne_b,c_ls,c_ols,c_noft,
      &                                   p_ls,p_ols,p_noft,p_enoft,
@@ -120,6 +123,7 @@
       noft_energy%e_correlation_ab = en_2el_corr
 !
       if (functional.eq.ddft.or.
+     &    functional.eq.dft.or.
      &    functional.eq.noft.or.
      &    functional.eq.nocorrelation) then
         call noft_eval_2e_energy_aa_nc(occ_2e_aa,
@@ -148,6 +152,7 @@
       noft_energy%e_correlation_aa = en_2el_corr
 !
       if (functional.eq.ddft.or.
+     &    functional.eq.dft.or.
      &    functional.eq.noft.or.
      &    functional.eq.nocorrelation) then
         call noft_eval_2e_energy_aa_nc(occ_2e_bb,

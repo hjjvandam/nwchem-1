@@ -114,6 +114,14 @@
         !noft_params%c_ddft = 15.44531_dp
       endif
 !
+!     Load the DFT coefficient
+!
+      if (rtdb_get(rtdb,"noft:c_dft", MT_DBL, 1, noft_params%c_dft))
+     &then
+      else
+        noft_params%c_dft = 1.0_dp
+      endif
+!
 !     Load the Löwdin-Shull coefficient
 !
       if (rtdb_get(rtdb,"noft:c_ls", MT_DBL, 1,

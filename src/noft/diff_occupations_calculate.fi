@@ -31,7 +31,8 @@
       integer :: ihi(ndim)
       integer :: ild(ndim)
 !
-      c_ddft = noft_params%c_ddft
+!     c_ddft = noft_params%c_ddft
+      c_ddft = 1.0_dp
       p_ddft = noft_params%p_ddft
 !
       call noft_access(diff_occupations%occ_1e_a,diff,ilo,ihi)

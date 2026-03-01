@@ -62,6 +62,8 @@
           write(luout,'("no-correlation functional")')
         else if (noft_params%functional.eq.ddft) then
           write(luout,'("difference density functional (ddft)")')
+        else if (noft_params%functional.eq.dft) then
+          write(luout,'("density functional theory (dft)")')
         else if (noft_params%functional.eq.noft) then
           write(luout,'("natural orbital functional (noft)")')
         else
@@ -81,6 +83,8 @@
      &        noft_params%c_noft
         write(luout,'(" ddft          prefactor       : ",f12.6)')
      &        noft_params%c_ddft
+        write(luout,'(" dft           prefactor       : ",f12.6)')
+     &        noft_params%c_dft
         write(luout,'(" sigma-sigma   power           : ",f12.6)')
      &        noft_params%p_aa
         write(luout,'(" alpha-beta    power           : ",f12.6)')
@@ -114,7 +118,8 @@
         write(luout,'(i6)')noft_params%ncore_a
         write(luout,'(" number of virtual orbitals    : ",$)')
         write(luout,'(i6)')noft_params%nvirtual_a
-        if (noft_params%functional.eq.ddft) then
+        if (noft_params%functional.eq.ddft.or.
+     &      noft_params%functional.eq.dft) then
           call noft_print_xc()
         endif
         write(luout,*)

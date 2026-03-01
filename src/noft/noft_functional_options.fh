@@ -13,6 +13,7 @@
       integer, parameter :: average = 19
       integer, parameter :: nocorrelation = 20
       integer, parameter :: ddft = 21
-      integer, parameter :: noft = 22
+      integer, parameter :: dft = 22
+      integer, parameter :: noft = 23
 !
 !-----------------------------------------------------------------------

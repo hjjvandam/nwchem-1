@@ -19,6 +19,7 @@
         real(kind=dp) :: e_correlation_aa
         real(kind=dp) :: e_correlation_ab
         real(kind=dp) :: e_correlation_bb
+        real(kind=dp) :: e_correlation_dft
         real(kind=dp) :: e_correlation_ddft
         !> The nuclear repulsion energy
         real(kind=dp) :: e_nuclear
