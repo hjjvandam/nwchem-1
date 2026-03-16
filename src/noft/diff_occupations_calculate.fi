@@ -87,3 +87,91 @@
       end subroutine diff_occupations_calculate_1
 !
 !-----------------------------------------------------------------------
+!>
+!> \brief calculate Löwdin-Shull "occupation numbers"
+!>
+!> Instead of using regular occupation numbers we take the square root
+!> of the occupation numbers. For idem-potent density matrices this
+!> is identical to using regular occupation numbers (sqrt(0)==0 and
+!> sqrt(1.0)==1.0). But with fractional occupation numbers this enhances
+!> the correlation because when 0<x<1, sqrt(x)>x.
+!>
+!> @params[in]  noft_params      The calculation parameters
+!> @params[in]  noft_occupations The current occupation numbers
+!> @params[in]  dip_occupations  The nearest idem-potent occupation
+!>                               numbers
+!> @params[out] diff_occupations The absolute difference occupation
+!>                               numbers
+!>
+      subroutine diff_occupations_calculate_ii(noft_params,
+     &           noft_occupations,dip_occupations,diff_occupations)
+      implicit none
+      type(noft_parameter_tp),   intent(in)    :: noft_params
+      type(noft_occupations_tp), intent(in)    :: noft_occupations
+      type(noft_occupations_tp), intent(in)    :: dip_occupations
+      type(noft_occupations_tp), intent(inout) :: diff_occupations
+!
+      real(kind=dp), pointer     :: diff(:)
+      real(kind=dp), allocatable :: doft(:)
+      real(kind=dp), allocatable :: dip(:)
+      real(kind=dp)              :: c_ddft
+      real(kind=dp)              :: p_ddft
+      integer,       parameter   :: ndim = 1
+      integer :: ilo(ndim)
+      integer :: ihi(ndim)
+      integer :: ild(ndim)
+!
+!     c_ddft = noft_params%c_ddft
+      c_ddft = 1.0_dp
+      p_ddft = noft_params%p_ddft
+!
+      call noft_access(diff_occupations%occ_1e_a,diff,ilo,ihi)
+      allocate(doft(ilo(1):ihi(1)))
+      allocate(dip(ilo(1):ihi(1)))
+      ild(1) = ihi(1)-ilo(1)+1
+      call nga_get(noft_occupations%occ_1e_a,ilo,ihi,doft,ild)
+      call nga_get(dip_occupations%occ_1e_a,ilo,ihi,dip,ild)
+      call diff_occupations_calculate_1_ii(c_ddft,p_ddft,ilo,ihi,doft,
+     &                                     dip,diff)
+      deallocate(doft)
+      deallocate(dip)
+      call noft_release(diff_occupations%occ_1e_a,diff,ilo,ihi)
+!
+      call noft_access(diff_occupations%occ_1e_b,diff,ilo,ihi)
+      allocate(doft(ilo(1):ihi(1)))
+      allocate(dip(ilo(1):ihi(1)))
+      ild(1) = ihi(1)-ilo(1)+1
+      call nga_get(noft_occupations%occ_1e_b,ilo,ihi,doft,ild)
+      call nga_get(dip_occupations%occ_1e_b,ilo,ihi,dip,ild)
+      call diff_occupations_calculate_1_ii(c_ddft,p_ddft,ilo,ihi,doft,
+     &                                     dip,diff)
+      deallocate(doft)
+      deallocate(dip)
+      call noft_release(diff_occupations%occ_1e_b,diff,ilo,ihi)
+!
+      end subroutine diff_occupations_calculate_ii
+!
+!-----------------------------------------------------------------------
+!
+      subroutine diff_occupations_calculate_1_ii(c_ddft,p_ddft,ilo,ihi,
+     &                                           doft,dip,diff)
+      implicit none
+      real(kind=dp), intent(in)  :: c_ddft
+      real(kind=dp), intent(in)  :: p_ddft
+      integer,       intent(in)  :: ilo(:)
+      integer,       intent(in)  :: ihi(:)
+      real(kind=dp), intent(in)  :: doft(:)
+      real(kind=dp), intent(in)  :: dip(:)
+      real(kind=dp), intent(out) :: diff(:)
+!
+      real(kind=dp) :: fac
+      integer :: ii
+!
+      fac = c_ddft
+      do ii = ilo(1), ihi(1)
+        diff(ii) = fac*(doft(ii)**p_ddft)
+      enddo
+!
+      end subroutine diff_occupations_calculate_1_ii
+!
+!-----------------------------------------------------------------------

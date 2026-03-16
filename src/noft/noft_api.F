@@ -441,6 +441,23 @@
             functional = ddft
             call inp_set_field(inp_cur_field()+1)
             call xc_input(rtdb, 'dft')
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "ddft_ii"))
+     &    then
+!
+!           ddft_ii xc <exchange-correlation functional specification>
+!
+!           this module always uses 100% exact exchange so functionals
+!           should be selected accordingly
+!
+!           "xc" must be present on the input line but xc_input cannot
+!           process it so we have to skip it.
+!           (Maybe if "xc" is not present we should pick a default
+!           functional.)
+!
+            functional = ddft_ii
+            call inp_set_field(inp_cur_field()+1)
+            call xc_input(rtdb, 'dft')
           else if (inp_compare(.false.,test(1:inp_strlen(test)),"dft"))
      &    then
 !

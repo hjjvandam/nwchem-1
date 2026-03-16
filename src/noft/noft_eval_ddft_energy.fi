@@ -86,6 +86,7 @@
       noft_energy%e_correlation_ddft = 0.0_dp
       noft_energy%e_correlation_dft = 0.0_dp
       if (noft_parameters%functional.ne.ddft.and.
+     &    noft_parameters%functional.ne.ddft_ii.and.
      &    noft_parameters%functional.ne.dft) then
         !
         ! This is not a DDFT nor a DFT calculation
@@ -104,8 +105,13 @@
       call noft_occupations_create(noft_parameters,diff_occupations)
       call ddft_occupations_calculate(noft_parameters,noft_occupations,
      &                                dip_occupations)
-      call diff_occupations_calculate(noft_parameters,noft_occupations,
-     &                                dip_occupations,diff_occupations)
+      if (noft_parameters%functional.eq.ddft) then
+        call diff_occupations_calculate(noft_parameters,
+     &       noft_occupations,dip_occupations,diff_occupations)
+      else if (noft_parameters%functional.eq.ddft_ii) then
+        call diff_occupations_calculate_ii(noft_parameters,
+     &       noft_occupations,dip_occupations,diff_occupations)
+      endif
       chunk = -1
       dims  = noft_parameters%nao
 !DEBUG
@@ -126,7 +132,8 @@
       if (noft_parameters%functional.eq.dft) then
         call noft_eval_density_matrix_ao(noft_parameters,
      &       noft_occupations,noft_wavefunction,g_dens)
-      else if (noft_parameters%functional.eq.ddft) then
+      else if (noft_parameters%functional.eq.ddft.or.
+     &         noft_parameters%functional.eq.ddft_ii) then
         call noft_eval_density_matrix_ao(noft_parameters,
      &       diff_occupations,noft_wavefunction,g_dens)
       endif
@@ -168,7 +175,8 @@
 !     noft_energy%e_correlation_ddft = (EFc - EFip)
 !     noft_energy%e_correlation_ddft = EFc
 !     noft_energy%e_correlation_ddft = - 1000.0_dp*(EFc - EFip)
-      if (noft_parameters%functional.eq.ddft) then
+      if (noft_parameters%functional.eq.ddft.or.
+     &    noft_parameters%functional.eq.ddft_ii) then
         noft_energy%e_correlation_ddft = EFc*noft_parameters%c_ddft
         noft_energy%e_correlation_dft = 0.0_dp
       else if (noft_parameters%functional.eq.dft) then

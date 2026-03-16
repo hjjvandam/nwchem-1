@@ -62,6 +62,8 @@
           write(luout,'("no-correlation functional")')
         else if (noft_params%functional.eq.ddft) then
           write(luout,'("difference density functional (ddft)")')
+        else if (noft_params%functional.eq.ddft_ii) then
+          write(luout,'("difference density functional II (ddft_ii)")')
         else if (noft_params%functional.eq.dft) then
           write(luout,'("density functional theory (dft)")')
         else if (noft_params%functional.eq.noft) then
@@ -119,6 +121,7 @@
         write(luout,'(" number of virtual orbitals    : ",$)')
         write(luout,'(i6)')noft_params%nvirtual_a
         if (noft_params%functional.eq.ddft.or.
+     &      noft_params%functional.eq.ddft_ii.or.
      &      noft_params%functional.eq.dft) then
           call noft_print_xc()
         endif

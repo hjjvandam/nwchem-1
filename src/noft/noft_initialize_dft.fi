@@ -17,6 +17,7 @@
       type(noft_instances_tp), intent(in) :: noft_instances
 !
       if (noft_params%functional.ne.ddft.and.
+     &    noft_params%functional.ne.ddft_ii.and.
      &    noft_params%functional.ne.dft) return
 !
 !     call grid_acc_def(rtdb)
