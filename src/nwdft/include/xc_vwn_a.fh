@@ -265,15 +265,19 @@ c the tolerance.  rs => Wigner-Seitz radius
          rhoval = rho(n,1)
          if(rhoval.gt.tol_rho) then
             rs = p0*rhoval**(-onethird)
-         else
-            rs=0d0
-         endif
 c Daniel (5-23-12): x = rs**{1/2} is defined under Eq. [4.3] in VWN.
 c d1rs => 1st derivative of rs with respect to rho
 c d1x => 1st derivative of x with respect to rs
-         d1rs = -onethird*rs/rhoval
-         x = sqrt(rs)
-         d1x = 0.5d0/x
+            d1rs = -onethird*rs/rhoval
+            x = sqrt(rs)
+            d1x = 0.5d0/x
+         else
+            rhoval=1d-60
+            rs=1d-60
+            d1rs=1d-60
+            x=1d-60
+            d1x=1d-60
+         endif
 #if defined(SECOND_DERIV) || defined(THIRD_DERIV)
 c Daniel (5-23-12)
 c d2rs => 2nd derivative of rs with respect to rho
