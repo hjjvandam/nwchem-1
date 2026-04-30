@@ -51,6 +51,9 @@
 !
       onoft_mos = .false.
       call ga_norm_infinity(noft_wavefunction%so,dnorm)
+!DEBUG
+!     write(*,*)"HVD: noft_load_wavefunction: dnorm   = ",dnorm
+!DEBUG
       if (dnorm.gt.0.0_dp) then
 !       The orthogonalizing transformation is already set and will
 !       correspond to the current geometry. In this case we should not
@@ -73,6 +76,9 @@
 !
       if (movecs_read_header(noft_files%movecs_in,title,basis,
      &                       scftype,nbf,nsets,nmo,ldnmo)) then
+!DEBUG
+!       write(*,*)"HVD: noft_load_wavefunction: scftype = ",scftype
+!DEBUG
         allocate(occ(1:nbf))
         allocate(evals(1:nbf))
         if (scftype.eq."scf".or.scftype.eq."dft".or.scftype.eq."mcscf")
@@ -105,8 +111,8 @@
               call errquit(pname//"failed to read beta MO vecs",
      &                     30, UERR)
             endif
+            onoft_mos = .true.
             if (noft_params%symmetry_adapt) then
-              onoft_mos = .false.
               idim(1) = noft_params%nao
               idim(2) = noft_params%nmo
               nnao = noft_params%nao
@@ -124,8 +130,6 @@
               call ga_copy(g_vec,noft_wavefunction%mo_b)
               if (.not.ga_destroy(g_vec))
      &          call errquit(pname//"failed to destroy vec", 50, UERR)
-            else
-              onoft_mos = .true.
             endif
           endif
         else
@@ -133,7 +137,10 @@
         endif
         deallocate(evals)
         deallocate(occ)
-        if (.not.onoft_mos) then
+!DEBUG
+!       write(*,*)"HVD: noft_load_wavefunction: onoft_mos = ",onoft_mos
+!DEBUG
+!       if (.not.onoft_mos) then
           if (noft_params%symmetry_adapt) then
             call scf_movecs_sym_adapt(noft_instances%basis,
      &                                noft_wavefunction%mo_a,.false.,0,
@@ -149,15 +156,15 @@
           endif
           call noft_orthogonal_basis_mos(noft_params,noft_operators,
      &                                   noft_wavefunction)
-        else
-          if (noft_params%symmetry_adapt) then
-            call errquit(pname//"missing code to assign symmetry",0,
-     &                   CAPMIS_ERR)
-          else
-            noft_wavefunction%irrep_a = 1
-            noft_wavefunction%irrep_b = 1
-          endif
-        endif
+!       else
+!         if (noft_params%symmetry_adapt) then
+!           call errquit(pname//"missing code to assign symmetry",0,
+!    &                   CAPMIS_ERR)
+!         else
+!           noft_wavefunction%irrep_a = 1
+!           noft_wavefunction%irrep_b = 1
+!         endif
+!       endif
       endif
 !
       if (onoft_mos) then
