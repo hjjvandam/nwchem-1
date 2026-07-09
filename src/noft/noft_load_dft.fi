@@ -75,9 +75,10 @@
       nlxfac       = .false.
       xccomb       = .false.
       xcfit        = .false.
-      cdfit        = .false.
+      cdfit        = .true.  ! We just want the XC contribution from DFT
       leb          = .false.
       grid_written = .false.
+      tol_rho      = 1.0d-10
 !
 !     if (.not. rtdb_get(rtdb, 'dft:no_prune', mt_log, 1,
 !    &                   no_prune))no_prune = .false.
@@ -531,6 +532,8 @@
 !    &    call errquit(pname//'rtdb_get mxnang failed', 119, RTDB_ERR)
 !     endif
 !DEBUG
+      write(*,*)'HvD: hfexch     = ',xfac(1)
+      write(*,*)'HvD: cdfit      = ',cdfit
       write(*,*)'HvD: nquad_task = ',nquad_task
       write(*,*)'HvD: iangquad   = ',iangquad
       write(*,*)'HvD: gridtype   = ',gridtype
