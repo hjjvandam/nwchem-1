@@ -13,7 +13,7 @@
         !> the step size threshold below which the calculation is
         !> converged
         real(kind=dp) :: step_threshold
-        !> the maximum step size given that the optimization is 
+        !> the maximum step size given that the optimization is
         !> rotation based
         real(kind=dp) :: step_maximum
         !> the \f$a\f$ parameter in the step size update
