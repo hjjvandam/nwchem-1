@@ -19,6 +19,7 @@ HEADERS = xc.fh xc_vdw.fh xc_params.fh xc_hcth.fh
 	setACmat.o \
 	xc_becke88.o \
 	xc_dirac.o \
+	xc_dirac_pow.o \
 	xc_bnl.o \
 	xc_dirac_screened.o \
 	xc_fitv.o \
@@ -69,7 +70,7 @@ HEADERS = xc.fh xc_vdw.fh xc_params.fh xc_hcth.fh
 
 LIB_INCLUDES = -I../include
 
-   USES_BLAS = xc_fitv.F xc_dirac.F xc_bnl.F xc_att_xc.F xc_tabcd.F xc_rhogen.F \
+   USES_BLAS = xc_fitv.F xc_dirac.F xc_dirac_pow.F xc_bnl.F xc_att_xc.F xc_tabcd.F xc_rhogen.F \
                xc_oep.F xc_sic_pert.F xc_sic.F localize_sic.F \
                xc_eval_basis.F xc_eval_fnl.F xc_fd.F xc_optc.F xc_atomblock.F scat_mat.F \
                xc_replicated.F xc_vdw_main.F xc_vdw_util.F\

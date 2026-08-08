@@ -41,6 +41,7 @@ cc AJL/End
 cc AJL/Begin/FDE
      &     cfac_fde, xfac_fde, tsfac
 cc AJL/End
+     &     , p_ddft_d
       logical
      &     nodamping, nolevelshifting, nodiis, ltight, lmaxov, incore,
      &     lmaxov_imom,
@@ -90,6 +91,7 @@ c
 cc AJL/Begin/FDE
      &     cfac_fde(numfunc), xfac_fde(numfunc), tsfac(numfunc_fde),
 cc AJL/End
+     &     p_ddft_d,
 c
 c     Logicals
 c

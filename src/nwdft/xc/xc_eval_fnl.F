@@ -250,6 +250,22 @@ c
      &           .false., func)
          endif
       endif
+      if (abs(cfac(101)).gt.eps)then
+         if (.not. do_2nd .and. .not. do_3rd) then
+            call xc_dirac_pow(tol_rho, cfac(101),
+     &           lcfac(101), nlcfac(101), rho,
+     &           Amat, nq, ipol, Ex, qwght,
+     &           ldew, func)
+!        else if (.not. do_3rd) then
+!           call xc_dirac_pow_d2(tol_rho, cfac(101), lcfac(101), nlcfac(101), rho,
+!    &           Amat, Amat2, nq, ipol, Ex, qwght,
+!    &           .false., func)
+!        else
+!           call xc_dirac_pow_d3(tol_rho, cfac(101), lcfac(101), nlcfac(101), rho,
+!    &           Amat, Amat2, Amat3, nq, ipol, Ex, qwght,
+!    &           .false., func)
+         endif
+      endif
 c
 c     LB94 potential and energy (not variational!)
 c

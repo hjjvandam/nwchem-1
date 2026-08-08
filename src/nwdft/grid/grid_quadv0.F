@@ -1011,15 +1011,21 @@ c     for fractional occupations the correct electron number comes from tr[PS]
 c         
         if(oprintw) then
            if(sic_orb_occ.eq.0) then
-              rho_err=abs(rho_int-nelec)/nelec
+              if (nelec.le.0.0d0) then
+                rho_err=abs(rho_int)
+              else
+                rho_err=abs(rho_int-nelec)/nelec
+              endif
            else
               rho_err=abs(rho_int-1d0)
            endif
 c Daniel (1-11-13): I changed the logic here to stop the warning from
 c being printed for either the TDDFT solver or TDDFT gradient solver.
            lcpksl_gxc = (do_cpks_l.or.do_gxc)
-           if(.not.lcpksl_gxc.and.rho_err.gt.job_grid_acc.and.me.eq.0)
-     &        write(LuOut,123) rho_int,job_grid_acc
+!DEBUG HVD
+!          if(.not.lcpksl_gxc.and.rho_err.gt.job_grid_acc.and.me.eq.0)
+!    &        write(LuOut,123) rho_int,job_grid_acc
+!DEBUG HVD
 c         if(.not.do_cpks_l.and.rho_err.gt.job_grid_acc.and.me.eq.0)
 c     &      write(LuOut,123) rho_int,job_grid_acc
         endif ! oprintw

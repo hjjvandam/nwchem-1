@@ -622,6 +622,7 @@ c
       cname(83)='            MN15-L Correlation Potential'
       cname(84)='              MN15 Correlation Potential'
       cname(85)='            M06-SX Correlation Potential'
+      cname(101)='        ddft dirac Correlation Potential'
 c
 c     Exchange functional name defaults.
 c
