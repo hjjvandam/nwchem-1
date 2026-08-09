@@ -86,3 +86,11 @@ Solving this gives
 
 The resulting function is referred to as $s3$ and is
 $s3(x) = 15 x^2 - 50 x^3 + 60 x^4 - 24 x^5$
+
+## Visualising schlenker functions
+
+Above we listed and developed in total 3 schlenker functions,
+$s1$, $s2$, and $s3$. The image below shows what they look
+like.
+
+![Three schlenker functions](./schlenker-functions.png)
