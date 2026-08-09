@@ -3,7 +3,7 @@
 In practice the Löwdin-Shull terms are important to ensure that the
 energy raises fast enough when bonds are being broken. These
 terms are characterised by occupation dependent weights like
-$\left(d^\alpha_i d^\beta_i\right)^{1/2}$.
+$\left(d^\alpha_i d^\beta_i\right)^{\textonehalf}$.
 
 When combining these terms with corelation approaches two problems
 arise:
@@ -19,7 +19,7 @@ arise:
 To address this we'll introduce "schlenker" functions. To do this let's
 first rewrite the Löwdin-Shull weights as
 $\left(s\left(d^\alpha_i\right) s\left(d^\beta_i\right)\right)^{p_{ls}}$
-where $p_{ls}$ is the Löwdin-Shull power which originally is $1/2$ but now
+where $p_{ls}$ is the Löwdin-Shull power which originally is $\textonehalf$ but now
 could be something else, and $s$ is the schlenker function which
 originally is just $s(x)=x$. We'll refer to the original schlenker function
 as $s1$.
@@ -34,15 +34,15 @@ function would be one that has a zero gradient at half occupation.
 So we would like a schlenker function that satisfies the constraints:
 - [1] $s(0) = 0$
 - [2] $s(1) = 1$
-- [3] $s(1/2) = 1/2$
-- [4] $s'(x)|_{x=1/2} = 0$
+- [3] $s(\textonehalf) = \textonehalf$
+- [4] $s'(x)|_{x=\textonehalf} = 0$
 
 suppose
 - $s(x) = a x + b x^2 + c x^3$ this satisfies [1]
 - [2] is satisfied if $a + b + c = 1$
-- [3] is satisfied if $1/2 a + 1/4 b + 1/8 c = 1/2$
+- [3] is satisfied if $\textonehalf a + \textonequarter b + 1/8 c = \textonehalf$
 - $s'(x) = a + 2 b x + 3 c x^2$
-- [4] is satisfied if $a + b + 3/4 c = 0$
+- [4] is satisfied if $a + b + \textthreequarters c = 0$
 
 These constraints define a linear system of equations
 the solution of which is
@@ -65,17 +65,17 @@ satisfies the constraints of $s2$ but in addition also has zero gradients at
 $x=0§ and $x=1$. This gets us the following constraints:
 - [1] $s(0) = 0$
 - [2] $s(1) = 1$
-- [3] $s(1/2) = 1/2$
+- [3] $s(\textonehalf) = \textonehalf$
 - [4] $s'(x)|_{x=0} = 0$
-- [5] $s'(x)|_{x=1/2} = 0$
+- [5] $s'(x)|_{x=\textonehalf} = 0$
 - [6] $s'(x)|_{x=1} = 0$
 
 suppose
 - $s(x) = a x^2 + b x^3 + c x^4 + d x^5$ this satisfies [1] and [4]
 - [2] is satisfied if $a+b+c+d=1$
-- [3] requires that $1/4 a + 1/8 b + 1/16 c + 1/32 d = 1/2 $
+- [3] requires that $\textonequarter a + 1/8 b + 1/16 c + 1/32 d = \textonehalf $
 - $s'(x) = 2 a x + 3 b x^2 + 4 c x^3 + 5 d x^4$
-- [5] requires that $a + 3/4 b + 1/2 c  + 5/16 d = 0$
+- [5] requires that $a + \textthreequarters b + \textonehalf c  + 5/16 d = 0$
 - [6] requires that $2 a + 3 b + 4 c + 5 d = 0$
 
 Solving this gives
