@@ -73,9 +73,9 @@ $x=0§ and $x=1$. This gets us the following constraints:
 suppose
 - $s(x) = a x^2 + b x^3 + c x^4 + d x^5$ this satisfies [1] and [4]
 - [2] is satisfied if $a+b+c+d=1$
-- [3] requires that $\textonequarter a + 1/8 b + 1/16 c + 1/32 d = \textonehalf $
+- [3] requires that $\textonequarter a + \mbox{1/8} b + \mbox{1/16} c + \mbox{1/32} d = \textonehalf $
 - $s'(x) = 2 a x + 3 b x^2 + 4 c x^3 + 5 d x^4$
-- [5] requires that $a + \textthreequarters b + \textonehalf c  + 5/16 d = 0$
+- [5] requires that $a + \textthreequarters b + \textonehalf c  + \mbox{5/16} d = 0$
 - [6] requires that $2 a + 3 b + 4 c + 5 d = 0$
 
 Solving this gives
