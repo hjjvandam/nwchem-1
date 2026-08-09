@@ -11,7 +11,7 @@ arise:
   contributions have to rise gently to not over estimate correlation
   effects. The result is the Löwdin-Shull terms overwhelm the
   correlation effects.
-- Near $1/2$ the correlation contributions reach their maximum, but
+- Near $\textonehalf$ the correlation contributions reach their maximum, but
   the Löwdin-Shull terms are still steadily rising. This leads to the
   total energy still climbing gently long beyond a bond distance where
   the bond should have been broken.
