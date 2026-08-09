@@ -40,7 +40,7 @@ So we would like a schlenker function that satisfies the constraints:
 suppose
 - $s(x) = a x + b x^2 + c x^3$ this satisfies [1]
 - [2] is satisfied if $a + b + c = 1$
-- [3] is satisfied if $\textonehalf a + \textonequarter b + 1/8 c = \textonehalf$
+- [3] is satisfied if $\textonehalf a + \textonequarter b + \nicefrac{1}{8} c = \textonehalf$
 - $s'(x) = a + 2 b x + 3 c x^2$
 - [4] is satisfied if $a + b + \textthreequarters c = 0$
 
