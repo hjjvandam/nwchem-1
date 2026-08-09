@@ -62,7 +62,7 @@ modestly as the occupation numbers move away from zero. The original Löwdin-Shu
 contributions on the other hand rise steeply and have a tendency to overwhelm
 the correlation terms. To counter that we can try a schlenker function that
 satisfies the constraints of $s2$ but in addition also has zero gradients at
-$x=0§ and $x=1$. This gets us the following constraints:
+$x=0$ and $x=1$. This gets us the following constraints:
 - [1] $s(0) = 0$
 - [2] $s(1) = 1$
 - [3] $s(\textonehalf) = \textonehalf$
