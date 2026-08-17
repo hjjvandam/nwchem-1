@@ -87,6 +87,59 @@ Solving this gives
 The resulting function is referred to as $s3$ and is
 $s3(x) = 15 x^2 - 50 x^3 + 60 x^4 - 24 x^5$
 
+## $s4$: $s2$ but also fixing low occupation
+
+The first experiments suggest that the high occupation numbers
+are fine as they are. That leaves the possibility that something
+might be gained from the low occupation numbers. So we take the
+conditions from $s3$ but drop one, getting:
+- [1] $s(0) = 0$
+- [2] $s(1) = 1$
+- [3] $s(\textonehalf) = \textonehalf$
+- [4] $s'(x)|_{x=0} = 0$
+- [5] $s'(x)|_{x=\textonehalf} = 0$
+
+suppose
+- $s(x) = a x^2 + b x^3 + c x^4$ this satisfies [1] and [4]
+- [2] is satisfied if $a+b+c=1$
+- [3] requires that $\textonequarter a + \mbox{1/8} b + \mbox{1/16} c = \textonehalf $
+- [5] requires $a + \textthreequarters b + \textonehalf c = 0$
+
+Solving this gives:
+- $a = +9$
+- $b = -20$
+- $c = +12$
+
+The resulting function is referred as $s4$ and is given by
+$s4(x) = 9 x^2 - 20 x^3 + 12 x^4$
+
+## $s5$: $s2$ but also fixing high occupation
+
+To complete the set of schlenker functions we add the one
+that addresses the high occupation numbers. So we take the
+conditions from $s3$ but drop one, getting:
+- [1] $s(0) = 0$
+- [2] $s(1) = 1$
+- [3] $s(\textonehalf) = \textonehalf$
+- [4] $s'(x)|_{x=\textonehalf} = 0$
+- [5] $s'(x)|_{x=1} = 0$
+
+suppose
+- $s(x) = a x + b x^2 + c x^3 + d x^4$ this satisfies [1] and [4]
+- [2] is satisfied if $a+b+c+d=1$
+- [3] requires that $\textonehalf a + \textonequarter b + \mbox{1/8} c + \mbox{1/16} d = \textonehalf $
+- [4] requires that $a + b + \textthreequarters c + \textonehalf d = 0$
+- [5] requires $a + 2 b + 3 c + 4 d = 0$
+
+Solving this gives:
+- $a = +6$
+- $b = -21$
+- $c = +28$
+- $d = -12$
+
+The resulting function is referred as $s5$ and is given by
+$s5(x) = 6 x - 21 x^2 + 28 x^3 - 12 x^4$
+
 ## Visualising schlenker functions
 
 Above we listed and developed in total 3 schlenker functions,
