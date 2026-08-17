@@ -144,6 +144,7 @@ $s5(x) = 6 x - 21 x^2 + 28 x^3 - 12 x^4$
 
 Above we listed and developed in total 3 schlenker functions,
 $s1$, $s2$, and $s3$. The image below shows what they look
-like.
+like. Note that the functions $s4$ and $s5$ have local
+minima which make them unsuitable for our purposes.
 
 ![Three schlenker functions](./schlenker-functions.png)

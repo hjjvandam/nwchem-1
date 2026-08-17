@@ -8,8 +8,8 @@ s2(x)=3*x-6*x**2+4*x**3
 s3(x)=15*x**2-50*x**3+60*x**4-24*x**5
 s4(x)=9*x**2-20*x**3+12*x**4
 s5(x)=6*x-21*x**2+28*x**3-12*x**4
-set terminal png
-set output "schlenker-functions.png"
+#set terminal png
+#set output "schlenker-functions.png"
 set xrange [0:1]
-plot s1(x), s2(x), s3(x), s4(x), s5(x)
-quit
+plot s1(x), s2(x), s3(x)
+#quit
