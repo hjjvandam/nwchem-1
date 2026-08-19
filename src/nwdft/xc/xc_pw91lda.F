@@ -119,7 +119,7 @@ c
 c     ======> BOTH SPIN-RESTRICTED AND UNRESTRICTED <======
 c
       do 200 n = 1, nq
-         if (rho(n,1).lt.tol_rho)goto 200
+         if (rho(n,1).le.tol_rho)goto 200
 c
          rhoval = rho(n,1)
          rs = p0*rhoval**(-onethird)
