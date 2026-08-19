@@ -4,6 +4,7 @@
 !>
       subroutine noft_print_parameters(noft_params)
       implicit none
+#include "cdft.fh"
 #include "errquit.fh"
 #include "global.fh"
 #include "stdio.fh"
@@ -66,12 +67,41 @@
           write(luout,'("difference density functional II (ddft_ii)")')
         else if (noft_params%functional.eq.dft) then
           write(luout,'("density functional theory (dft)")')
-        else if (noft_params%functional.eq.noft) then
+        else if (noft_params%functional.eq.noftf) then
           write(luout,'("natural orbital functional (noft)")')
         else
           write(luout,'(" ERROR: unknown functional")')
           call errquit("unknown functional option",
      &                 noft_params%functional,UERR)
+        endif
+        write(luout,'(" schlenker function            : ",$)')
+        if (noft_params%s_ls.eq.s0_ls) then
+          write(luout,'("none")')
+        else if (noft_params%s_ls.eq.s1_ls) then
+          write(luout,'("s1(x) = x")')
+        else if (noft_params%s_ls.eq.s2_ls) then
+          write(luout,'("s2(x) = 3 x - 6 x**2 + 4 x**3")')
+        else if (noft_params%s_ls.eq.s3_ls) then
+          write(luout,'("s3(x) = 15 x**2 - 50 x**3 + 60 x**4 - 24 x**5")
+     &')
+        else if (noft_params%s_ls.eq.s2s3_ls) then
+          write(luout,'("s2(x) = 3 x - 6 x**2 + 4 x**3")')
+          write(luout,'("                               : ",$)')
+          write(luout,'("s3(x) = 15 x**2 - 50 x**3 + 60 x**4 - 24 x**5")
+     &')
+          write(luout,'("                               : ",$)')
+          write(luout,'("x <= 0.5: s2(x); x > 0.5: s3(x)")')
+        else if (noft_params%s_ls.eq.s3s2_ls) then
+          write(luout,'("s2(x) = 3 x - 6 x**2 + 4 x**3")')
+          write(luout,'("                               : ",$)')
+          write(luout,'("s3(x) = 15 x**2 - 50 x**3 + 60 x**4 - 24 x**5")
+     &')
+          write(luout,'("                               : ",$)')
+          write(luout,'("x <= 0.5: s3(x); x > 0.5: s2(x)")')
+        else
+          write(luout,'(" ERROR: unknown schlenker function")')
+          call errquit("unknown schlenker function option",
+     &                 noft_params%s_ls,UERR)
         endif
         write(luout,'(" sigma-sigma   prefactor       : ",f12.6)')
      &        noft_params%c_aa
@@ -101,6 +131,8 @@
      &        noft_params%p_enoft
         write(luout,'(" ddft          power           : ",f12.6)')
      &        noft_params%p_ddft
+        write(luout,'(" ddft_d        power           : ",f12.6)')
+     &        p_ddft_d
         write(luout,'(" solver                        : ",$)')
         if (noft_params%solver.eq.monte_carlo) then
           write(luout,'(" Monte Carlo")')

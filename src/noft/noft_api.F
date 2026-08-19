@@ -11,6 +11,7 @@
 !> Read the input for the NOFT calculations
 !>
       subroutine noft_input(rtdb)
+      use noft
       implicit none
 #include "errquit.fh"
 #include "inp.fh"
@@ -20,7 +21,6 @@
 #include "rtdb.fh"
       integer, intent(inout) :: rtdb !> [Input] The runtime database
 !
-      integer, parameter :: dp = selected_real_kind(15)
       character(len=255) :: test
       character(len=16)  :: xc
       integer :: maxiter
@@ -38,6 +38,7 @@
       real(kind=dp) :: p_aa
       real(kind=dp) :: p_ab
       real(kind=dp) :: p_ddft
+      real(kind=dp) :: p_ddft_d
       real(kind=dp) :: p_ls
       real(kind=dp) :: p_ols
       real(kind=dp) :: p_noft
@@ -50,7 +51,9 @@
       integer       :: ncore
       integer       :: nvirtual
       integer       :: functional
+      integer       :: s_ls
       logical       :: symmetrize
+      logical       :: no_keyword_processed
 !
 !     Fix the SCF type for the atomic guess
 !
@@ -67,6 +70,7 @@
       if (.not. rtdb_put(rtdb,'int2e:memsize', mt_int, 1, -1))
      &  call errquit('noft_input: failed to store memsize',0, RTDB_ERR)
 !
+      no_keyword_processed = .true.
       do while (inp_read())
         if (.not. inp_a(test))
      &    call errquit("noft_input: keyword read failed", 0,
@@ -76,6 +80,7 @@
 !
         if (inp_compare(.false.,test(1:inp_strlen(test)),"maxiter"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_i(maxiter))
      &      call errquit("noft_input: read maxiter failed", 0,
      &                   INPUT_ERR)
@@ -86,6 +91,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"nopen"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_i(nopen))
      &      call errquit("noft_input: read nopen failed", 0,
      &                   INPUT_ERR)
@@ -96,6 +102,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"ncore"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_i(ncore))
      &      call errquit("noft_input: read ncore failed", 0,
      &                   INPUT_ERR)
@@ -107,6 +114,7 @@
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "nvirtual"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_i(nvirtual))
      &      call errquit("noft_input: read nvirtual failed", 0,
      &                   INPUT_ERR)
@@ -117,6 +125,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "threshold")) then
+          no_keyword_processed = .false.
           if (.not. inp_f(threshold))
      &      call errquit("noft_input: read threshold failed", 0,
      &                   INPUT_ERR)
@@ -128,6 +137,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "levelshift")) then
+          no_keyword_processed = .false.
           if (.not. inp_f(levelshift_orbitals))
      &      call errquit("noft_input: read levelshift orbitals failed",
      &                   0, INPUT_ERR)
@@ -145,6 +155,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "vectors")) then
+          no_keyword_processed = .false.
           call vectors_input(rtdb,'noft')
 !
 !       C_aa (note C_aa refers to same spin interactions,
@@ -152,6 +163,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_aa"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(c_aa))
      &      call errquit("noft_input: read c_aa failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:c_aa", mt_dbl, 1, c_aa))
@@ -161,6 +173,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_ab"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(c_ab))
      &      call errquit("noft_input: read c_ab failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:c_ab", mt_dbl, 1, c_ab))
@@ -170,6 +183,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_ddft"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(c_ddft))
      &      call errquit("noft_input: read c_ddft failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:c_ddft", mt_dbl, 1, c_ddft))
@@ -179,6 +193,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_dft"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(c_dft))
      &      call errquit("noft_input: read c_dft failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:c_dft", mt_dbl, 1, c_dft))
@@ -188,6 +203,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_ls"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(c_ls))
      &      call errquit("noft_input: read c_ls failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:c_ls", mt_dbl, 1, c_ls))
@@ -197,6 +213,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_ols"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(c_ols))
      &      call errquit("noft_input: read c_ols failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:c_ols", mt_dbl, 1, c_ols))
@@ -206,6 +223,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"c_noft"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(c_noft))
      &      call errquit("noft_input: read c_noft failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:c_noft", mt_dbl, 1, c_noft))
@@ -215,6 +233,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_aa"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(p_aa))
      &      call errquit("noft_input: read p_aa failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:p_aa", mt_dbl, 1, p_aa))
@@ -224,6 +243,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_ab"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(p_ab))
      &      call errquit("noft_input: read p_ab failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:p_ab", mt_dbl, 1, p_ab))
@@ -233,15 +253,30 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_ddft"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(p_ddft))
      &      call errquit("noft_input: read p_ddft failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:p_ddft", mt_dbl, 1, p_ddft))
+     &      call errquit("noft_input: rtdb_put failed", 75, RTDB_ERR)
+!
+!       P_ddft_d
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "p_ddft_d"))
+     &  then
+          no_keyword_processed = .false.
+          if (.not. inp_f(p_ddft_d))
+     &      call errquit("noft_input: read p_ddft_d failed", 0,
+     &                   INPUT_ERR)
+          if (.not. rtdb_put(rtdb, "noft:p_ddft_d", mt_dbl, 1,
+     &                       p_ddft_d))
      &      call errquit("noft_input: rtdb_put failed", 75, RTDB_ERR)
 !
 !       P_ls
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_ls"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(p_ls))
      &      call errquit("noft_input: read p_ls failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:p_ls", mt_dbl, 1, p_ls))
@@ -251,6 +286,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_ols"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(p_ols))
      &      call errquit("noft_input: read p_ols failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:p_ols", mt_dbl, 1, p_ols))
@@ -260,6 +296,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"p_noft"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(p_noft))
      &      call errquit("noft_input: read p_noft failed", 0, INPUT_ERR)
           if (.not. rtdb_put(rtdb, "noft:p_noft", mt_dbl, 1, p_noft))
@@ -269,6 +306,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &           "p_enoft")) then
+          no_keyword_processed = .false.
           if (.not. inp_f(p_enoft))
      &      call errquit("noft_input: read p_enoft failed",
      &                   0, INPUT_ERR)
@@ -280,6 +318,7 @@
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "temperature"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_f(temperature))
      &      call errquit("noft_input: read temperature failed",
      &                   0, INPUT_ERR)
@@ -291,6 +330,7 @@
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"lindep"))
      &  then
+          no_keyword_processed = .false.
           nindep = -2
           cindep = -2.0d0
           nfield = inp_n_field()
@@ -339,6 +379,7 @@
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "restricted"))
      &  then
+          no_keyword_processed = .false.
           if (.not. rtdb_put(rtdb, "noft:restricted", mt_log, 1,
      &                       .true.))
      &      call errquit("noft_input: rtdb_put failed", 100, RTDB_ERR)
@@ -348,6 +389,7 @@
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "unrestricted"))
      &  then
+          no_keyword_processed = .false.
           if (.not. rtdb_put(rtdb, "noft:unrestricted", mt_log, 1,
      &                       .false.))
      &      call errquit("noft_input: rtdb_put failed", 110, RTDB_ERR)
@@ -357,6 +399,7 @@
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "symmetrize"))
      &  then
+          no_keyword_processed = .false.
           if (.not.inp_l(symmetrize))
      &      call errquit("noft_input: invalid symmetrize option",
      &                   120, INPUT_ERR)
@@ -369,6 +412,7 @@
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "montecarlo"))
      &  then
+          no_keyword_processed = .false.
           call noft_input_monte_carlo(rtdb)
 !
 !       PairRotation
@@ -376,6 +420,7 @@
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "pairrotation"))
      &  then
+          no_keyword_processed = .false.
           if (.not. rtdb_put(rtdb, "noft:solver", mt_int, 1,
      &                       pair_rotation))
      &      call errquit("noft_input: rtdb_put failed", 140, RTDB_ERR)
@@ -385,6 +430,7 @@
         else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                       "functional"))
      &  then
+          no_keyword_processed = .false.
           if (.not. inp_a(test))
      &      call errquit("noft_input: failed to read functional",150,
      &                   INPUT_ERR)
@@ -476,7 +522,7 @@
             call xc_input(rtdb, 'dft')
           else if (inp_compare(.false.,test(1:inp_strlen(test)),
      &                         "noft")) then
-            functional = noft
+            functional = noftf
           else
             call errquit("noft_input: invalid functional: "//test,
      &                   160, INPUT_ERR)
@@ -485,10 +531,52 @@
      &                       functional))
      &      call errquit("noft_input: rtdb_put failed", 170, RTDB_ERR)
 !
+!       Schlenker functions
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "schlenker")) then
+          no_keyword_processed = .false.
+          if (.not. inp_a(test))
+     &      call errquit("noft_input: failed to read schlenker",155,
+     &                   INPUT_ERR)
+          if (inp_compare(.false.,test(1:inp_strlen(test)),"s1"))
+     &    then
+            s_ls = s1_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s2"))
+     &    then
+            s_ls = s2_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s3"))
+     &    then
+            s_ls = s3_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "s2-s3"))
+     &    then
+            s_ls = s2s3_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                         "s3-s2"))
+     &    then
+            s_ls = s3s2_ls
+          else
+            call errquit("noft_input: invalid schlenker: "//test,
+     &                   165, INPUT_ERR)
+          endif
+          if (.not. rtdb_put(rtdb, "noft:schlenker", mt_int, 1,
+     &                       s_ls))
+     &      call errquit("noft_input: rtdb_put failed", 175, RTDB_ERR)
+!
 !       End
 !
         else if (inp_compare(.false.,test(1:inp_strlen(test)),"end"))
      &  then
+          if (.not.no_keyword_processed) then
+            !
+            ! If a keyword was processed then the job parameters may
+            ! have changed and we should set the converged status
+            ! to .false., otherwise we leave the convergence status
+            ! as is.
+            !
+            call noft_save_convergence(rtdb,no_keyword_processed)
+          endif
           return
         else
           call errquit("noft_input: unknown directive", 0, INPUT_ERR)

@@ -15,6 +15,12 @@
       integer, parameter :: ddft = 21
       integer, parameter :: ddft_ii = 22
       integer, parameter :: dft = 23
-      integer, parameter :: noft = 24
+      integer, parameter :: noftf = 24
+      integer, parameter :: s0_ls = 25 ! None, don't use schlenker
+      integer, parameter :: s1_ls = 26
+      integer, parameter :: s2_ls = 27
+      integer, parameter :: s3_ls = 28
+      integer, parameter :: s2s3_ls = 29
+      integer, parameter :: s3s2_ls = 30
 !
 !-----------------------------------------------------------------------

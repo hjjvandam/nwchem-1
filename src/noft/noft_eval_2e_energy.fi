@@ -27,9 +27,11 @@
       integer :: occ_2e_aa, occ_2e_bb
       integer :: functional
       integer :: ne_a, ne_b
+      integer :: s_ls
       character(len=21), parameter :: pname =
      &  "noft_eval_2e_energy: "
       character(len=4) :: func
+      character(len=12) :: str_s_ls
 !
       c_aa    = noft_parameters%c_aa
       c_ab    = noft_parameters%c_ab
@@ -42,6 +44,7 @@
       p_ols   = noft_parameters%p_ols
       p_noft  = noft_parameters%p_noft
       p_enoft = noft_parameters%p_enoft
+      s_ls    = noft_parameters%s_ls
       ne_a    = noft_parameters%ne_a
       ne_b    = noft_parameters%ne_b
       functional = noft_parameters%functional
@@ -99,13 +102,44 @@
      &                                 moab_el_2,en_2el,en_2el_corr)
       else if (functional.eq.ddft.or.
      &         functional.eq.ddft_ii) then
-        call noft_eval_2e_energy_ab_ls(c_ls,c_ols,p_ls,p_ols,
-     &                                 occ_1e_a,occ_1e_b,
-     &                                 moab_el_2,en_2el,en_2el_corr)
+        if (s_ls.eq.s0_ls) then
+          call noft_eval_2e_energy_ab_ls(c_ls,c_ols,p_ls,p_ols,
+     &                                   occ_1e_a,occ_1e_b,
+     &                                   moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s1_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_1,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s2_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_2,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s3_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_3,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s2s3_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_23,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s3s2_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_32,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else
+          write(str_s_ls,*)s_ls
+          call errquit(pname//" unknown schlenker: "//str_s_ls, 5,
+     &                 UERR)
+        endif
       else if (functional.eq.dft) then
         call noft_eval_2e_energy_ab_nc(occ_1e_a,occ_1e_b,
      &                                 moab_el_2,en_2el,en_2el_corr)
-      else if (functional.eq.noft) then
+      else if (functional.eq.noftf) then
         call noft_eval_2e_energy_ab_noft(ne_a,ne_b,c_ls,c_ols,c_noft,
      &                                   p_ls,p_ols,p_noft,p_enoft,
      &                                   occ_1e_a,occ_1e_b,
@@ -126,7 +160,7 @@
       if (functional.eq.ddft.or.
      &    functional.eq.ddft_ii.or.
      &    functional.eq.dft.or.
-     &    functional.eq.noft.or.
+     &    functional.eq.noftf.or.
      &    functional.eq.nocorrelation) then
         call noft_eval_2e_energy_aa_nc(occ_2e_aa,
      &                                 moaa_el_2,en_2el,en_2el_corr)
@@ -156,7 +190,7 @@
       if (functional.eq.ddft.or.
      &    functional.eq.ddft_ii.or.
      &    functional.eq.dft.or.
-     &    functional.eq.noft.or.
+     &    functional.eq.noftf.or.
      &    functional.eq.nocorrelation) then
         call noft_eval_2e_energy_aa_nc(occ_2e_bb,
      &                                 mobb_el_2,en_2el,en_2el_corr)

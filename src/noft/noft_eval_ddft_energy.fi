@@ -115,7 +115,7 @@
       chunk = -1
       dims  = noft_parameters%nao
 !DEBUG
-      write(6,*)"HVD*in************************************************"
+!     write(6,*)"HVD*in************************************************"
 !DEBUG
       g_vxc = 0
       if (.not.nga_create(MT_DBL,ndim,dims,"dens_a",chunk,g_dens(1)))
@@ -141,8 +141,8 @@
       call ga_zero(g_vxc(2))
       call xc_getv(rtdb,exc,dume,1,0,0,g_dens,g_vxc,
      &     .false.,0,0,0,.false.,rho_n,dum1,dum2,0,dum3)
-      if (ga_nodeid().eq.0.and.abs(rho_n).gt.1.0d-3)
-     &    write(luout,*)"Integrate difference density: ",rho_n
+!     if (ga_nodeid().eq.0.and.abs(rho_n).gt.1.0d-3)
+!    &    write(luout,*)"Integrate difference density: ",rho_n
       EFc = ga_ddot(g_dens(1),g_vxc(1)) + ga_ddot(g_dens(2),g_vxc(2))
 !
 !     call noft_eval_density_matrix_ao(noft_parameters,
@@ -167,10 +167,8 @@
 !     call ga_print(dip_occupations%occ_1e_a)
 !     write(luout,*)"OCCc"
 !     call ga_print(noft_occupations%occ_1e_a)
-      write(luout,*)"EFdiff = ",EFdiff
-      write(luout,*)"EFc    = ",EFc
-!     write(luout,*)"Ecor   = ",EFc-EFip
-      write(6,*)"HVD*out***********************************************"
+!     write(luout,*)"EFc    = ",EFc
+!     write(6,*)"HVD*out***********************************************"
 !DEBUG
 !     noft_energy%e_correlation_ddft = (EFc - EFip)
 !     noft_energy%e_correlation_ddft = EFc

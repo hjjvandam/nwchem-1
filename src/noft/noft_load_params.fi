@@ -7,6 +7,7 @@
 !>
       subroutine noft_load_params(rtdb,noft_params)
       implicit none
+#include "cdft.fh"
 #include "errquit.fh"
 #include "mafdecls.fh"
 #include "rtdb.fh"
@@ -170,6 +171,15 @@
         !noft_params%p_ddft = 0.64794_dp
       endif
 !
+!     Load the DDFT-D power
+!
+      if (rtdb_get(rtdb,"noft:p_ddft_d", MT_DBL, 1,
+     &             p_ddft_d)) then
+      else
+        ! From the Dirac/Slater functional
+        p_ddft_d = 4.0_dp/3.0_dp
+      endif
+!
 !     Load the Löwdin-Shull power
 !
       if (rtdb_get(rtdb,"noft:p_ls", MT_DBL, 1,
@@ -247,6 +257,14 @@
      &             noft_params%functional)) then
       else
         noft_params%functional = conjugate
+      endif
+!
+!     Load the Löwdin-Shull schlenker function
+!
+      if (rtdb_get(rtdb,"noft:schlenker", MT_INT, 1,
+     &             noft_params%s_ls)) then
+      else
+        noft_params%s_ls = s0_ls
       endif
 !
 !     Load the solver parameters
