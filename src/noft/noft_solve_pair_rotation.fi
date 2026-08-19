@@ -399,6 +399,9 @@
           enddo
         enddo
         step_now = step_new
+        write(luout,"(4i8,a6,2f12.4,$)")imacro,jj,ii,
+     &        iteration,fields(nfields_all+1),step_now,step_new
+        call noft_print_energy(noft_energy,luout,.true.)
         if (nlower.eq.0) then
           ! We didn't find a single energy lowering rotation
           ! so we're done
