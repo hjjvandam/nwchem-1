@@ -131,6 +131,46 @@
      &                                    c_ls,c_ols,p_ls,p_ols,
      &                                    occ_1e_a,occ_1e_b,
      &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s6_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_6,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s7_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_7,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s8_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_8,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s24_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_24,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s26_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_26,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s41_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_41,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s42_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_42,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
+        else if (s_ls.eq.s43_ls) then
+          call noft_eval_2e_energy_ab_sls(noft_schlenker_43,
+     &                                    c_ls,c_ols,p_ls,p_ols,
+     &                                    occ_1e_a,occ_1e_b,
+     &                                    moab_el_2,en_2el,en_2el_corr)
         else
           write(str_s_ls,*)s_ls
           call errquit(pname//" unknown schlenker: "//str_s_ls, 5,

@@ -98,6 +98,25 @@
      &')
           write(luout,'("                               : ",$)')
           write(luout,'("x <= 0.5: s3(x); x > 0.5: s2(x)")')
+        else if (noft_params%s_ls.eq.s6_ls) then
+          write(luout,'("s6(x) = 3 x**2 - 2 x**3")')
+        else if (noft_params%s_ls.eq.s7_ls) then
+          write(luout,'("s7(x) = 2 x**2 - x**3")')
+        else if (noft_params%s_ls.eq.s8_ls) then
+          write(luout,'("s8(x) = x + x**2 - x**3")')
+        else if (noft_params%s_ls.eq.s24_ls) then
+          write(luout,'("s24(x) = 5 x - 20 x**2 + 40 x**3 - 40 x**4 + 16
+     &x**5")')
+        else if (noft_params%s_ls.eq.s26_ls) then
+          write(luout,'("s26(x) = 7 x - 42 x**2 + 140 x**3 - 280 x**4 +
+     &336 x**5 - 224 x**6 + 64 x**7")')
+        else if (noft_params%s_ls.eq.s41_ls) then
+          write(luout,'("s41(x) = -2 x**3 + 3 x**2")')
+        else if (noft_params%s_ls.eq.s42_ls) then
+          write(luout,'("s42(x) = 6 x**5 - 15 x**4 + 10 x**3")')
+        else if (noft_params%s_ls.eq.s43_ls) then
+          write(luout,'("s43(x) = -20 x**7 + 70 x**6 - 84 x**5 + 35 x**
+     &4")')
         else
           write(luout,'(" ERROR: unknown schlenker function")')
           call errquit("unknown schlenker function option",

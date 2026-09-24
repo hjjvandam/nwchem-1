@@ -22,5 +22,13 @@
       integer, parameter :: s3_ls = 28
       integer, parameter :: s2s3_ls = 29
       integer, parameter :: s3s2_ls = 30
+      integer, parameter :: s6_ls = 31
+      integer, parameter :: s7_ls = 32
+      integer, parameter :: s8_ls = 33
+      integer, parameter :: s24_ls = 34 ! same as s2 but with power 4
+      integer, parameter :: s26_ls = 35 ! same as s2 but with power 6
+      integer, parameter :: s41_ls = 36
+      integer, parameter :: s42_ls = 37
+      integer, parameter :: s43_ls = 38
 !
 !-----------------------------------------------------------------------

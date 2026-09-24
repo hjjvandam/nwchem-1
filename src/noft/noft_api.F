@@ -556,6 +556,30 @@
      &                         "s3-s2"))
      &    then
             s_ls = s3s2_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s6"))
+     &    then
+            s_ls = s6_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s7"))
+     &    then
+            s_ls = s7_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s8"))
+     &    then
+            s_ls = s8_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s24"))
+     &    then
+            s_ls = s24_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s26"))
+     &    then
+            s_ls = s26_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s41"))
+     &    then
+            s_ls = s41_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s42"))
+     &    then
+            s_ls = s42_ls
+          else if (inp_compare(.false.,test(1:inp_strlen(test)),"s43"))
+     &    then
+            s_ls = s43_ls
           else
             call errquit("noft_input: invalid schlenker: "//test,
      &                   165, INPUT_ERR)
