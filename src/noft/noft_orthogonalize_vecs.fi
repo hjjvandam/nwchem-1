@@ -1,11 +1,11 @@
 !-----------------------------------------------------------------------
 !
 !>
-!>    \brief Orthonormalize the vectors 
+!>    \brief Orthonormalize the vectors
 !>
-!>    This subroutine ortho-normalizes all vectors making up the 
+!>    This subroutine ortho-normalizes all vectors making up the
 !>    wavefunction, i.e. the natural orbitals as well as the correlation
-!>    functions. 
+!>    functions.
 !>
       subroutine noft_orthogonalize(noft_wavefunction)
       implicit none
@@ -26,7 +26,7 @@
 !
 !> \brief Orthogonalize a set of complex or double vectors
 !>
-!> Orthogonalize a set of vectors in either an orthogonal basis or 
+!> Orthogonalize a set of vectors in either an orthogonal basis or
 !> a non-orthogonal basis:
 !> - ometric = .false. the vectors are given in an orthogonal basis
 !>   and `g_over` is not used
@@ -61,7 +61,7 @@
       complex(kind=dp), allocatable :: zovl(:,:)
       complex(kind=dp), allocatable :: zsij(:)
       complex(kind=dp), allocatable :: zw(:)
-!     
+!
 !     Redistribute the input matrix ... block the leading
 !     dimension, leave second dimension undistributed
 !     ... each process has a(ulo:uhi,1:ni).  If
@@ -185,7 +185,7 @@
 !> \brief Orthonormalize a set of vectors using local memory
 !>
 !> The vectors are stored in local memory. Each vector is distributed
-!> across multiple processors. Each processor holds the same rows of 
+!> across multiple processors. Each processor holds the same rows of
 !> all vectors. The vectors are real.
 !>
 !> The repeated Gramm-Schmidt algorithm is used.
@@ -195,35 +195,35 @@
       implicit none
 #include "errquit.fh"
 #include "msgids.fh"
-c     
+!
       integer, intent(in) :: ld, ni, ulo, uhi, nu
-      real(kind=dp), intent(inout) :: 
+      real(kind=dp), intent(inout) ::
 !          Local patch of vectors
      &     vecs(ulo:(ulo+ld-1),1:ni),
 !          workspace for making overlap
      &     s(ni),
 !          workspace for making overlap
      &     w(nu)
-      real(kind=dp), intent(in) :: 
+      real(kind=dp), intent(in) ::
 !          metric matrix if (ometric)
      &     o(1:nu,ulo:(ulo+ld-1))
       logical, intent(in) :: ometric
 !
       integer i, j, u, npass
       real(kind=dp) si, scale
-!     
+!
 !     Orthogonalize columns of a matrix distributed so that
 !     each process has vecs(ulo:uhi,1:ni) ... uses global sums only.
-!     
+!
       do i = 1, ni
         npass = 0
    10   npass = npass + 1
-!     
+!
 !       If have a metric then first form overlap*vec(i)
-!     
+!
         if (ometric) then
           call dfill(nu, 0.0d0, w, 1)
-          if ((uhi-ulo+1) .gt. 0) 
+          if ((uhi-ulo+1) .gt. 0)
      &      call dgemv('n', nu, (uhi-ulo+1), 1.0d0, o, nu,
      &           vecs(ulo,i), 1, 0.0d0, w, 1)
           call ga_dgop(msg_orthog_1, w, nu, '+') ! Actually only need ulo:hi local
@@ -232,9 +232,9 @@ c
             w(u) = vecs(u,i)
           end do
         end if
-!     
+!
 !       Now form overlap between vector i and vectors 1...i
-!     
+!
         call dfill(i, 0.0d0, s, 1)
         if ((uhi-ulo+1) .gt. 0) then
           call dgemv('t', (uhi-ulo+1), i, 1.0d0,
@@ -243,14 +243,14 @@ c
         call ga_dgop(msg_orthog_2, s, i, '+')
 !
 !       Apply the projection
-!     
+!
         if ((uhi-ulo+1).gt.0 .and. i.gt.1) then
           call dgemv('n', (uhi-ulo+1), i-1, -1.0d0,
      &         vecs(ulo,1), ld, s(1), 1, 1.0d0, vecs(ulo,i), 1)
         end if
-!     
+!
 !       Renormalize vector i
-!     
+!
         si = s(i)
         do j = 1, i-1
           si = si - s(j)*s(j)
@@ -266,9 +266,9 @@ c
         do u = ulo, uhi
           vecs(u,i) = vecs(u,i) * scale
         end do
-!     
+!
 !       If the vector norm changed a lot then repeat
-!     
+!
         if (i .gt. 1) then
           scale = si/s(i)
           if (scale .lt. 0.9d0) then
@@ -290,7 +290,7 @@ c
 !> \brief Orthonormalize a set of vectors using local memory
 !>
 !> The vectors are stored in local memory. Each vector is distributed
-!> across multiple processors. Each processor holds the same rows of 
+!> across multiple processors. Each processor holds the same rows of
 !> all vectors. The vectors are complex.
 !>
 !> The repeated Gramm-Schmidt algorithm is used.
@@ -300,16 +300,16 @@ c
       implicit none
 #include "errquit.fh"
 #include "msgids.fh"
-c     
+!
       integer, intent(in) :: ld, ni, ulo, uhi, nu
-      complex(kind=8), intent(inout) :: 
+      complex(kind=8), intent(inout) ::
 !     Local patch of vectors
      &     vecs(ulo:(ulo+ld-1),1:ni),
 !     workspace for making overlap
      &     s(ni),
 !     workspace for making overlap
      &     w(nu)
-      complex(kind=dp), intent(in) :: 
+      complex(kind=dp), intent(in) ::
 !          metric matrix if (ometric)
      &     o(1:nu,ulo:(ulo+ld-1))
       logical, intent(in) :: ometric
@@ -318,19 +318,19 @@ c
       complex(kind=dp) :: si, scale
       complex(kind=dp), parameter :: zero = complex(0.0d0,0.0d0)
       complex(kind=dp), parameter :: one  = complex(1.0d0,0.0d0)
-!     
+!
 !     Orthogonalize columns of a matrix distributed so that
 !     each process has vecs(ulo:uhi,1:ni) ... uses global sums only.
-!     
+!
       do i = 1, ni
         npass = 0
    10   npass = npass + 1
-!     
+!
 !       If have a metric then first form overlap*vec(i)
-!     
+!
         if (ometric) then
           w = zero
-          if ((uhi-ulo+1) .gt. 0) 
+          if ((uhi-ulo+1) .gt. 0)
      &      call zgemv('n', nu, (uhi-ulo+1), one, o, nu,
      &           vecs(ulo,i), 1, zero, w, 1)
           call ga_zgop(msg_orthog_1, w, nu, '+') ! Actually only need ulo:hi local
@@ -339,9 +339,9 @@ c
             w(u) = vecs(u,i)
           end do
         end if
-!     
+!
 !       Now form overlap between vector i and vectors 1...i
-!     
+!
         s = zero
         if ((uhi-ulo+1) .gt. 0) then
           call zgemv('c', (uhi-ulo+1), i, one,
@@ -350,19 +350,19 @@ c
         call ga_zgop(msg_orthog_2, s, i, '+')
 !
 !       Apply the projection
-!     
+!
         if ((uhi-ulo+1).gt.0 .and. i.gt.1) then
           call zgemv('n', (uhi-ulo+1), i-1, -one,
      &         vecs(ulo,1), ld, s(1), 1, one, vecs(ulo,i), 1)
         end if
-!     
+!
 !       Renormalize vector i
-!     
+!
         si = s(i)
         do j = 1, i-1
           si = si - s(j)*conjg(s(j))
         end do
-!     
+!
         if (abs(si) .eq. 0.0d0) then
           call errquit('noft_orthog_zvecs: hard zero', i, GA_ERR)
         endif
@@ -370,9 +370,9 @@ c
         do u = ulo, uhi
           vecs(u,i) = vecs(u,i) * scale
         end do
-!     
+!
 !       If the vector norm changed a lot then repeat
-!     
+!
         if (i .gt. 1) then
           scale = si/s(i)
           if (abs(scale) .lt. 0.9d0) then
@@ -507,7 +507,7 @@ c
 !
 !-----------------------------------------------------------------------
 !
-!> \brief Call noft_orthog and test whether the resulting vectors are 
+!> \brief Call noft_orthog and test whether the resulting vectors are
 !>        orthogonal
 !>
       subroutine noft_tst_orthog(g_vecs,g_over,ometric)
@@ -517,9 +517,9 @@ c
 #include "global.fh"
 #include "msgids.fh"
 !>    The GA with the vectors
-      integer, intent(in) :: g_vecs 
+      integer, intent(in) :: g_vecs
 !>    The GA with the overlap
-      integer, intent(in) :: g_over 
+      integer, intent(in) :: g_over
 !>    Flag if .true. there is an overlap matrix, .false. there is not.
       logical, intent(in) :: ometric
 !
@@ -528,8 +528,8 @@ c
       integer :: nbf, nmo
       integer :: g_bfmo, g_momo
 !
-      character(len=1) :: tn 
-      character(len=1) :: tt 
+      character(len=1) :: tn
+      character(len=1) :: tt
 !
       call ga_inquire(g_vecs,itypv,nbf,nmo)
       if (ometric) then
@@ -580,7 +580,7 @@ c
 !> \brief Orthogonalize 1 vector from X against nvec vectors from M
 !>
 !> The global arrays X and M may be the same, but neither need to have
-!> normalized vectors. Also the resulting orthogonalized vector in 
+!> normalized vectors. Also the resulting orthogonalized vector in
 !> X is not normalized.
 !>
 !> The modified Gramm-Schmidt algorithm is used. The performance can
