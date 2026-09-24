@@ -58,6 +58,7 @@ c-----------------------------------------------------------------------
 #include "noft_eval_energy.fi"
 #include "noft_eval_nuc_energy.fi"
 #include "noft_eval_tot_energy.fi"
+#include "noft_files_exist.fi"
 #include "noft_finalize_dft.fi"
 #include "noft_finalize_instances.fi"
 #include "noft_finalize_integrals.fi"

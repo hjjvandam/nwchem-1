@@ -1,0 +1,28 @@
+!-----------------------------------------------------------------------
+!
+!> \brief Check if the wavefunction files exist
+!>
+!> When we want to start a calculation from an existing wavefunction
+!> it would be good to know if the files actually exist. If they don't
+!> we could choose another solution. This function returns .true. if
+!> the files all exist and .false. otherwise.
+!>
+      function noft_files_in_exist(noft_files) result(all_exist)
+      implicit none
+      type(noft_files_tp), intent(in) :: noft_files
+      logical :: all_exist
+      logical :: one_exist
+!
+      all_exist = .true.
+      inquire(file=trim(noft_files%movecs_in), exist=one_exist)
+      all_exist = all_exist .and. one_exist
+      inquire(file=trim(noft_files%svecs_in), exist=one_exist)
+      all_exist = all_exist .and. one_exist
+      inquire(file=trim(noft_files%mvecs_in), exist=one_exist)
+      all_exist = all_exist .and. one_exist
+      inquire(file=trim(noft_files%tvecs_in), exist=one_exist)
+      all_exist = all_exist .and. one_exist
+!
+      end function noft_files_in_exist
+!
+!-----------------------------------------------------------------------
