@@ -17,6 +17,7 @@
 #include "inp.fh"
 #include "mafdecls.fh"
 #include "noft_functional_options.fh"
+#include "noft_restricted_options.fh"
 #include "noft_solver_options.fh"
 #include "rtdb.fh"
       integer, intent(inout) :: rtdb !> [Input] The runtime database
@@ -380,9 +381,19 @@
      &                       "restricted"))
      &  then
           no_keyword_processed = .false.
-          if (.not. rtdb_put(rtdb, "noft:restricted", mt_log, 1,
-     &                       .true.))
+          if (.not. rtdb_put(rtdb, "noft:restricted", mt_int, 1,
+     &                       restricted))
      &      call errquit("noft_input: rtdb_put failed", 100, RTDB_ERR)
+!
+!       Halfrestricted
+!
+        else if (inp_compare(.false.,test(1:inp_strlen(test)),
+     &                       "halfrestricted"))
+     &  then
+          no_keyword_processed = .false.
+          if (.not. rtdb_put(rtdb, "noft:restricted", mt_int, 1,
+     &                       halfrestricted))
+     &      call errquit("noft_input: rtdb_put failed", 105, RTDB_ERR)
 !
 !       Unrestricted
 !
@@ -390,8 +401,8 @@
      &                       "unrestricted"))
      &  then
           no_keyword_processed = .false.
-          if (.not. rtdb_put(rtdb, "noft:unrestricted", mt_log, 1,
-     &                       .false.))
+          if (.not. rtdb_put(rtdb, "noft:restricted", mt_int, 1,
+     &                       unrestricted))
      &      call errquit("noft_input: rtdb_put failed", 110, RTDB_ERR)
 !
 !       Symmetrize

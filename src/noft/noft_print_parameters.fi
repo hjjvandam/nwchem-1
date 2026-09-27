@@ -8,6 +8,7 @@
 #include "errquit.fh"
 #include "global.fh"
 #include "stdio.fh"
+#include "noft_restricted_options.fh"
 #include "noft_solver_options.fh"
 #include "noft_functional_options.fh"
       !> The job parameters
@@ -27,10 +28,12 @@
           write(luout,'(" no")')
         endif
         write(luout,'(" spin restricted               : ",$)')
-        if (noft_params%restricted) then
-          write(luout,'("yes")')
-        else
-          write(luout,'(" no")')
+        if (noft_params%restricted.eq.restricted) then
+          write(luout,'("restricted")')
+        else if (noft_params%restricted.eq.halfrestricted) then
+          write(luout,'("halfrestricted")')
+        else if (noft_params%restricted.eq.unrestricted) then
+          write(luout,'("unrestricted")')
         endif
         write(luout,'(" functional                    : ",$)')
         if (noft_params%functional.eq.same) then

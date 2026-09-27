@@ -48,7 +48,13 @@
         !> "Temperature"
         real(kind=dp) :: temperature
         !> Is this a spin restricted calculation?
-        logical :: restricted
+        !> We now have 3 options:
+        !> - restricted: alpha and beta wavefunctions are the same
+        !> - halfrestricted: alpha and beta MOs are the same but
+        !>                   the tilde functions are different
+        !> - unrestricted: alpha and beta wavefunctions are in no
+        !>                 restricted to be the same
+        integer :: restricted
         !> Do we use symmetry?
         logical :: symmetry_adapt
         !> The number of open shell orbitals

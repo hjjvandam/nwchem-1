@@ -18,6 +18,7 @@
      &           noft_wavefunction_step,noft_energy_step,noft_step,
      &           noft_rotation,noft_range)
       implicit none
+#include "noft_restricted_options.fh"
       !> The runtime database handle
       integer, intent(in) :: rtdb
       !> The calculation parameters
@@ -66,8 +67,13 @@
       range_init = noft_params%monte_carlo%step_maximum/10.0_dp
       call noft_monte_carlo_range_zero(noft_range)
       do ifield = 1, nfields
-        if (noft_params%restricted.and.ifield.gt.nfields_csh) then
+        if (noft_params%restricted.eq.restricted.and.
+     &      ifield.gt.nfields_csh) then
           return
+        endif
+        if (noft_params%restricted.eq.halfrestricted.and.
+     &      fields(ifield).eq."mo_b") then
+          cycle
         endif
         do jj = 1, noft_params%nmo
           do ii = 1, jj-1

@@ -9,14 +9,18 @@
       subroutine noft_restrict_wavefunction(noft_parameters,
      &           noft_wavefunction)
       implicit none
+#include "noft_restricted_options.fh"
       !> The calculation parameters
       type(noft_parameter_tp),    intent(in)    :: noft_parameters
       !> The wavefunction
       type(noft_wavefunction_tp), intent(inout) :: noft_wavefunction
 !
-      if (noft_parameters%restricted) then
+      if (noft_parameters%restricted.eq.restricted) then
         call ga_copy(noft_wavefunction%mo_a,noft_wavefunction%mo_b)
         call ga_copy(noft_wavefunction%to_a,noft_wavefunction%to_b)
+      endif
+      if (noft_parameters%restricted.eq.halfrestricted) then
+        call ga_copy(noft_wavefunction%mo_a,noft_wavefunction%mo_b)
       endif
       noft_wavefunction%irrep_b = noft_wavefunction%irrep_a
 !

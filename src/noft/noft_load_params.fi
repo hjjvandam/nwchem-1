@@ -11,6 +11,7 @@
 #include "errquit.fh"
 #include "mafdecls.fh"
 #include "rtdb.fh"
+#include "noft_restricted_options.fh"
 #include "noft_solver_options.fh"
 #include "noft_functional_options.fh"
       !> The runtime database handle
@@ -229,10 +230,10 @@
 !
 !     Load the restricted setting
 !
-      if (rtdb_get(rtdb,"noft:restricted", MT_LOG, 1,
+      if (rtdb_get(rtdb,"noft:restricted", MT_INT, 1,
      &             noft_params%restricted)) then
       else
-        noft_params%restricted = .false.
+        noft_params%restricted = unrestricted
       endif
 !
 !     Load the symmetrize setting

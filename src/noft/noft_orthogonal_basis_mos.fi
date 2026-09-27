@@ -11,7 +11,7 @@
 !> in terms of the orthogonal basis. So we need the solution of
 !> \$S^{-1/2} X = M\$ where \$M\$ are the MOs we have now, and
 !> \$S^{-1/2}\$ is the orthogonalizing transformation. We can also
-!> write this as \$X = (S^{-1/2})^T S M\$ because then 
+!> write this as \$X = (S^{-1/2})^T S M\$ because then
 !> \$S^{-1/2}X = S^{-1/2}(S^{-1/2})^T S M = S^{-1}S M = M\$
 !>
       subroutine noft_orthogonal_basis_mos(noft_params,noft_operators,
@@ -20,6 +20,7 @@
 #include "global.fh"
 #include "errquit.fh"
 #include "mafdecls.fh"
+#include "noft_restricted_options.fh"
 !>    The parameters of the calculation
       type(noft_parameter_tp),    intent(in)    :: noft_params
 !>    The calculation operators
@@ -67,7 +68,8 @@
 !
       enddo
 !
-      if (noft_params%restricted) then
+      if (noft_params%restricted.eq.restricted.or.
+     &    noft_params%restricted.eq.halfrestricted) then
         call ga_copy(noft_wavefunction%mo_a,noft_wavefunction%mo_b)
       endif
       if (.not.ga_destroy(g_ao_ao)) then

@@ -61,7 +61,8 @@
       geom  = noft_instances%geom
 !
 !     The NOFT code only supports unrestricted wavefunctions
-!     (restricted mode means setting alpha and beta wavefunctions equal)
+!     (restricted mode means setting alpha and beta wavefunctions equal,
+!      halfrestricted means alpha and beta MOs are equal)
 !
       ipol         = 2
       mult         = noft_params%ne_a-noft_params%ne_b+1

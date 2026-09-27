@@ -20,6 +20,7 @@
      &           noft_energy,oconv)
       implicit none
 #include "errquit.fh"
+#include "noft_restricted_options.fh"
 #include "stdio.fh"
       !> The runtime database handle
       integer,                    intent(in)    :: rtdb
@@ -101,7 +102,7 @@
      &                      noft_wavefunction,noft_energy)
       fields = (/"to_a","mo_a","to_b","mo_b","    "/)
       nfields = nfields_all
-      if (noft_params%restricted) then
+      if (noft_params%restricted.eq.restricted) then
         nfields = nfields_csh
       endif
 !DEBUG

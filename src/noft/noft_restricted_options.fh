@@ -1,0 +1,8 @@
+!-----------------------------------------------------------------------
+!     Option for differently restricted wavefunctions
+!
+      integer, parameter :: restricted = 101
+      integer, parameter :: halfrestricted = 102
+      integer, parameter :: unrestricted = 103
+!
+!-----------------------------------------------------------------------
