@@ -1,0 +1,275 @@
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_1(rho) result(s1)
+      implicit none
+!
+!     This function implements the most basic schlenker function,
+!     the identity.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s1
+!
+      s1 = rho
+!
+      end function noft_schlenker_1
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_2(rho) result(s2)
+      implicit none
+!
+!     This function implements a schlenker function that has a
+!     stationary point at rho==0.5.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s2
+      real(kind=dp)             :: rho2, rho3
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      s2 = 3.0_dp*rho - 6.0_dp*rho2 + 4.0_dp*rho3
+!
+      end function noft_schlenker_2
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_3(rho) result(s3)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.0.
+!     - rho==0.5.
+!     - rho==1.0.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s3
+      real(kind=dp)             :: rho2, rho3, rho4, rho5
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      rho4 = rho2*rho2
+      rho5 = rho3*rho2
+      s3 = 15.0_dp*rho2 - 50.0_dp*rho3 + 60.0_dp*rho4 - 24.0_dp*rho5
+!
+      end function noft_schlenker_3
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_23(rho) result(st)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.5.
+!     - rho==1.0.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: st
+!
+      if (rho.le.0.5_dp) then
+        st = noft_schlenker_2(rho)
+      else
+        st = noft_schlenker_3(rho)
+      endif
+!
+      end function noft_schlenker_23
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_32(rho) result(st)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.0.
+!     - rho==0.5.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: st
+!
+      if (rho.le.0.5_dp) then
+        st = noft_schlenker_3(rho)
+      else
+        st = noft_schlenker_2(rho)
+      endif
+!
+      end function noft_schlenker_32
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_6(rho) result(s6)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.0.
+!     - rho==1.0.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s6
+      real(kind=dp)             :: rho2, rho3
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      s6 = 3.0_dp*rho2 - 2.0_dp*rho3
+!
+      end function noft_schlenker_6
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_7(rho) result(s7)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.0.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s7
+      real(kind=dp)             :: rho2, rho3, rho4, rho5
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      s7 = 2.0_dp*rho2 - 1.0_dp*rho3
+!
+      end function noft_schlenker_7
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_8(rho) result(s8)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==1.0.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s8
+      real(kind=dp)             :: rho2, rho3
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      s8 = rho + rho2 - rho3
+!
+      end function noft_schlenker_8
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_24(rho) result(s24)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.5.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s24
+      real(kind=dp)             :: rho2, rho3, rho4, rho5
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      rho4 = rho2*rho2
+      rho5 = rho2*rho3
+      s24 = 16.0_dp*rho5-40.0_dp*rho4+40.0_dp*rho3-20.0_dp*rho2+
+     &      5.0_dp*rho
+!
+      end function noft_schlenker_24
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_26(rho) result(s26)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.5.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s26
+      real(kind=dp)             :: rho2, rho3, rho4, rho5, rho6, rho7
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      rho4 = rho2*rho2
+      rho5 = rho2*rho3
+      rho6 = rho3*rho3
+      rho7 = rho4*rho3
+      s26 = 64.0_dp*rho7-224.0_dp*rho6+336.0_dp*rho5-280.0_dp*rho4+
+     &      140.0_dp*rho3-42.0_dp*rho2+7.0_dp*rho
+!
+      end function noft_schlenker_26
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_41(rho) result(s31)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.0
+!     - rho==1.0.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s31
+      real(kind=dp)             :: rho2, rho3, rho4, rho5, rho6, rho7
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      rho4 = rho2*rho2
+      rho5 = rho2*rho3
+      rho6 = rho3*rho3
+      rho7 = rho4*rho3
+      s31 = -2.0_dp*rho3+3.0_dp*rho2
+!
+      end function noft_schlenker_41
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_42(rho) result(s32)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.0
+!     - rho==1.0.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s32
+      real(kind=dp)             :: rho2, rho3, rho4, rho5, rho6, rho7
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      rho4 = rho2*rho2
+      rho5 = rho2*rho3
+      rho6 = rho3*rho3
+      rho7 = rho4*rho3
+      s32 = 6.0_dp*rho5-15.0_dp*rho4+10.0_dp*rho3
+!
+      end function noft_schlenker_42
+!
+!-----------------------------------------------------------------------
+!
+      function noft_schlenker_43(rho) result(s33)
+      implicit none
+!
+!     This function implements a schlenker function that has
+!     stationary points at:
+!     - rho==0.0
+!     - rho==1.0.
+!
+      real(kind=dp), intent(in) :: rho
+      real(kind=dp)             :: s33
+      real(kind=dp)             :: rho2, rho3, rho4, rho5, rho6, rho7
+!
+      rho2 = rho*rho
+      rho3 = rho*rho2
+      rho4 = rho2*rho2
+      rho5 = rho2*rho3
+      rho6 = rho3*rho3
+      rho7 = rho4*rho3
+      s33 = -20.0_dp*rho7 + 70.0_dp*rho6 - 84.0_dp*rho5 + 35.0_dp*rho4
+!
+      end function noft_schlenker_43
+!
+!-----------------------------------------------------------------------
