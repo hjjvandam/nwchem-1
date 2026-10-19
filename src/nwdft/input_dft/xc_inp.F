@@ -153,7 +153,7 @@ c
 c     r2scan0 ==> 19
 c
       integer num_dirs, ind, mlen, iline, n, itemp
-      parameter (num_dirs=169)
+      parameter (num_dirs=170)
 c
       character*15 dirs(num_dirs)
       character*255 test
