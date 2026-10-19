@@ -212,7 +212,7 @@ c
      &     'xscan', 'cscan',
      &     'hcth147@tz2p',
      W     'wb97','wb97x','wb97x-d3', 
-     &     'xr2scan', 'cr2scan','r2scan0', 'cddft' /
+     &     'xr2scan', 'cr2scan','r2scan0', 'cddft', 'cddft2' /
 c     becke97-d, ssb-d
       logical disp, dumdirect
       integer ivdw
@@ -298,7 +298,7 @@ c
      &     9710,9720,9650,9660,9615,9616,
      &  1947,
      &  9410,9420,9430,
-     &  9661,9662,9670, 9966,
+     &  9661,9662,9670, 9966, 9967,
      &     1999 ) ind
 
 
@@ -4454,14 +4454,26 @@ c
       xccomb(28) = .true.
 c     
       goto 10
-c     
+c
 c     cddft
 c          rho**power
-c             
+c
  9966 xccomb(101) = .false.
         cfac(101) = 1.00d0
        lcfac(101) = .true.
       nlcfac(101) = .false.
+c
+      goto 10
+c
+c     cddft2
+c          rho**power
+c
+c          same as cddft but for unrestricted cases
+c
+ 9967 xccomb(102) = .false.
+        cfac(102) = 1.00d0
+       lcfac(102) = .true.
+      nlcfac(102) = .false.
 c
       goto 10
  1999 continue

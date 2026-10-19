@@ -5,13 +5,13 @@ c     DWS - 6/12
 c     BGJ - 8/98
 c
 #if !defined SECOND_DERIV && !defined THIRD_DERIV
-      Subroutine xc_dirac_pow(tol_rho1, fac, lfac, nlfac, rho, Amat, nq, 
+      Subroutine xc_dirac_pow(tol_rho1, fac, lfac, nlfac, rho, Amat, nq,
      &                    jpol, Ex, qwght, ldew, func)
 #elif defined(SECOND_DERIV) && !defined THIRD_DERIV
 c     For locations of 2nd derivatives of functionals in array
 #include "dft2drv.fh"
       Subroutine xc_dirac_pow_d2(tol_rho1, fac, lfac, nlfac, rho, Amat,
-     &                       Amat2, nq, jpol, Ex, qwght, ldew, 
+     &                       Amat2, nq, jpol, Ex, qwght, ldew,
      &                       func)
 #else
 #include "dft2drv.fh"
@@ -31,7 +31,7 @@ c
 c
 c This functional is defined as
 c
-c    rho**pow
+c    rhoa**pow + rhob**pow
 c
 c where `pow` is a variable. The thought is that maybe a good DDFT functional
 c is the DDFT density to some power. This idea is based on the fact that the
@@ -79,6 +79,7 @@ c     P3 =       -(6/PI)**(1/3)
 c     P4 = -(3/4)*(6/PI)**(1/3)
 c
       double precision rho13, rho32, rho33, one_third, term
+      double precision rhot1, rhot2, rhot3
       double precision two_ninth, rhom23
       Parameter (one_third = 1.d0/3.d0)
       Parameter (two_ninth = 2.d0/9.d0)
@@ -91,6 +92,7 @@ c
 c
 c        ======> SPIN-RESTRICTED <======
 c
+         call errquit("we don't do closed shell",UERR)
          P1 = -(3.0d0/PI)**(p_ddft_d-1.0d0)
          do 10 n = 1, nq
             if (rho(n,1).gt.tol_rho)then
@@ -115,24 +117,28 @@ c
                rho32=0.0d0
                rho33=0.0d0
                if (rho(n,2).gt.tol_rho)
-     &             rho32=rho(n,2)**(p_ddft_d-1.0d0)
+     &             rho32=(2.0d0*rho(n,2))**p_ddft_d
                if (rho(n,3).gt.tol_rho)
-     &             rho33=rho(n,3)**(p_ddft_d-1.0d0)
-               Amat(n,1) = Amat(n,1) + P3*rho32*fac
-               Amat(n,2) = Amat(n,2) + P3*rho33*fac
+     &             rho33=(2.0d0*rho(n,3))**p_ddft_d
+               rhot1 = 0.5d0*(rho32+rho33)
+               if (rho(n,2).gt.tol_rho)
+     &             Amat(n,1) = Amat(n,1)
+     &                       + p_ddft_d*P3*rho32*fac/(2.0d0*rho(n,2))
+               if (rho(n,3).gt.tol_rho)
+     &             Amat(n,2) = Amat(n,2)
+     &                       + p_ddft_d*P3*rho33*fac/(2.0d0*rho(n,3))
                if (ldew)
-     &           func(n) = func(n) + (rho32*rho(n,2) +
-     &                                rho33*rho(n,3)   )*P3*fac/p_ddft_d
-               term = term + (rho32*rho(n,2)+rho33*rho(n,3))*qwght(n)
+     &           func(n) = func(n) + rhot1*P3*fac
+               term = term + rhot1*qwght(n)
 c      write(LuOut,*)'from xc_dirac ; rho32, rho33, qwght(n): ',
 c     &                           rho32, rho33, qwght(n)
             endif
    20    continue
 c
-         Ex = Ex + P3*term*fac/p_ddft_d
+         Ex = Ex + P3*term*fac
 c
       endif
-c      write(LuOut,*)'from xc_dirac ; p4, exp, fac, Ex: ', 
+c      write(LuOut,*)'from xc_dirac ; p4, exp, fac, Ex: ',
 c     &                           p4, exp, fac, Ex
       return
       end
