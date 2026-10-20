@@ -1,0 +1,15 @@
+# Plot the schlenker functions we have developed. There are
+# only 5 different ones, one of which is pre-existing,
+# only 4 are new.
+# The schlenker functions we need are non-decreasing, but
+# 4 and 5 both have minima which makes them unsuitable.
+s1(x)=x
+s22(x)=3*x-6*x**2+4*x**3
+s24(x)=16*x**5-40*x**4+40*x**3-20*x**2+5*x
+s26(x)=64*x**7-224*x**6+336*x**5-280*x**4+140*x**3-42*x**2+7*x
+#set terminal png
+#set output "schlenker-functions.png"
+set xrange [0:1]
+#plot s1(x), s2(x), s3(x), s4(x), s5(x), s6(x), s7(x), s8(x)
+plot s1(x), s22(x), s24(x), s26(x)
+#quit
