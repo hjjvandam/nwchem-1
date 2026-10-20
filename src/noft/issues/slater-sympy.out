@@ -1,0 +1,11 @@
+Slater functional
+f(ra=rb) =  c*(2*ra)**a
+Functional =  c*(2*sqrt(ra)*sqrt(rb))**a
+Diff(ra)   =  a*c*(2*sqrt(ra)*sqrt(rb))**a/(2*ra)
+Diff(rb)   =  a*c*(2*sqrt(ra)*sqrt(rb))**a/(2*rb)
+
+Slater exchange functional
+g(ra=rb) =  c*(2*ra)**a
+Functional =  c*((2*ra)**a + (2*rb)**a)/2
+Diff(ra)   =  a*c*(2*ra)**a/(2*ra)
+Diff(rb)   =  a*c*(2*rb)**a/(2*rb)
