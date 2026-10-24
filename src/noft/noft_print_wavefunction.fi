@@ -1,0 +1,20 @@
+!-----------------------------------------------------------------------
+!>
+!> \brief Print the wavefunction
+!>
+!> This subroutine is mainly intented for debugging purposes. It just
+!> prints all the global arrays that make up the wavefunction. No
+!> special formatting or anything is done.
+!>
+      subroutine noft_print_wavefunction(noft_wavefunction)
+      implicit none
+      type(noft_wavefunction_tp), intent(in) :: noft_wavefunction
+!
+      call ga_print(noft_wavefunction%to_a)
+      call ga_print(noft_wavefunction%to_b)
+      call ga_print(noft_wavefunction%mo_a)
+      call ga_print(noft_wavefunction%mo_b)
+!
+      end subroutine noft_print_wavefunction
+!
+!-----------------------------------------------------------------------
