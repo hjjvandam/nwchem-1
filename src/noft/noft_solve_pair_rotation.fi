@@ -48,8 +48,9 @@
       !> Storage for the step size
       type(noft_monte_carlo_range_tp) :: noft_range
 !
-      integer, parameter :: nfields_all = 4
-      integer, parameter :: nfields_csh = 2
+      integer, parameter :: nfields_all  = 4
+      integer, parameter :: nfields_rosh = 3
+      integer, parameter :: nfields_csh  = 2
       integer :: nfields
       integer :: ifield
       integer :: npoints
@@ -104,6 +105,9 @@
       nfields = nfields_all
       if (noft_params%restricted.eq.restricted) then
         nfields = nfields_csh
+      endif
+      if (noft_params%restricted.eq.halfrestricted) then
+        nfields = nfields_rosh
       endif
 !DEBUG
 !     call noft_monte_carlo_range_create(noft_params, noft_range)

@@ -45,11 +45,18 @@
       integer :: g_vecs(ndim)
       integer :: idim(ndim)
       integer :: chunk(ndim)
+      ! movecs_write assume that nmo and nto are of length 2
+      integer :: nmo(2)
+      integer :: nto(2)
 !
       allocate(occ(1:2*noft_params%nso))
       allocate(evals(1:2*noft_params%nso))
       occ = 0.0_dp
       evals = 0.0_dp
+      nmo(1) = noft_params%nmo
+      nmo(2) = noft_params%nmo
+      nto(1) = noft_params%nto
+      nto(2) = noft_params%nto
 !
       if (.not.movecs_write(rtdb,
      &    noft_instances%basis,
@@ -74,7 +81,7 @@
      &    title,
      &    noft_params%nso,
      &    2,
-     &    noft_params%nmo,
+     &    nmo,
      &    occ,1,
      &    evals,1,
      &    g_vecs))
@@ -90,7 +97,7 @@
      &    title,
      &    noft_params%nmo,
      &    2,
-     &    noft_params%nto,
+     &    nto,
      &    occ,1,
      &    evals,1,
      &    g_vecs))
@@ -119,7 +126,7 @@
      &    title,
      &    noft_params%nao,
      &    2,
-     &    noft_params%nmo,
+     &    nmo,
      &    occ,1,
      &    evals,1,
      &    g_vecs))
